@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="plane-gradient" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <path d="M502.6 54.6c-13.1-13.1-34.3-13.1-47.4 0l-99.2 99.2H48c-17.7 0-32 14.3-32 32s14.3 32 32 32h178.7l-120.6 120.6H16c-8.8 0-16 7.2-16 16s7.2 16 16 16h90.1l-27.7 27.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l27.7-27.7V464c0 8.8 7.2 16 16 16s16-7.2 16-16v-90.1l120.6-120.6V464c0 17.7 14.3 32 32 32s32-14.3 32-32V210.1l99.2-99.2c13.1-13.1 13.1-34.3 0-47.4z"
+    fill="url(#plane-gradient)"/>
+</svg> 

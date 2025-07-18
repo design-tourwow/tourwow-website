@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page</title>
+</head>
+<body>
+    <h1>Testing Website Status</h1>
+    <p>If you can see this, the basic HTML works.</p>
+    <script>
+        console.log('JavaScript is working');
+        
+        // Test if we can access the React page
+        fetch('/wholesale-tours-2')
+            .then(response => {
+                console.log('Status:', response.status);
+                return response.text();
+            })
+            .then(html => {
+                console.log('Page loaded successfully');
+                document.body.innerHTML += '<p style="color: green;">✅ wholesale-tours-2 page loads successfully!</p>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.body.innerHTML += '<p style="color: red;">❌ Error loading wholesale-tours-2: ' + error.message + '</p>';
+            });
+    </script>
+</body>
+</html>

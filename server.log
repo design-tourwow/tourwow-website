@@ -1,0 +1,284 @@
+
+> tourwow-website@0.1.0 dev
+> next dev --port 3000
+
+   ▲ Next.js 15.3.4
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.158:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1202ms
+ ○ Compiling / ...
+ ✓ Compiled / in 900ms (885 modules)
+ HEAD / 200 in 1252ms
+ GET / 200 in 265ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 545ms (889 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 880ms
+ ✓ Compiled /wholesale-tours in 335ms (919 modules)
+ GET /wholesale-tours 200 in 388ms
+ ✓ Compiled /wholesale-tours-2 in 334ms (955 modules)
+ GET /wholesale-tours-2 200 in 652ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 265ms
+ ○ Compiling /tours-detail-2/[tour-code] ...
+ ✓ Compiled /tours-detail-2/[tour-code] in 505ms (1029 modules)
+ GET /tours-detail-2/XJ292 200 in 4795ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 288ms
+ GET /tours-detail-2/XJ292 200 in 5353ms
+ ✓ Compiled in 1175ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 80ms
+ ✓ Compiled in 353ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 76ms
+ ✓ Compiled in 389ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 57ms
+ ✓ Compiled in 278ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 53ms
+ ✓ Compiled /_not-found in 306ms (570 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 684ms
+ GET /tours-detail-2/XJ292 200 in 4191ms
+ ✓ Compiled in 480ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 70ms
+ ✓ Compiled in 336ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 55ms
+ ✓ Compiled /_not-found in 184ms (570 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 441ms
+ GET /tours-detail-2/XJ292 200 in 4840ms
+ ✓ Compiled in 433ms (1036 modules)
+ GET /tours-detail-2/XJ292 200 in 54ms
+ ✓ Compiled in 576ms (1035 modules)
+ GET /tours-detail-2/XJ292 200 in 54ms
+ ✓ Compiled in 684ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 55ms
+ ✓ Compiled in 299ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 54ms
+ ✓ Compiled in 239ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 53ms
+ ✓ Compiled in 566ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 75ms
+ ✓ Compiled /_not-found in 308ms (569 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 655ms
+ GET /tours-detail-2/XJ292 200 in 4017ms
+ ✓ Compiled in 497ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 79ms
+ ✓ Compiled in 382ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 124ms
+ ✓ Compiled in 359ms (1033 modules)
+ GET /tours-detail-2/XJ292 200 in 91ms
+ ✓ Compiled /_not-found in 239ms (569 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 609ms
+ GET /tours-detail-2/XJ292 200 in 4172ms
+ ✓ Compiled in 739ms (1032 modules)
+ GET /tours-detail-2/XJ292 200 in 58ms
+ ✓ Compiled in 122ms (464 modules)
+ GET /tours-detail-2/XJ292 200 in 18ms
+ ✓ Compiled in 115ms (464 modules)
+ GET /tours-detail-2/XJ292 200 in 90ms
+ ✓ Compiled in 160ms (464 modules)
+ GET /tours-detail-2/XJ292 200 in 27ms
+ ✓ Compiled in 137ms (464 modules)
+ GET /tours-detail-2/XJ292 200 in 42ms
+ ✓ Compiled in 204ms (464 modules)
+ GET /tours-detail-2/XJ292 200 in 101ms
+ ✓ Compiled in 403ms (1017 modules)
+ GET /tours-detail-2/XJ292 200 in 345ms
+ GET /tours-detail-2/XJ292 200 in 16ms
+ ✓ Compiled /_not-found in 144ms (568 modules)
+ GET /tours-detail-2 404 in 522ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 428ms
+ ○ Compiling /contact ...
+ ✓ Compiled /contact in 633ms (1028 modules)
+ GET /contact 200 in 686ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1587560699334-cc4262401233?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80 404
+ ✓ Compiled /wholesale-tours in 275ms (582 modules)
+ GET /wholesale-tours 200 in 326ms
+ GET /wholesale-tours-2 200 in 313ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 363ms
+ ✓ Compiled in 548ms (1049 modules)
+ GET /wholesale-tours-2 200 in 56ms
+ GET /tours-detail-2/XJ292 200 in 3914ms
+ GET /wholesale-tours 200 in 285ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 302ms
+ GET /wholesale-tours-2 200 in 241ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 268ms
+ ✓ Compiled in 241ms (467 modules)
+ GET /wholesale-tours-2 200 in 14ms
+ ✓ Compiled in 115ms (467 modules)
+ GET /wholesale-tours-2 200 in 12ms
+ ✓ Compiled in 105ms (467 modules)
+ GET /wholesale-tours-2 200 in 13ms
+ ✓ Compiled in 119ms (467 modules)
+ GET /wholesale-tours-2 200 in 42ms
+ GET /wholesale-tours-2 200 in 217ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 204ms
+ GET /tours-detail-2/XJ292 200 in 5348ms
+ GET /wholesale-tours-2 200 in 22ms
+ GET /tours-detail-2/XJ259 200 in 3850ms
+ GET /tours-detail-2/XJ259 200 in 6896ms
+ GET /wholesale-tours-2 200 in 243ms
+ GET /tours-detail-2/KWEFD0824 200 in 3832ms
+ GET /tours-detail-2/KWEFD0824 200 in 5470ms
+ GET /tours-detail-2 404 in 204ms
+ GET /tours-detail-2/XJ259 200 in 4358ms
+ GET /wholesale-tours-2 200 in 33ms
+ GET /tours-detail-2/XJ292 200 in 5214ms
+ ○ Compiling /flash-sale ...
+ ✓ Compiled /flash-sale in 612ms (1059 modules)
+ GET /flash-sale 200 in 687ms
+ GET /flash-sale 200 in 12ms
+ ✓ Compiled /tours/[id] in 480ms (1050 modules)
+ GET /tours/26 200 in 951ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=800&q=80 404
+ GET /tours/27 200 in 43ms
+ ✓ Compiled /api-tours in 436ms (1043 modules)
+ GET /api-tours 200 in 496ms
+ GET /wholesale-tours 200 in 40ms
+ GET /wholesale-tours 200 in 329ms
+ ✓ Compiled /wholesale-tours-2 in 196ms (561 modules)
+ GET /wholesale-tours-2 200 in 549ms
+ ✓ Compiled in 309ms (477 modules)
+ GET /wholesale-tours-2 200 in 52ms
+ ✓ Compiled in 171ms (477 modules)
+ GET /wholesale-tours-2 200 in 15ms
+ ✓ Compiled in 108ms (477 modules)
+ GET /wholesale-tours-2 200 in 25ms
+ ✓ Compiled in 119ms (477 modules)
+ GET /wholesale-tours-2 200 in 13ms
+ ✓ Compiled in 115ms (477 modules)
+ GET /wholesale-tours-2 200 in 60ms
+ ✓ Compiled in 254ms (477 modules)
+ GET /wholesale-tours-2 200 in 15ms
+ ✓ Compiled in 161ms (477 modules)
+ GET /wholesale-tours-2 200 in 13ms
+ ✓ Compiled in 206ms (477 modules)
+ GET /wholesale-tours-2 200 in 24ms
+ ✓ Compiled in 202ms (477 modules)
+ GET /wholesale-tours-2 200 in 17ms
+ GET /wholesale-tours-2 200 in 224ms
+ ○ Compiling /blog ...
+ ✓ Compiled /blog in 541ms (1027 modules)
+ GET /blog 200 in 615ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1542347582-e616262145b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1509395062183-035f084f87a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1568254183919-78a4f43a2b53?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1499539279428-c107a4c211f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1533105079780-52b9be4ac20d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1518481851411-9d413c4626b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ✓ Compiled /blog/[slug] in 388ms (1057 modules)
+ GET /blog/ultimate-guide-planning-first-trip-japan 200 in 848ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1499539279428-c107a4c211f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1542347582-e616262145b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1509395062183-035f084f87a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1533105079780-52b9be4ac20d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1518481851411-9d413c4626b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1568254183919-78a4f43a2b53?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=95 404
+ ✓ Compiled in 112ms (482 modules)
+ GET /blog 200 in 17ms
+ ✓ Compiled in 209ms (482 modules)
+ GET /wholesale-tours-2 200 in 35ms
+ ✓ Compiled in 149ms (482 modules)
+ GET /wholesale-tours-2 200 in 27ms
+ ✓ Compiled in 194ms (482 modules)
+ GET /wholesale-tours-2 200 in 29ms
+ ✓ Compiled in 95ms (482 modules)
+ GET /wholesale-tours-2 200 in 13ms
+ ✓ Compiled in 130ms (482 modules)
+ GET /wholesale-tours-2 200 in 22ms
+ ✓ Compiled in 345ms (482 modules)
+ GET /wholesale-tours-2 200 in 19ms
+ ✓ Compiled in 88ms (482 modules)
+ GET /wholesale-tours-2 200 in 11ms
+ ✓ Compiled in 196ms (482 modules)
+ ✓ Compiled /_not-found in 242ms (577 modules)
+ GET /wholesale-tours-2 404 in 339ms
+ GET /wholesale-tours-2 200 in 301ms
+ GET /wholesale-tours-2 200 in 278ms
+ ✓ Compiled /wholesale-tours in 205ms (582 modules)
+ GET /wholesale-tours 200 in 540ms
+ GET /wholesale-tours-2 200 in 246ms
+ ○ Compiling /tours-detail-2/[tour-code] ...
+ ✓ Compiled /tours-detail-2/[tour-code] in 624ms (608 modules)
+ GET /tours-detail-2/XJ292 200 in 4423ms
+ GET /tours-detail-2/XJ292 200 in 3719ms
+ ○ Compiling /tours ...
+ ✓ Compiled /tours in 734ms (1093 modules)
+ GET /tours 200 in 858ms
+ GET /tours 200 in 14ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1530122037265-dc5f1f02a3a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1516587275781-a3dd1d65f62a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1509639820,ib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1547893223-169b1e5a5b99?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80 404
+ GET /wholesale-tours 200 in 63ms
+ ✓ Compiled in 215ms (484 modules)
+ GET /wholesale-tours 200 in 28ms
+ GET /wholesale-tours-2 200 in 276ms
+ ✓ Compiled in 136ms (484 modules)
+ GET /wholesale-tours-2 200 in 20ms
+ ✓ Compiled in 228ms (1071 modules)
+ GET /wholesale-tours-2 200 in 108ms
+ ✓ Compiled in 185ms (484 modules)
+ GET /wholesale-tours-2 200 in 25ms
+ ✓ Compiled /_not-found in 407ms (602 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 1031ms
+ GET /wholesale-tours-2 200 in 194ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 195ms
+ ✓ Compiled in 186ms (484 modules)
+ GET /wholesale-tours-2 200 in 16ms
+ GET /wholesale-tours-2 200 in 141ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 183ms
+ GET /wholesale-tours-2 200 in 269ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 357ms
+ ✓ Compiled in 286ms (484 modules)
+ GET /wholesale-tours-2 200 in 28ms
+ ✓ Compiled in 227ms (484 modules)
+ GET /tours-detail-2/FD029 200 in 45ms
+ GET /tours-detail-2/FD029 200 in 3677ms
+ GET /wholesale-tours-2 200 in 229ms
+ ✓ Compiled in 197ms (484 modules)
+ GET /tours-detail-2/FD029 200 in 46ms
+ GET /wholesale-tours-2 200 in 47ms
+ ○ Compiling /wholesale-tours-3 ...
+ ✓ Compiled /wholesale-tours-3 in 743ms (1082 modules)
+ GET /wholesale-tours-3 200 in 1085ms
+ ○ Compiling /compare ...
+ ✓ Compiled /compare in 591ms (1064 modules)
+ GET /compare?tours=XJ292,XJ259,XJ291,XJ289,XJ290 200 in 876ms
+ GET /compare?tours=XJ292,XJ259,XJ291,XJ289,XJ290 200 in 188ms
+ GET /wholesale-tours-3 200 in 298ms
+ GET /compare?tours=XJ292,XJ259,XJ272 200 in 175ms
+ ✓ Compiled /_not-found in 234ms (581 modules)
+ GET /tours-detail-2/XJ259 200 in 3902ms
+ GET /tours-detail-2/XJ272 200 in 3966ms
+ GET /tours-detail-2/XJ272 200 in 4095ms
+ ✓ Compiled /wholesale-tours in 165ms (586 modules)
+ GET /wholesale-tours 200 in 248ms
+ GET /wholesale-tours-2 200 in 336ms
+ GET /tours-detail-2/XJ292 200 in 3806ms
+ ✓ Compiled in 1037ms (1071 modules)
+ GET /wholesale-tours-3 200 in 129ms
+ GET /tours-detail-2/FD029 200 in 125ms
+ GET /tours-detail-2/XJ292 200 in 125ms
+ ✓ Compiled /_not-found in 297ms (580 modules)
+ GET /tours-detail-3 404 in 718ms
+ GET /wholesale-tours 200 in 47ms
+ GET /wholesale-tours-3 200 in 264ms
+ GET /wholesale-tours-2 200 in 278ms
+ ✓ Compiled in 309ms (492 modules)
+ GET /tours-detail-2/FD029 200 in 87ms
+ GET /wholesale-tours-3 200 in 80ms
+ GET /wholesale-tours-2 200 in 75ms
+ ✓ Compiled in 583ms (1071 modules)
+ GET /wholesale-tours-3 200 in 122ms
+ GET /tours-detail-2/FD029 200 in 161ms
+ GET /wholesale-tours-2 200 in 90ms
+ ✓ Compiled in 744ms (1071 modules)
+ GET /tours-detail-2/FD029 200 in 64ms
+ GET /wholesale-tours-3 200 in 69ms
+ GET /wholesale-tours-2 200 in 69ms
+ ○ Compiling /wishlist ...
+ ✓ Compiled /wishlist in 734ms (1068 modules)
+ GET /wishlist 200 in 790ms
+ ✓ Compiled / in 261ms (595 modules)
+ GET / 200 in 316ms
+[?25h

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Tabs Error</title>
+</head>
+<body>
+    <h1>Testing the tours-detail-2 page</h1>
+    <p>Navigate to: <a href="http://localhost:3000/tours-detail-2/ANY_TOUR_CODE" target="_blank">http://localhost:3000/tours-detail-2/ANY_TOUR_CODE</a></p>
+    <p>Then click on the "เงื่อนไข & บริการ" tab to test if the error still occurs.</p>
+    
+    <h2>Fixed Issues:</h2>
+    <ul>
+        <li>✅ Fixed Wheelchair import (changed to Accessibility)</li>
+        <li>✅ Fixed TypeScript type casting for activeTab</li>
+    </ul>
+    
+    <script>
+        // Auto-open the page after 2 seconds
+        setTimeout(() => {
+            window.open('http://localhost:3000/tours-detail-2/test-code', '_blank');
+        }, 2000);
+    </script>
+</body>
+</html>

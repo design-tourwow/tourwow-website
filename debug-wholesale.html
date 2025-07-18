@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Wholesale Tours</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Wholesale Tours</h1>
+    <div id="status"></div>
+    
+    <script>
+        const statusDiv = document.getElementById('status');
+        
+        function addStatus(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = message;
+            statusDiv.appendChild(div);
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        addStatus('🚀 Starting wholesale tours debug...', 'info');
+        
+        // Test if we can access the wholesale-tours-2 page
+        fetch('/wholesale-tours-2')
+            .then(response => {
+                addStatus(`📡 Server Response: ${response.status} ${response.statusText}`, 
+                         response.ok ? 'success' : 'error');
+                return response.text();
+            })
+            .then(html => {
+                if (html.includes('Error') || html.includes('error')) {
+                    addStatus('❌ Found error in HTML response', 'error');
+                    // Try to extract error message
+                    const errorMatch = html.match(/<pre[^>]*>(.*?)<\/pre>/s);
+                    if (errorMatch) {
+                        addStatus(`Error details: ${errorMatch[1]}`, 'error');
+                    }
+                } else if (html.includes('Wholesale Tours Enhanced')) {
+                    addStatus('✅ HTML loaded successfully', 'success');
+                    addStatus('🔍 Checking JavaScript errors...', 'info');
+                    
+                    // Test if we can access the page in an iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.src = '/wholesale-tours-2';
+                    iframe.style.width = '100%';
+                    iframe.style.height = '400px';
+                    iframe.style.border = '1px solid #ccc';
+                    iframe.style.marginTop = '20px';
+                    
+                    iframe.onload = function() {
+                        addStatus('✅ Page loaded in iframe successfully', 'success');
+                        
+                        // Check for console errors in iframe
+                        setTimeout(() => {
+                            try {
+                                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                if (iframeDoc.title.includes('Error')) {
+                                    addStatus('❌ Error detected in iframe', 'error');
+                                } else {
+                                    addStatus('✅ No obvious errors detected', 'success');
+                                }
+                            } catch(e) {
+                                addStatus('⚠️ Cannot access iframe content (CORS)', 'info');
+                            }
+                        }, 2000);
+                    };
+                    
+                    iframe.onerror = function() {
+                        addStatus('❌ Failed to load page in iframe', 'error');
+                    };
+                    
+                    document.body.appendChild(iframe);
+                } else {
+                    addStatus('❓ Unexpected HTML response', 'error');
+                }
+            })
+            .catch(error => {
+                addStatus(`❌ Network Error: ${error.message}`, 'error');
+            });
+            
+        // Test TTN API
+        addStatus('🌐 Testing TTN API...', 'info');
+        fetch("https://online.ttnconnect.com/api/agency/get-allprogram")
+            .then(response => {
+                addStatus(`📡 TTN API Response: ${response.status}`, 
+                         response.ok ? 'success' : 'error');
+            })
+            .catch(error => {
+                addStatus(`❌ TTN API Error: ${error.message}`, 'error');
+            });
+    </script>
+</body>
+</html>

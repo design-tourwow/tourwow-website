@@ -1,0 +1,430 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ProductPool {
+  id                               Int      @id @default(autoincrement())
+  supplierId                       Int      @map("supplier_id")
+  productRunningId                 Int      @map("product_running_id")
+  productId                        Int      @map("product_id")
+  periodId                         Int      @map("period_id")
+  productSubCategoryId             Int      @map("product_sub_category_id")
+  productTourCode                  String   @map("product_tour_code")
+  productTourwowCode               String   @map("product_tourwow_code")
+  productTwUrlPath                 String   @map("product_tw_url_path")
+  productName                      String   @map("product_name")
+  productStartAt                   DateTime @map("product_start_at")
+  productPrice                     Decimal  @map("product_price")
+  productPriceCompare              Decimal? @map("product_price_compare")
+  productHasOneCountry             Int      @map("product_has_one_country")
+  productMainCountryId             Int      @map("product_main_country_id")
+  productMainCountryNameTh         String   @map("product_main_country_name_th")
+  productMainCountryNameEn         String   @map("product_main_country_name_en")
+  productCountries                 String   @map("product_countries")
+  productCountrySubUnits           String   @map("product_country_sub_units")
+  productTags                      String   @map("product_tags")
+  productTagsJson                  String   @map("product_tags_json")
+  productDurationDay               Int      @map("product_duration_day")
+  productDurationNight             Int      @map("product_duration_night")
+  productDurationDayAndNight       String   @map("product_duration_day_and_night")
+  productFreeDay                   Int?     @map("product_free_day")
+  productMealAmount                Int      @map("product_meal_amount")
+  productHotelStar                 Int      @map("product_hotel_star")
+  productHasVisa                   Int      @map("product_has_visa")
+  productVisaPrice                 Decimal? @map("product_visa_price")
+  productHilightDescription        String   @map("product_hilight_description")
+  productSubCategoryLabel          String   @map("product_sub_category_label")
+  productBannerUrl                 String   @map("product_banner_url")
+  productHasActivePeriods          Int      @map("product_has_active_periods")
+  productIsRecommended             Int      @map("product_is_recommended")
+  periodGroupCode                  String?  @map("period_group_code")
+  periodStartAt                    DateTime @map("period_start_at")
+  periodEndAt                      DateTime @map("period_end_at")
+  periodIsChannelTwpOnlineBooking  Int      @map("period_is_channel_twp_online_booking")
+  periodPriceAdultDouble           Decimal  @map("period_price_adult_double")
+  periodPriceAdultSingle           Decimal? @map("period_price_adult_single")
+  periodPriceAdultTripple          Decimal? @map("period_price_adult_tripple")
+  periodPriceChildNoBed            Decimal? @map("period_price_child_no_bed")
+  periodPriceChildBed              Decimal? @map("period_price_child_bed")
+  periodPriceInfant                Decimal? @map("period_price_infant")
+  periodPriceJoinLand              Decimal? @map("period_price_join_land")
+  periodPriceAdultDoubleCompare    Decimal? @map("period_price_adult_double_compare")
+  periodPriceAdultSingleCompare    Decimal? @map("period_price_adult_single_compare")
+  periodPriceAdultTrippleCompare   Decimal? @map("period_price_adult_tripple_compare")
+  periodPriceChildNoBedCompare     Decimal? @map("period_price_child_no_bed_compare")
+  periodPriceChildBedCompare       Decimal? @map("period_price_child_bed_compare")
+  periodPriceInfantCompare         Decimal? @map("period_price_infant_compare")
+  periodPriceJoinLandCompare       Decimal? @map("period_price_join_land_compare")
+  periodDeposit                    Decimal? @map("period_deposit")
+  periodCommission                 Decimal  @map("period_commission")
+  periodCommissionCompany          Decimal  @map("period_commission_company")
+  periodCommissionSeller           Decimal  @map("period_commission_seller")
+  periodQuantity                   Int      @map("period_quantity")
+  periodQuantityRemaining          Int      @map("period_quantity_remaining")
+  periodSellStatusCode             Int      @map("period_sell_status_code")
+  periodIsActive                   Int      @map("period_is_active")
+  periodDeal                       Int      @map("period_deal")
+  periodConfig                     Int      @map("period_config")
+  periodInstallmentCount           Int      @map("period_installment_count")
+  periodTransportationCategoryId   Int      @map("period_transportation_category_id")
+  periodTransportationCategoryName String   @map("period_transportation_category_name")
+  periodGoTransportationId         Int      @map("period_go_transportation_id")
+  periodGoTransportationNameEn     String   @map("period_go_transportation_name_en")
+  periodGoTransportationCode       String   @map("period_go_transportation_code")
+  periodGoAirportArrival           String?  @map("period_go_airport_arrival")
+  periodGoAirportDeparture         String?  @map("period_go_airport_departure")
+  periodGoFlightNumberArrival      String?  @map("period_go_flight_number_arrival")
+  periodGoFlightNumberDeparture    String?  @map("period_go_flight_number_departure")
+  periodGoFlightTimeArrival        String?  @map("period_go_flight_time_arrival")
+  periodGoFlightTimeDeparture      String?  @map("period_go_flight_time_departure")
+  periodBackTransportationId       Int      @map("period_back_transportation_id")
+  periodBackTransportationNameEn   String   @map("period_back_transportation_name_en")
+  periodBackTransportationCode     String   @map("period_back_transportation_code")
+  periodBackAirportArrival         String?  @map("period_back_airport_arrival")
+  periodBackAirportDeparture       String?  @map("period_back_airport_departure")
+  periodBackFlightNumberArrival    String?  @map("period_back_flight_number_arrival")
+  periodBackFlightNumberDeparture  String?  @map("period_back_flight_number_departure")
+  periodBackFlightTimeArrival      String?  @map("period_back_flight_time_arrival")
+  periodBackFlightTimeDeparture    String?  @map("period_back_flight_time_departure")
+  createdAt                        DateTime @map("created_at")
+
+  @@map("product_pools")
+}
+
+model AgencyBlog {
+  id                      Int       @id @default(autoincrement())
+  agencyId                Int       @map("agcy_agencies_id")
+  title                   String
+  tags                    String
+  createdAt               DateTime  @map("created_at")
+  createdByAgencyMemberId Int       @map("created_by_agency_member_id")
+  updatedAt               DateTime  @map("updated_at")
+  updatedByAgencyMemberId Int       @map("updated_by_agency_member_id")
+  deletedAt               DateTime? @map("deleted_at")
+  deletedByAgencyMemberId Int?      @map("deleted_by_agency_member_id")
+
+  @@map("agcy_blogs")
+}
+
+model SeoArticle {
+  id                           Int       @id @default(autoincrement())
+  agencyId                     Int       @map("agcy_agency_id")
+  parentArticleId              Int?      @map("parent_article_id")
+  isChildOfHomePage            Int       @map("is_child_of_home_page")
+  isActive                     Int       @map("is_active")
+  seoArticleTypeId             Int       @map("agcy_seo_article_type_id")
+  seoTargetPageTypeId          Int?      @map("agcy_seo_target_page_type_id")
+  seoSpecialPageId             Int?      @map("agcy_seo_special_page_id")
+  countryId                    Int?      @map("country_id")
+  provinceId                   Int?      @map("province_id")
+  countrySubUnitId             Int?      @map("country_sub_unit_id")
+  proCategorySubProductId      Int?      @map("pro_category_sub_product_id")
+  code                         String
+  name                         String
+  urlPath                      String    @map("url_path")
+  trimmedUrlPath               String    @map("trimmed_url_path")
+  realUrlPath                  String    @map("real_url_path")
+  metaTitle                    String?   @map("meta_title")
+  metaDescription              String?   @map("meta_description")
+  primaryKeyword               String?   @map("primary_keyword")
+  secondaryKeyword             String?   @map("secondary_keyword")
+  relatedKeyword               String?   @map("related_keyword")
+  note                         String?
+  desktopCoverImageFileName    String?   @map("desktop_cover_image_file_name")
+  desktopCoverImageFileSize    Int?      @map("desktop_cover_image_file_size")
+  desktopCoverImageContentType String?   @map("desktop_cover_image_content_type")
+  desktopCoverImageUpdatedAt   DateTime? @map("desktop_cover_image_updated_at")
+  mobileCoverImageFileName     String?   @map("mobile_cover_image_file_name")
+  mobileCoverImageFileSize     Int?      @map("mobile_cover_image_file_size")
+  mobileCoverImageContentType  String?   @map("mobile_cover_image_content_type")
+  mobileCoverImageUpdatedAt    DateTime? @map("mobile_cover_image_updated_at")
+  coverImageAltText            String?   @map("cover_image_alt_text")
+  content                      String?
+  hasContent                   Int       @map("has_content")
+  tags                         String?
+  createdAt                    DateTime  @map("created_at")
+  createdByAgencyMemberId      Int       @map("created_by_agency_member_id")
+  updatedAt                    DateTime  @map("updated_at")
+  updatedByAgencyMemberId      Int       @map("updated_by_agency_member_id")
+
+  @@map("agcy_seo_articles")
+}
+
+model TwPage {
+  id                Int       @id @default(autoincrement())
+  agencyId          Int?      @map("agcy_agency_id")
+  urlPath           String    @map("url_path")
+  redirectToUrlPath String?   @map("redirect_to_url_path")
+  twPageTypeId      Int       @map("tw_page_type_id")
+  twPageArgument    String    @map("tw_page_argument")
+  lastmod           String
+  priority          Float
+  visitedCount      Int       @map("visited_count")
+  isActive          Int       @map("is_active")
+  createdAt         DateTime  @map("created_at")
+  updatedAt         DateTime  @map("updated_at")
+  visitedAt         DateTime? @map("visited_at")
+
+  @@map("tw_pages")
+}
+
+model TwPageType {
+  id       Int    @id @default(autoincrement())
+  slug     String
+  priority Float
+
+  @@map("tw_page_types")
+}
+
+model SeoArticleType {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String
+
+  @@map("agcy_seo_article_types")
+}
+
+model BlogDescription {
+  id                      Int       @id @default(autoincrement())
+  agcyBlogsId             Int       @map("agcy_blogs_id")
+  agcyGalleriesId         Int?      @map("agcy_galleries_id")
+  typeSlug                String    @map("type_slug")
+  ordinal                 Int
+  description             String?
+  imageDescription        String?   @map("image_description")
+  createdAt               DateTime  @map("created_at")
+  createdByAgencyMemberId Int       @map("created_by_agency_member_id")
+  updatedAt               DateTime  @map("updated_at")
+  updatedByAgencyMemberId Int       @map("updated_by_agency_member_id")
+  deletedAt               DateTime? @map("deleted_at")
+  deletedByAgencyMemberId Int?      @map("deleted_by_agency_member_id")
+
+  @@map("agcy_blog_descriptions")
+}
+
+// ============= BOOKING SYSTEM =============
+
+model TourOrder {
+  id                    Int      @id @default(autoincrement())
+  orderReference        String   @unique @map("order_reference") // TW240101001
+  
+  // Product Pool mapping
+  productTourwowCode    String   @map("product_tourwow_code")    // link to ProductPool
+  productTourCode       String   @map("product_tour_code")       // backup link
+  periodStartAt         DateTime @map("period_start_at")         // from ProductPool
+  periodEndAt           DateTime @map("period_end_at")           // from ProductPool
+  productId             Int      @map("product_id")              // from ProductPool
+  periodId              Int      @map("period_id")               // from ProductPool
+  supplierId            Int      @map("supplier_id")             // from ProductPool
+  
+  // Tour details snapshot (เก็บไว้เผื่อข้อมูลใน ProductPool เปลี่ยน)
+  tourName              String   @map("tour_name")
+  tourCountry           String   @map("tour_country")
+  tourDurationDays      Int      @map("tour_duration_days")
+  tourDurationNights    Int      @map("tour_duration_nights")
+  
+  // Pricing (ราคา ณ ขณะจอง)
+  basePrice             Decimal  @map("base_price")              // ราคาต่อหน่วย
+  totalAmount           Decimal  @map("total_amount")            // ราคารวมทั้งหมด
+  depositAmount         Decimal? @map("deposit_amount")          // เงินมัดจำ
+  remainingAmount       Decimal? @map("remaining_amount")        // เงินส่วนที่เหลือ
+  currency              String   @default("THB")
+  
+  // Booking details
+  adultCount            Int      @default(1) @map("adult_count")
+  childWithBedCount     Int      @default(0) @map("child_with_bed_count")
+  childNoBedCount       Int      @default(0) @map("child_no_bed_count")
+  infantCount           Int      @default(0) @map("infant_count")
+  singleRoomCount       Int      @default(0) @map("single_room_count")
+  extraRoomCount        Int      @default(0) @map("extra_room_count")
+  
+  // Contact info (ผู้จอง)
+  bookerTitle           String?  @map("booker_title")            // Mr., Mrs., Ms.
+  bookerFirstNameTh     String   @map("booker_first_name_th")
+  bookerLastNameTh      String   @map("booker_last_name_th")
+  bookerFirstNameEn     String   @map("booker_first_name_en")
+  bookerLastNameEn      String   @map("booker_last_name_en")
+  bookerPhone           String   @map("booker_phone")
+  bookerEmail           String   @map("booker_email")
+  bookerDateOfBirth     DateTime? @map("booker_date_of_birth")
+  
+  // Address
+  bookerAddress         String?  @map("booker_address")
+  bookerProvince        String?  @map("booker_province")
+  bookerPostalCode      String?  @map("booker_postal_code")
+  
+  // Special requests
+  specialRequests       String?  @map("special_requests")
+  dietaryRequirements   String?  @map("dietary_requirements")
+  medicalConditions     String?  @map("medical_conditions")
+  
+  // Status tracking
+  orderStatus           String   @default("pending") @map("order_status")       // pending, confirmed, cancelled, completed
+  paymentStatus         String   @default("pending") @map("payment_status")     // pending, partial, paid, refunded
+  
+  // Important dates
+  paymentDeadline       DateTime? @map("payment_deadline")      // วันที่ต้องชำระเต็มจำนวน
+  documentDeadline      DateTime? @map("document_deadline")     // วันที่ต้องส่งเอกสาร
+  
+  // System fields
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  confirmedAt           DateTime? @map("confirmed_at")
+  cancelledAt           DateTime? @map("cancelled_at")
+  completedAt           DateTime? @map("completed_at")
+  
+  // Relations
+  travelers             OrderTraveler[]
+  payments              OrderPayment[]
+  documents             OrderDocument[]
+  notes                 OrderNote[]
+
+  @@map("tour_orders")
+}
+
+model OrderTraveler {
+  id                    Int      @id @default(autoincrement())
+  orderId               Int      @map("order_id")
+  travelerType          String   @map("traveler_type")           // adult, child_with_bed, child_no_bed, infant
+  
+  // Personal info
+  title                 String?  @map("title")                  // Mr., Mrs., Ms., Master
+  firstNameTh           String   @map("first_name_th")
+  lastNameTh            String   @map("last_name_th")
+  firstNameEn           String   @map("first_name_en")
+  lastNameEn            String   @map("last_name_en")
+  dateOfBirth           DateTime? @map("date_of_birth")
+  gender                String?  @map("gender")                 // male, female
+  
+  // Contact (สำหรับผู้ใหญ่)
+  phone                 String?  @map("phone")
+  email                 String?  @map("email")
+  
+  // Passport information
+  passportNumber        String?  @map("passport_number")
+  passportExpiry        DateTime? @map("passport_expiry")
+  passportNationality   String?  @map("passport_nationality")
+  passportIssueCountry  String?  @map("passport_issue_country")
+  
+  // Preferences
+  seatPreference        String?  @map("seat_preference")        // window, aisle, any
+  mealPreference        String?  @map("meal_preference")        // normal, vegetarian, halal, etc.
+  specialNeeds          String?  @map("special_needs")
+  
+  // Pricing for this traveler
+  price                 Decimal? @map("price")                 // ราคาสำหรับคนนี้
+  
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  
+  // Relation
+  order                 TourOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_travelers")
+}
+
+model OrderPayment {
+  id                    Int      @id @default(autoincrement())
+  orderId               Int      @map("order_id")
+  
+  // Payment info
+  paymentType           String   @map("payment_type")           // deposit, full_payment, remaining_balance
+  paymentMethod         String   @map("payment_method")         // credit_card, bank_transfer, qr_code, cash
+  paymentProvider       String?  @map("payment_provider")       // omise, promptpay, scb, kbank
+  
+  // Transaction details
+  transactionId         String?  @map("transaction_id")
+  referenceNumber       String?  @map("reference_number")       // เลขที่อ้างอิง
+  
+  // Amount
+  amount                Decimal  @map("amount")
+  currency              String   @default("THB")
+  exchangeRate          Decimal? @map("exchange_rate")
+  
+  // Status
+  paymentStatus         String   @default("pending") @map("payment_status")     // pending, processing, success, failed, cancelled, refunded
+  
+  // Gateway/Bank response
+  gatewayResponse       String?  @map("gateway_response")       // JSON response from payment gateway
+  bankResponse          String?  @map("bank_response")          // Bank transaction details
+  
+  // Receipt/Invoice
+  receiptNumber         String?  @map("receipt_number")
+  invoiceNumber         String?  @map("invoice_number")
+  
+  // Timestamps
+  requestedAt           DateTime @default(now()) @map("requested_at")
+  processedAt           DateTime? @map("processed_at")
+  completedAt           DateTime? @map("completed_at")
+  failedAt              DateTime? @map("failed_at")
+  refundedAt            DateTime? @map("refunded_at")
+  
+  // Notes
+  paymentNotes          String?  @map("payment_notes")
+  failureReason         String?  @map("failure_reason")
+  
+  // Relation
+  order                 TourOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_payments")
+}
+
+model OrderDocument {
+  id                    Int      @id @default(autoincrement())
+  orderId               Int      @map("order_id")
+  
+  // Document info
+  documentType          String   @map("document_type")          // voucher, invoice, receipt, itinerary, contract, passport_copy
+  documentTitle         String   @map("document_title")
+  documentDescription   String?  @map("document_description")
+  
+  // File info
+  fileName              String   @map("file_name")
+  originalFileName      String   @map("original_file_name")
+  filePath              String   @map("file_path")
+  fileSize              Int?     @map("file_size")
+  mimeType              String   @map("mime_type")
+  
+  // Status
+  isGenerated           Boolean  @default(false) @map("is_generated")         // true = system generated, false = uploaded
+  isActive              Boolean  @default(true) @map("is_active")
+  
+  // Timestamps
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  
+  // Relation
+  order                 TourOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_documents")
+}
+
+model OrderNote {
+  id                    Int      @id @default(autoincrement())
+  orderId               Int      @map("order_id")
+  
+  // Note details
+  noteType              String   @map("note_type")              // internal, customer, system, payment
+  subject               String?  @map("subject")
+  content               String   @map("content")
+  isInternal            Boolean  @default(true) @map("is_internal")           // true = staff only, false = visible to customer
+  
+  // Author (อาจจะเป็น staff หรือ system)
+  authorType            String   @map("author_type")            // staff, customer, system
+  authorName            String?  @map("author_name")
+  authorId              String?  @map("author_id")              // staff ID or customer ID
+  
+  // Timestamps
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  
+  // Relation
+  order                 TourOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_notes")
+}
