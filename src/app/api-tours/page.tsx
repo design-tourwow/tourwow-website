@@ -225,7 +225,13 @@ function ApiToursPageContent() {
   }, [tours])
 
   const categories = useMemo(() => ['ทั้งหมด', ...Array.from(new Set(convertedTours.map(t => t.category)))], [convertedTours])
-  const priceRanges = ['ทั้งหมด', 'ต่ำกว่า 25,000', '25,000-35,000', '35,000-50,000', 'มากกว่า 50,000']
+  const priceRanges = [
+    { name: 'ต่ำกว่า 10,000', count: 0 },
+    { name: '10,000-20,000', count: 0 },
+    { name: '20,000-30,000', count: 0 },
+    { name: '30,000-50,000', count: 0 },
+    { name: '50,000 ขึ้นไป', count: 0 },
+  ];
   const countries = useMemo(() => {
     const countryCount = convertedTours.reduce((acc, tour) => {
       acc[tour.country] = (acc[tour.country] || 0) + 1;
