@@ -88,11 +88,11 @@ export default function Header() {
             
             <Link href="/product-pool" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
               isActive('/product-pool') 
-                ? 'text-orange-600 bg-orange-50 shadow-sm' 
-                : 'text-gray-700 hover:text-orange-600 hover:bg-orange-50'
+                ? 'text-blue-600 bg-blue-50 shadow-sm' 
+                : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
             }`}>
               Product Pool
-              {isActive('/product-pool') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-600 rounded-full"></div>}
+              {isActive('/product-pool') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></div>}
             </Link>
             
             <Link href="/tourwow-blog" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
@@ -226,7 +226,7 @@ export default function Header() {
               <Link 
                 href="/product-pool"
                 className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
-                  isActive('/product-pool') ? 'text-orange-600 bg-orange-50' : 'text-gray-700 hover:text-orange-600 hover:bg-orange-50'
+                  isActive('/product-pool') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >

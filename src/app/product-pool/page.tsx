@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, Suspense, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { MapPin, Calendar, Hotel, Star, Plane, Award, Eye, Heart, ArrowUpDown, Check } from 'lucide-react'
 import TourFilterSidebar from '@/components/TourFilterSidebar'
 import { Button } from '@/components/ui/Button'
@@ -39,6 +40,7 @@ interface ProductPoolTourRaw {
   periodGoTransportationCode: string
   periodBackTransportationNameEn: string
   periodBackTransportationCode: string
+  period_id: number
 }
 
 interface Period {
@@ -187,6 +189,7 @@ function mapRawToTour(raw: ProductPoolTourRaw): ProductPoolTour {
     tags: raw.productTags ? raw.productTags.split(/,|\n|\|/).map(s => s.trim()).filter(Boolean) : [],
     periods: [
       {
+        id: raw.periodId,
         startAt: raw.periodStartAt,
         endAt: raw.periodEndAt,
         price: raw.periodPriceAdultDouble,
@@ -275,7 +278,7 @@ function ProductPoolPageContent() {
 
   const [selectedCountry, setSelectedCountry] = useState('ทั้งหมด')
   const [priceRange, setPriceRange] = useState('ทั้งหมด')
-  const [sortBy, setSortBy] = useState('ยอดนิยม')
+  const [sortBy, setSortBy] = useState('วันที่ใหม่')
   const [selectedDays, setSelectedDays] = useState('ทั้งหมด')
   const [selectedNights, setSelectedNights] = useState('ทั้งหมด')
   const [selectedHotelStar, setSelectedHotelStar] = useState('ทั้งหมด')
@@ -288,8 +291,29 @@ function ProductPoolPageContent() {
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>([])
   const [notifications, setNotifications] = useState<string[]>([])
   const [showSortDropdown, setShowSortDropdown] = useState(false)
+  const [selectedTheme, setSelectedTheme] = useState<'classic' | 'premium' | 'dynamic' | 'futuristic' | 'artistic'>('classic')
   const sortDropdownRef = useRef<HTMLDivElement>(null)
+  
+  // Router hooks for URL management
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const toursPerLoad = 200
+
+  // Initialize theme from URL parameters
+  useEffect(() => {
+    const themeFromUrl = searchParams.get('theme') as 'classic' | 'premium' | 'dynamic' | 'futuristic' | 'artistic' | null
+    if (themeFromUrl && ['classic', 'premium', 'dynamic', 'futuristic', 'artistic'].includes(themeFromUrl)) {
+      setSelectedTheme(themeFromUrl)
+    }
+  }, [searchParams])
+
+  // Function to handle theme changes with URL update
+  const handleThemeChange = (theme: 'classic' | 'premium' | 'dynamic' | 'futuristic' | 'artistic') => {
+    setSelectedTheme(theme)
+    const currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.set('theme', theme)
+    router.push(currentUrl.pathname + currentUrl.search, { scroll: false })
+  }
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -330,6 +354,7 @@ function ProductPoolPageContent() {
             const firstTour = tourGroup[0]
             // Create periods from all group members
             const periods = tourGroup.map(raw => ({
+              id: raw.periodId,
               startAt: raw.periodStartAt,
               endAt: raw.periodEndAt,
               price: raw.periodPriceAdultDouble,
@@ -872,7 +897,7 @@ function ProductPoolPageContent() {
     setSearchTerm('')
     setPriceRange('ทั้งหมด')
     setSelectedCountry('ทั้งหมด')
-    setSortBy('ยอดนิยม')
+    setSortBy('วันที่ใหม่')
     setSelectedDays('ทั้งหมด')
     setSelectedNights('ทั้งหมด')
     setSelectedHotelStar('ทั้งหมด')
@@ -889,7 +914,11 @@ function ProductPoolPageContent() {
   }
 
   return (
-    <main className="bg-blue-50/30">
+    <main className={
+      selectedTheme === 'premium' 
+        ? 'bg-gradient-to-br from-slate-50 via-blue-50/50 to-gray-100 min-h-screen'
+        : 'bg-blue-50/30'
+    }>
       {notifications.length > 0 && (
         <div className="fixed top-4 right-4 z-50 space-y-2">
           {notifications.map((notification, idx) => (
@@ -925,7 +954,71 @@ function ProductPoolPageContent() {
             />
           </aside>
           <section className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div className={
+              selectedTheme === 'premium'
+                ? 'bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-2xl p-8 mb-8'
+                : 'bg-white rounded-lg shadow-md p-4 mb-6'
+            }>
+                {/* Style Selector */}
+                <div className="flex flex-col items-center mb-6">
+                  {/* Debug indicator */}
+                  <div className="text-xs text-gray-500 mb-2">
+                    Current theme: {selectedTheme}
+                  </div>
+                  <div className="flex bg-gray-100 rounded-xl p-1.5 gap-1">
+                    <button
+                      onClick={() => handleThemeChange('classic')}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        selectedTheme === 'classic'
+                          ? 'bg-blue-500 text-white shadow-md'
+                          : 'text-gray-600 hover:bg-blue-100'
+                      }`}
+                    >
+                      Classic
+                    </button>
+                    <button
+                      onClick={() => handleThemeChange('premium')}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        selectedTheme === 'premium'
+                          ? 'bg-blue-500 text-white shadow-md'
+                          : 'text-gray-600 hover:bg-blue-100'
+                      }`}
+                    >
+                      Premium
+                    </button>
+                    <button
+                      onClick={() => handleThemeChange('dynamic')}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        selectedTheme === 'dynamic'
+                          ? 'bg-blue-500 text-white shadow-md'
+                          : 'text-gray-600 hover:bg-blue-100'
+                      }`}
+                    >
+                      Dynamic
+                    </button>
+                    <button
+                      onClick={() => handleThemeChange('futuristic')}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        selectedTheme === 'futuristic'
+                          ? 'bg-blue-500 text-white shadow-md'
+                          : 'text-gray-600 hover:bg-blue-100'
+                      }`}
+                    >
+                      Futuristic
+                    </button>
+                    <button
+                      onClick={() => handleThemeChange('artistic')}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        selectedTheme === 'artistic'
+                          ? 'bg-blue-500 text-white shadow-md'
+                          : 'text-gray-600 hover:bg-blue-100'
+                      }`}
+                    >
+                      Artistic
+                    </button>
+                  </div>
+                </div>
+                
               {/* Single Row with Search, Results, and Sort */}
               <div className="flex flex-col lg:flex-row gap-4 items-center">
                 {/* Left Side - Search and Mobile Buttons */}
@@ -1008,8 +1101,10 @@ function ProductPoolPageContent() {
             </div>
             {filteredAndSortedTours.length > 0 ? (
               <>
-                <div className={`grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3`}>
-                  {displayedToursData.map((tour, index) => {
+                {/* Render different themes */}
+                {selectedTheme === 'classic' && (
+                  <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {displayedToursData.map((tour, index) => {
                     // ตรวจสอบสถานะจาก periods ทั้งหมด
                     const hasAvailableSeats = tour.periods.some(p => p.available > 0)
                     const hasLowStockSeats = tour.periods.some(p => p.available > 0 && p.available < 5)
@@ -1205,20 +1300,39 @@ function ProductPoolPageContent() {
                         <Link 
                           key={`${tour.id}-${index}`} 
                           href={`/product-pool/${encodeURIComponent(tour.tourwowCode)}`} 
-                          className={`bg-white rounded-2xl ${borderClass} shadow-lg overflow-hidden flex flex-col cursor-pointer`}
+                          className={
+                            selectedTheme === 'premium'
+                              ? `group relative bg-gradient-to-br from-white via-slate-50/80 to-blue-50/30 backdrop-blur-sm rounded-none shadow-[0_20px_40px_rgba(0,0,0,0.15)] hover:shadow-[0_30px_60px_rgba(59,130,246,0.25)] transition-all duration-1000 overflow-hidden cursor-pointer border-l-4 border-blue-600 transform hover:scale-[1.03] hover:-translate-y-3 flex flex-col min-h-[600px]`
+                              : `bg-white rounded-2xl ${borderClass} shadow-lg overflow-hidden flex flex-col cursor-pointer`
+                          }
                           onClick={() => {
                             console.log('Navigating to tour:', tour.tourwowCode)
                             addToRecentlyViewed(tour.id)
                           }}
                         >
-                          <div className="relative h-56">
+                          <div className={
+                            selectedTheme === 'premium'
+                              ? 'relative h-80 overflow-hidden'
+                              : 'relative h-56'
+                          }>
                             <Image
                               src={tour.image || "/plane.svg"}
                               alt={tour.name || "Tour Image"}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              className="object-cover"
+                              className={
+                                selectedTheme === 'premium'
+                                  ? 'object-cover group-hover:scale-110 transition-transform duration-700 filter contrast-110 saturate-110'
+                                  : 'object-cover'
+                              }
                             />
+                            {selectedTheme === 'premium' && (
+                              <>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent"></div>
+                                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-blue-600/20 to-transparent"></div>
+                              </>
+                            )}
                             {isLowStock && (
                               <div className="absolute top-2 left-2 z-10">
                                 <div className="bg-orange-600 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg">
@@ -1226,8 +1340,12 @@ function ProductPoolPageContent() {
                                 </div>
                               </div>
                             )}
-                            <div className="absolute top-0 right-0 text-white px-3 py-1.5 rounded-bl-lg text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-500">
-                              {tour.days} วัน {tour.nights} คืน
+                            <div className={
+                              selectedTheme === 'premium'
+                                ? 'absolute bottom-6 right-6 text-white px-8 py-4 text-xl font-bold bg-black/80 backdrop-blur-sm border border-white/30 shadow-2xl tracking-wider'
+                                : 'absolute top-0 right-0 text-white px-3 py-1.5 rounded-bl-lg text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-500'
+                            }>
+                              {selectedTheme === 'premium' ? `${tour.days}D · ${tour.nights}N` : `${tour.days} วัน ${tour.nights} คืน`}
                             </div>
                             <div className="absolute top-2 right-2 flex flex-col gap-2">
                               <button
@@ -1246,39 +1364,105 @@ function ProductPoolPageContent() {
                               </button>
                             </div>
                           </div>
-                          <div className="flex-1 p-6">
+                          <div className={
+                            selectedTheme === 'premium'
+                              ? 'flex-1 px-12 py-10 bg-gradient-to-t from-white via-white/95 to-white/90 backdrop-blur-md border-t border-gray-200/50'
+                              : 'flex-1 p-6'
+                          }>
+                            {selectedTheme === 'premium' && (
+                              <>
+                                <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent mb-4"></div>
+                                <div className="w-16 h-0.5 bg-blue-600 mb-6"></div>
+                              </>
+                            )}
                             <div className="mb-3">
-                              <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
+                              <h3 className={
+                                selectedTheme === 'premium'
+                                  ? 'text-3xl font-serif font-bold text-gray-900 mb-6 line-clamp-2 leading-tight tracking-wide'
+                                  : 'text-lg font-bold text-gray-800 mb-2 line-clamp-2'
+                              }>
                                 {tour.name}
                               </h3>
-                              <div className="flex items-center text-blue-600 mb-2">
-                                <MapPin className="w-4 h-4 mr-1" />
-                                <span className="text-sm">{tour.location}</span>
+                              <div className={
+                                selectedTheme === 'premium'
+                                  ? 'flex items-center text-blue-800 mb-8'
+                                  : 'flex items-center text-blue-600 mb-2'
+                              }>
+                                <MapPin className={
+                                  selectedTheme === 'premium'
+                                    ? 'w-7 h-7 mr-4 text-blue-700'
+                                    : 'w-4 h-4 mr-1'
+                                } />
+                                <span className={
+                                  selectedTheme === 'premium'
+                                    ? 'text-xl font-serif font-semibold tracking-wider uppercase text-gray-700'
+                                    : 'text-sm'
+                                }>{tour.location}</span>
                               </div>
                             </div>
-                            <div className="space-y-3 mb-4">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center text-gray-600">
-                                  <Calendar className="w-4 h-4 mr-2" />
-                                  <span className="text-sm">{tour.days} วัน {tour.nights} คืน</span>
-                                </div>
-                                {tour.hotelStar > 0 && (
-                                  <div className="flex items-center">
-                                    <Hotel className="w-4 h-4 mr-1 text-orange-500" />
-                                    <StarRating rating={tour.hotelStar || 0} />
+                            <div className={
+                              selectedTheme === 'premium' 
+                                ? 'grid grid-cols-2 gap-8 mb-8' 
+                                : 'space-y-3 mb-4'
+                            }>
+                              {selectedTheme === 'premium' ? (
+                                <>
+                                  <div className="space-y-6">
+                                    <div className="border-l-2 border-blue-600 pl-6">
+                                      <div className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-2">DURATION</div>
+                                      <div className="text-2xl font-serif text-gray-900">{tour.days}D • {tour.nights}N</div>
+                                    </div>
+                                    {tour.hotelStar > 0 && (
+                                      <div className="border-l-2 border-blue-600 pl-6">
+                                        <div className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-2">ACCOMMODATION</div>
+                                        <div className="flex items-center">
+                                          <StarRating rating={tour.hotelStar || 0} />
+                                          <span className="ml-2 text-lg font-serif text-gray-900">{tour.hotelStar} Star Hotels</span>
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center text-gray-600">
-                                  <Plane className="w-4 h-4 mr-2" />
-                                  <span className="text-sm">{tour.periods[0].goTransport}</span>
-                                </div>
-                              </div>
-                              {tour.highlights.length > 0 && (
-                                <div className="text-sm text-gray-600 line-clamp-2">
-                                  <strong>ไฮไลท์:</strong> {tour.highlights.join(', ')}
-                                </div>
+                                  <div className="space-y-6">
+                                    <div className="border-l-2 border-blue-600 pl-6">
+                                      <div className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-2">AIRLINE</div>
+                                      <div className="text-lg font-serif text-gray-900">{tour.periods[0].goTransport}</div>
+                                    </div>
+                                    {tour.highlights.length > 0 && (
+                                      <div className="border-l-2 border-blue-600 pl-6">
+                                        <div className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-2">HIGHLIGHTS</div>
+                                        <div className="text-sm text-gray-700 font-serif leading-relaxed line-clamp-3">
+                                          {tour.highlights.slice(0, 2).join(' • ')}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center text-gray-600">
+                                      <Calendar className="w-4 h-4 mr-2" />
+                                      <span className="text-sm">{tour.days} วัน {tour.nights} คืน</span>
+                                    </div>
+                                    {tour.hotelStar > 0 && (
+                                      <div className="flex items-center">
+                                        <Hotel className="w-4 h-4 mr-1 text-orange-500" />
+                                        <StarRating rating={tour.hotelStar || 0} />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center text-gray-600">
+                                      <Plane className="w-4 h-4 mr-2" />
+                                      <span className="text-sm">{tour.periods[0].goTransport}</span>
+                                    </div>
+                                  </div>
+                                  {tour.highlights.length > 0 && (
+                                    <div className="text-sm text-gray-600 line-clamp-2">
+                                      <strong>ไฮไลท์:</strong> {tour.highlights.join(', ')}
+                                    </div>
+                                  )}
+                                </>
                               )}
                               {tour.periods && tour.periods.length > 0 && (() => {
                                 const sortedPeriods = tour.periods
@@ -1376,8 +1560,16 @@ function ProductPoolPageContent() {
                                 )
                               })()}
                             </div>
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
+                            <div className={
+                              selectedTheme === 'premium' 
+                                ? 'mt-auto border-t-2 border-blue-100 pt-8 space-y-6' 
+                                : 'space-y-3'
+                            }>
+                              <div className={
+                                selectedTheme === 'premium' 
+                                  ? 'flex items-end justify-between' 
+                                  : 'flex items-center justify-between'
+                              }>
                                 <div>
                                   {tour.hasComparePrice && tour.comparePrice && (
                                     <div className="text-sm text-gray-900 line-through font-medium">
@@ -1404,9 +1596,13 @@ function ProductPoolPageContent() {
                               <Button 
                                 variant="primary" 
                                 size="default" 
-                                className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white"
+                                className={
+                                  selectedTheme === 'premium'
+                                    ? 'w-full px-8 py-4 bg-blue-800 hover:bg-blue-900 text-white font-serif text-lg tracking-wider shadow-xl hover:shadow-2xl transition-all duration-300'
+                                    : 'w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white'
+                                }
                               >
-                                ดูรายละเอียด
+                                {selectedTheme === 'premium' ? 'EXPLORE' : 'ดูรายละเอียด'}
                               </Button>
                             </div>
                           </div>
@@ -1414,7 +1610,564 @@ function ProductPoolPageContent() {
                       )
                     }
                   })}
-                </div>
+                  </div>
+                )}
+
+                {/* Premium Theme - Professional Layout */}
+                {selectedTheme === 'premium' && (
+                  <div className="space-y-12">
+                    {displayedToursData.map((tour, index) => {
+                      const isLowStock = tour.periods.some(p => p.available > 0 && p.available < 5) && tour.periods.some(p => p.available > 0)
+                      const isFull = isTourFull(tour.periods)
+                      
+                      if (isFull) return null
+                      
+                      return (
+                        <Link
+                          key={`${tour.id}-${index}`}
+                          href={`/product-pool/${encodeURIComponent(tour.tourwowCode)}`}
+                          className={`block group relative bg-white shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden ${
+                            index % 2 === 0 
+                              ? 'lg:grid lg:grid-cols-2 lg:gap-0' 
+                              : 'lg:grid lg:grid-cols-2 lg:gap-0'
+                          } lg:h-[400px]`}
+                          onClick={() => addToRecentlyViewed(tour.id)}
+                        >
+                          {/* Image Section */}
+                          <div className={`relative h-[320px] lg:h-[400px] overflow-hidden ${
+                            index % 2 === 0 ? '' : 'lg:order-2'
+                          }`}>
+                            <Image
+                              src={tour.image || "/plane.svg"}
+                              alt={tour.name}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                            
+                            {/* Overlay Content */}
+                            <div className="absolute inset-0 flex items-center">
+                              <div className="p-8 lg:p-12 text-white max-w-lg">
+                                <div className="text-xs font-medium tracking-[0.2em] uppercase mb-3 text-blue-300">
+                                  {tour.location}
+                                </div>
+                                <h2 className="text-2xl lg:text-3xl font-bold mb-4 leading-tight">
+                                  {tour.name}
+                                </h2>
+                                <div className="flex flex-wrap items-center gap-6 text-sm">
+                                  <span className="flex items-center gap-2">
+                                    <Calendar className="w-4 h-4 text-blue-300" />
+                                    {tour.days} วัน {tour.nights} คืน
+                                  </span>
+                                  <span className="flex items-center gap-2">
+                                    <Plane className="w-4 h-4 text-blue-300" />
+                                    {tour.periods[0].goTransport}
+                                  </span>
+                                  {tour.hotelStar > 0 && (
+                                    <span className="flex items-center gap-2">
+                                      <Hotel className="w-4 h-4 text-blue-300" />
+                                      {tour.hotelStar} ดาว
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {isLowStock && (
+                              <div className="absolute top-4 right-4">
+                                <div className="bg-red-600 text-white px-4 py-2 text-xs font-bold">
+                                  เหลือน้อย
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Content Section */}
+                          <div className={`bg-gray-50 p-6 lg:p-8 flex flex-col h-[320px] lg:h-[400px] overflow-hidden ${
+                            index % 2 === 0 ? '' : 'lg:order-1'
+                          }`}>
+                            <div className="flex flex-col h-full">
+                              {/* Header Section */}
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="text-xs font-medium text-blue-600">
+                                  รหัส: {tour.tourwowCode}
+                                </div>
+                                {tour.isRecommended && (
+                                  <div className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                                    <Award className="w-3 h-3" />
+                                    แนะนำ
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* Highlights */}
+                              <div className="mb-4 flex-1">
+                                <h3 className="text-sm font-bold text-gray-700 mb-2">ไฮไลท์ของทริป</h3>
+                                <div className="space-y-1.5">
+                                  {tour.highlights.slice(0, 2).map((highlight, idx) => (
+                                    <div key={idx} className="flex items-start gap-2">
+                                      <Check className="w-3 h-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                                      <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{highlight}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              
+                              {/* Tour Periods - Compact Version */}
+                              {tour.periods && tour.periods.length > 0 && (
+                                <div className="mb-4">
+                                  <div className="flex items-center justify-between text-xs mb-2">
+                                    <span className="font-bold text-gray-700">รอบเดินทาง</span>
+                                    <span className="text-gray-500">{tour.periods.length} รอบ</span>
+                                  </div>
+                                  <div className="bg-white rounded p-3 max-h-20 overflow-y-auto">
+                                    <div className="space-y-1">
+                                      {tour.periods.slice(0, 2).map((period, idx) => {
+                                        const currentDate = new Date()
+                                        const periodDate = new Date(period.startAt)
+                                        const isExpired = periodDate < currentDate
+                                        
+                                        return (
+                                          <div key={idx} className="flex items-center justify-between text-xs">
+                                            <span className={isExpired ? 'text-gray-400' : 'text-gray-600'}>
+                                              {formatDateToThai(period.startAt)}
+                                            </span>
+                                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                              isExpired 
+                                                ? 'bg-gray-100 text-gray-400'
+                                                : period.available === 0 
+                                                ? 'bg-gray-100 text-gray-500' 
+                                                : period.available < 5 
+                                                ? 'bg-orange-100 text-orange-700' 
+                                                : 'bg-green-100 text-green-700'
+                                            }`}>
+                                              {isExpired ? 'หมดเวลา' : period.available === 0 ? 'เต็ม' : `${period.available} ที่`}
+                                            </span>
+                                          </div>
+                                        )
+                                      })}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Price Section - Bottom */}
+                              <div className="mt-auto border-t border-gray-200 pt-4">
+                                <div className="flex items-center justify-between mb-3">
+                                  <div>
+                                    {tour.originalPrice && (
+                                      <div className="text-gray-400 line-through text-xs">
+                                        ฿{tour.originalPrice.toLocaleString()}
+                                      </div>
+                                    )}
+                                    <div className="flex items-baseline gap-1">
+                                      <span className="text-2xl font-bold text-blue-600">
+                                        ฿{tour.price.toLocaleString()}
+                                      </span>
+                                      <span className="text-xs text-gray-500">/คน</span>
+                                    </div>
+                                  </div>
+                                  <Button
+                                    variant="primary"
+                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-all duration-300"
+                                  >
+                                    ดูรายละเอียด
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {/* Dynamic Adventure Theme */}
+                {selectedTheme === 'dynamic' && (
+                  <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
+                    {displayedToursData.map((tour, index) => {
+                      const isLowStock = tour.periods.some(p => p.available > 0 && p.available < 5) && tour.periods.some(p => p.available > 0)
+                      const isFull = isTourFull(tour.periods)
+                      
+                      if (isFull) return null
+                      
+                      // Get next available period
+                      const nextPeriod = tour.periods
+                        .filter(p => new Date(p.startAt) > new Date() && p.available > 0)
+                        .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())[0]
+                      
+                      return (
+                        <Link
+                          key={`${tour.id}-${index}`}
+                          href={`/product-pool/${encodeURIComponent(tour.tourwowCode)}`}
+                          className="group block relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 flex flex-col h-full"
+                          onClick={() => addToRecentlyViewed(tour.id)}
+                        >
+                          {/* Image Header - Dynamic Style */}
+                          <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600">
+                            <Image
+                              src={tour.image || "/plane.svg"}
+                              alt={tour.name}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 via-transparent to-transparent"></div>
+                            
+                            {/* Badges */}
+                            <div className="absolute top-3 left-3 right-3 flex justify-between">
+                              {tour.isRecommended && (
+                                <div className="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg">
+                                  <Award className="w-3 h-3 inline mr-1" />
+                                  แนะนำ
+                                </div>
+                              )}
+                              {isLowStock && (
+                                <div className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg">
+                                  เหลือน้อย
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Title Overlay */}
+                            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                              <div className="text-blue-200 text-xs font-medium mb-1">
+                                {tour.location}
+                              </div>
+                              <h3 className="text-white text-lg font-bold leading-tight line-clamp-2">
+                                {tour.name}
+                              </h3>
+                            </div>
+                          </div>
+                          
+                          {/* Content Section - Dynamic Style */}
+                          <div className="p-5 flex flex-col flex-1">
+                            {/* Info Cards */}
+                            <div className="grid grid-cols-3 gap-2 mb-4">
+                              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
+                                <Calendar className="w-4 h-4 text-blue-600 mx-auto mb-1" />
+                                <div className="text-xs text-blue-700 font-medium">ระยะเวลา</div>
+                                <div className="text-sm font-bold text-blue-900">{tour.days}D{tour.nights}N</div>
+                              </div>
+                              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
+                                <Plane className="w-4 h-4 text-blue-600 mx-auto mb-1" />
+                                <div className="text-xs text-blue-700 font-medium">สายการบิน</div>
+                                <div className="text-sm font-bold text-blue-900">{tour.periods[0].goTransportCode}</div>
+                              </div>
+                              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
+                                <Hotel className="w-4 h-4 text-blue-600 mx-auto mb-1" />
+                                <div className="text-xs text-blue-700 font-medium">โรงแรม</div>
+                                <div className="text-sm font-bold text-blue-900">{tour.hotelStar}⭐</div>
+                              </div>
+                            </div>
+                            
+                            {/* Highlights */}
+                            <div className="mb-4 flex-1">
+                              <h4 className="text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
+                                <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                                ไฮไลท์ของทริป
+                              </h4>
+                              <div className="space-y-1.5">
+                                {tour.highlights.slice(0, 3).map((highlight, idx) => (
+                                  <div key={idx} className="flex items-start gap-2">
+                                    <Check className="w-3 h-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                                    <p className="text-xs text-gray-600">{highlight}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            {/* Next Period & Price - Always at bottom */}
+                            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 -mx-5 -mb-5 text-white mt-auto">
+                              {nextPeriod && (
+                                <div className="flex items-center justify-between mb-3">
+                                  <div>
+                                    <div className="text-blue-200 text-xs font-medium mb-1">รอบถัดไป</div>
+                                    <div className="text-white font-bold text-sm">
+                                      {formatDateToThai(nextPeriod.startAt)}
+                                    </div>
+                                  </div>
+                                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                    nextPeriod.available < 5 
+                                      ? 'bg-red-100 text-red-700' 
+                                      : 'bg-green-100 text-green-700'
+                                  }`}>
+                                    เหลือ {nextPeriod.available} ที่
+                                  </span>
+                                </div>
+                              )}
+                              
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  {tour.originalPrice && (
+                                    <div className="text-blue-200 line-through text-sm">
+                                      ฿{tour.originalPrice.toLocaleString()}
+                                    </div>
+                                  )}
+                                  <div className="flex items-baseline gap-1">
+                                    <span className="text-2xl font-bold text-white">฿{tour.price.toLocaleString()}</span>
+                                    <span className="text-sm text-blue-200">/คน</span>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="primary"
+                                  className="bg-white text-blue-600 hover:bg-blue-50 font-bold px-5 py-2 rounded-lg transition-all duration-300 text-sm"
+                                >
+                                  ดูรายละเอียด
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {selectedTheme === 'futuristic' && (
+                  <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+                    {displayedToursData.map((tour, index) => (
+                      <Link 
+                        key={tour.id} 
+                        href={`/product-pool/${tour.tourwowCode}`}
+                        className="group"
+                      >
+                        <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-blue-300 h-[32rem]">
+                          {/* Image section */}
+                          <div className="relative h-48 overflow-hidden">
+                            <Image
+                              src={tour.image}
+                              alt={tour.name}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              priority={index < 4}
+                            />
+                            
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            
+                            {/* Price badge */}
+                            <div className="absolute top-4 left-4">
+                              <div className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+                                ฿{tour.price.toLocaleString()}
+                              </div>
+                            </div>
+                            
+                            {/* Duration */}
+                            <div className="absolute bottom-4 left-4 text-white text-sm font-medium">
+                              {tour.duration.dayAndNight}
+                            </div>
+                            
+                            {/* Recommended badge */}
+                            {tour.isRecommended && (
+                              <div className="absolute top-4 right-4">
+                                <div className="bg-amber-500 text-white px-3 py-1 rounded-md text-xs font-medium">
+                                  <Award className="w-3 h-3 inline mr-1" />
+                                  แนะนำ
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Content */}
+                          <div className="p-6 space-y-4">
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-2">
+                                {tour.name}
+                              </h3>
+                              
+                              <div className="flex items-center gap-4 text-sm text-gray-600">
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4 text-blue-500" />
+                                  <span>{tour.location}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4 text-blue-500" />
+                                  <span>{tour.duration.dayAndNight}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-blue-50 p-3 rounded-lg">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Hotel className="w-4 h-4 text-blue-600" />
+                                  <span className="text-sm font-medium text-blue-600">โรงแรม</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <StarRating rating={tour.hotelStar} size="sm" />
+                                  <span className="text-sm font-semibold">{tour.hotelStar} ดาว</span>
+                                </div>
+                              </div>
+                              
+                              <div className="bg-blue-50 p-3 rounded-lg">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Plane className="w-4 h-4 text-blue-600" />
+                                  <span className="text-sm font-medium text-blue-600">สายการบิน</span>
+                                </div>
+                                <div className="text-sm font-semibold">
+                                  {tour.periods[0]?.goTransportCode || 'TG'}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {tour.highlights && tour.highlights.length > 0 && (
+                              <div className="space-y-2">
+                                <div className="text-sm font-medium text-gray-600">ไฮไลท์</div>
+                                <div className="space-y-1">
+                                  {tour.highlights.slice(0, 3).map((highlight, idx) => (
+                                    <div key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                                      <Check className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                                      <span className="line-clamp-1">{highlight}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            <div className="border-t pt-4">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="text-xs text-gray-500">ราคาเริ่มต้น</div>
+                                  <div className="text-xl font-bold text-blue-600">
+                                    ฿{tour.price.toLocaleString()}
+                                  </div>
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  คงเหลือ {tour.quantityRemaining} ที่นั่ง
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                {selectedTheme === 'artistic' && (
+                  <div className="grid gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                    {displayedToursData.map((tour, index) => (
+                      <Link 
+                        key={tour.id} 
+                        href={`/product-pool/${tour.tourwowCode}`}
+                        className="group"
+                      >
+                        <div className="bg-gradient-to-br from-white to-blue-50 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-blue-100 hover:border-blue-300 transform hover:scale-105 h-[32rem]">
+                          {/* Artistic header with image */}
+                          <div className="relative">
+                            <div className="h-48 overflow-hidden">
+                              <Image
+                                src={tour.image}
+                                alt={tour.name}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                priority={index < 6}
+                              />
+                            </div>
+                            
+                            {/* Artistic overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/60 via-blue-500/20 to-transparent"></div>
+                            
+                            {/* Floating price bubble */}
+                            <div className="absolute -bottom-6 left-6">
+                              <div className="bg-blue-600 text-white px-4 py-3 rounded-full shadow-xl border-4 border-white">
+                                <div className="text-center">
+                                  <div className="text-xs font-medium opacity-90">เริ่มต้น</div>
+                                  <div className="text-lg font-bold">฿{tour.price.toLocaleString()}</div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Duration badge */}
+                            <div className="absolute top-4 left-4">
+                              <div className="bg-white/90 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+                                {tour.duration.dayAndNight}
+                              </div>
+                            </div>
+                            
+                            {/* Recommended ribbon */}
+                            {tour.isRecommended && (
+                              <div className="absolute top-4 right-4">
+                                <div className="bg-amber-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                  <Award className="w-3 h-3 inline mr-1" />
+                                  แนะนำ
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Content area */}
+                          <div className="px-6 py-6 pt-10 flex flex-col h-72">
+                            
+                            {/* Title and info section */}
+                            <div className="mb-3">
+                              <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 mb-2">
+                                {tour.name}
+                              </h3>
+                              
+                              <div className="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4 text-blue-500" />
+                                  <span>{tour.location}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Hotel className="w-4 h-4 text-blue-500" />
+                                  <span>{tour.hotelStar}★</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Plane className="w-4 h-4 text-blue-500" />
+                                  <span>{tour.periods[0]?.goTransportCode || 'TG'}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Highlights preview - expanded area */}
+                            <div className="flex-1 mb-4">
+                              {tour.highlights && tour.highlights.length > 0 && (
+                                <div className="h-full flex flex-col">
+                                  <div className="text-sm font-semibold text-gray-800 mb-3">✨ ไฮไลท์พิเศษ</div>
+                                  <div className="flex-1 space-y-2">
+                                    {tour.highlights.slice(0, 4).map((highlight, idx) => (
+                                      <div key={idx} className="flex items-start gap-2 text-sm text-gray-600">
+                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <span className="line-clamp-2 leading-relaxed">{highlight}</span>
+                                      </div>
+                                    ))}
+                                    {tour.highlights.length > 4 && (
+                                      <div className="text-sm text-blue-600 font-medium mt-3">
+                                        และอีก {tour.highlights.length - 4} รายการ...
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Action button - locked to bottom of card */}
+                            <div className="mt-auto">
+                              <div className="flex items-center justify-between">
+                                <div className="text-sm text-gray-500">
+                                  คงเหลือ {tour.quantityRemaining} ที่นั่ง
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                                    <Heart className="w-4 h-4 text-blue-600" />
+                                  </div>
+                                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold group-hover:from-blue-600 group-hover:to-blue-700 transition-all duration-300 shadow-lg">
+                                    ดูรายละเอียด
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
                 {hasMoreTours && (
                   <div className="text-center mt-12 flex flex-col items-center gap-2">
                     <div className="text-sm text-gray-500 mb-2">

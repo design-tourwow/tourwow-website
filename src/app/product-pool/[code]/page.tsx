@@ -17,6 +17,8 @@ import {
 import { Button } from '@/components/ui/Button'
 import StarRating from '@/components/StarRating'
 import LoadingScreen from '@/components/LoadingScreen'
+import BookingModal, { BookingFormData } from '@/components/BookingModal'
+import { useThailandData } from '@/hooks/useThailandData'
 
 // Custom CSS for mobile scrolling
 const customStyles = `
@@ -68,19 +70,21 @@ interface ProductPoolTourRaw {
   periodGoTransportationCode: string
   periodBackTransportationNameEn: string
   periodBackTransportationCode: string
+  period_id: number
 }
 
 interface Period {
-  startAt: string
-  endAt: string
-  price: number
-  comparePrice?: number
-  available: number
-  isActive: number
-  goTransport: string
-  goTransportCode: string
-  backTransport: string
-  backTransportCode: string
+  id?: number;
+  startAt: string;
+  endAt: string;
+  price: number;
+  comparePrice?: number;
+  available: number;
+  isActive: number;
+  goTransport: string;
+  goTransportCode: string;
+  backTransport: string;
+  backTransportCode: string;
 }
 
 interface TourDetail {
@@ -138,6 +142,16 @@ function formatDateToThai(dateString: string): string {
   }
 }
 
+// Generate order reference number
+function generateOrderReference(): string {
+  const now = new Date()
+  const year = (now.getFullYear() % 100).toString().padStart(2, '0')
+  const month = (now.getMonth() + 1).toString().padStart(2, '0')
+  const day = now.getDate().toString().padStart(2, '0')
+  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
+  return `TW${year}${month}${day}${random}`
+}
+
 function mapRawToTour(raws: ProductPoolTourRaw[]): TourDetail | null {
   if (!raws || raws.length === 0) return null
   
@@ -173,6 +187,7 @@ function mapRawToTour(raws: ProductPoolTourRaw[]): TourDetail | null {
 
   // สร้าง periods จากทุก rows
   const periods: Period[] = raws.map(raw => ({
+    id: raw.periodId,
     startAt: raw.periodStartAt,
     endAt: raw.periodEndAt,
     price: raw.periodPriceAdultDouble,
@@ -227,6 +242,9 @@ export default function ProductPoolDetailPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<Period | null>(null)
   const [activeTab, setActiveTab] = useState<'overview' | 'itinerary' | 'booking' | 'terms'>('overview')
   
+  // Thailand data hook for address conversion
+  const { provinces, districts, subDistricts } = useThailandData()
+  
   // New features state
   const [chatbotOpen, setChatbotOpen] = useState(false)
   const [chatMessages, setChatMessages] = useState<Array<{id: string, text: string, sender: 'user' | 'bot', timestamp: Date}>>([])
@@ -241,6 +259,21 @@ export default function ProductPoolDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [selectedLanguage, setSelectedLanguage] = useState<'th' | 'en'>('th')
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false)
+  const [showBookingModal, setShowBookingModal] = useState(false)
+  
+  // Auto switch from booking tab if no periods are available
+  useEffect(() => {
+    if (activeTab === 'booking' && tour?.periods) {
+      const hasAvailablePeriod = tour.periods.some(period => {
+        const startDate = new Date(period.startAt)
+        const today = new Date()
+        return period.available > 0 && startDate >= today
+      })
+      if (!hasAvailablePeriod) {
+        setActiveTab('overview')
+      }
+    }
+  }, [tour, activeTab])
   
   // Mock image gallery data
   const imageGallery = [
@@ -422,6 +455,64 @@ export default function ProductPoolDetailPage() {
     const interval = setInterval(checkAvailability, 30000)
     return () => clearInterval(interval)
   }, [tour])
+
+  // Handle booking confirmation
+  const handleBookingConfirm = async (formData: BookingFormData) => {
+    if (!tour || !selectedPeriod) return
+    
+    try {
+      // Get names from Thailand data
+      const provinceName = provinces.find(p => p.id === formData.provinceId)?.name_th || ''
+      const districtName = districts.find(d => d.id === formData.districtId)?.name_th || ''
+      const subDistrictName = subDistricts.find(sd => sd.id === formData.subDistrictId)?.name_th || ''
+      
+      const orderData = {
+        period_id: selectedPeriod.id, // ✅ ส่ง period_id ที่เลือกไป backend
+        tour_program_id: tour.tourwowCode,
+        tour_name: tour.name,
+        departure_date: selectedPeriod.startAt,
+        return_date: selectedPeriod.endAt,
+        price_per_person: selectedPeriod.price,
+        traveler_count: travelers,
+        total_amount: selectedPeriod.price * travelers,
+        deposit_amount: Math.round(selectedPeriod.price * travelers * 0.3),
+        customer_name: formData.name,
+        customer_phone: formData.phone,
+        customer_email: formData.email,
+        customer_address: formData.address,
+        customer_sub_district: subDistrictName,
+        customer_district: districtName,
+        customer_province: provinceName,
+        customer_postal_code: formData.zipCode,
+        selected_package: selectedPackage,
+        extra_rooms: extraRooms,
+        base_price: selectedPeriod.price
+      }
+
+      console.log('🚀 Sending booking data:', orderData)
+      
+      const response = await fetch('/api/tw-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      })
+
+      const result = await response.json()
+      
+      if (response.ok) {
+        console.log('✅ Booking successful:', result)
+        // BookingModal จะแสดง success modal อัตโนมัติ
+      } else {
+        console.error('❌ Booking failed:', result)
+        alert('เกิดข้อผิดพลาดในการจอง: ' + result.error)
+      }
+    } catch (error) {
+      console.error('💥 Booking error:', error)
+      alert('เกิดข้อผิดพลาดในการจอง โปรดลองใหม่อีกครั้ง')
+    }
+  }
 
   if (loading) {
     return (
@@ -605,20 +696,38 @@ export default function ProductPoolDetailPage() {
                   { key: 'itinerary', label: t('รายการท่องเที่ยว', 'Itinerary'), icon: Globe },
                   { key: 'booking', label: t('จองทัวร์', 'Booking'), icon: CreditCard },
                   { key: 'terms', label: t('เงื่อนไข & บริการ', 'Terms & Service'), icon: Shield }
-                ].map(({ key, label, icon: Icon }) => (
-                  <button
-                    key={key}
-                    onClick={() => setActiveTab(key as 'overview' | 'itinerary' | 'booking' | 'terms')}
-                    className={`flex-1 flex items-center justify-center px-2 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-w-max ${
-                      activeTab === key
-                        ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {label}
-                  </button>
-                ))}
+                ].map(({ key, label, icon: Icon }) => {
+                  const isBookingTab = key === 'booking'
+                  // Tab จองทัวร์ควร disable เฉพาะเมื่อไม่มี period ใดที่มีที่ว่างและยังไม่หมดเวลา
+                  const hasAvailablePeriod = tour?.periods?.some(period => {
+                    const startDate = new Date(period.startAt)
+                    const today = new Date()
+                    return period.available > 0 && startDate >= today
+                  })
+                  const isDisabled = isBookingTab && !hasAvailablePeriod
+                  
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        if (!isDisabled) {
+                          setActiveTab(key as 'overview' | 'itinerary' | 'booking' | 'terms')
+                        }
+                      }}
+                      disabled={isDisabled}
+                      className={`flex-1 flex items-center justify-center px-2 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-w-max ${
+                        isDisabled 
+                          ? 'text-gray-400 cursor-not-allowed opacity-50'
+                          : activeTab === key
+                            ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                            : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 mr-2" />
+                      {label}
+                    </button>
+                  )
+                })}
               </div>
 
               <div className="p-3 sm:p-4 md:p-6">
@@ -1128,23 +1237,30 @@ export default function ProductPoolDetailPage() {
                           .map((period, idx) => (
                           <div 
                             key={idx} 
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                              selectedPeriod === period 
-                                ? 'border-green-500 bg-green-50' 
-                                : 'border-gray-200 hover:border-green-300'
+                            className={`p-4 border rounded-lg transition-colors ${
+                              period.available === 0 
+                                ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+                                : selectedPeriod === period 
+                                  ? 'border-green-500 bg-green-50 cursor-pointer' 
+                                  : 'border-gray-200 hover:border-green-300 cursor-pointer'
                             }`}
-                            onClick={() => setSelectedPeriod(period)}
+                            onClick={() => period.available > 0 && setSelectedPeriod(period)}
                           >
                             <div className="flex justify-between items-start">
                               <div>
-                                <div className="font-semibold text-green-800">
+                                <div className={`font-semibold ${period.available === 0 ? 'text-gray-500' : 'text-green-800'}`}>
                                   {formatDateToThai(period.startAt)} - {formatDateToThai(period.endAt)}
                                 </div>
                                 <div className="text-sm text-gray-600">{period.goTransport}</div>
+                                <div className="text-xs text-gray-400 mt-1">period_id: {period.id ?? '-'}</div>
                               </div>
                               <div className="text-right">
-                                <div className="font-semibold text-green-600">฿{period.price.toLocaleString()}</div>
-                                <div className="text-sm text-gray-600">ว่าง {period.available} ที่</div>
+                                <div className={`font-semibold ${period.available === 0 ? 'text-gray-500' : 'text-green-600'}`}>
+                                  ฿{period.price.toLocaleString()}
+                                </div>
+                                <div className={`text-sm ${period.available === 0 ? 'text-red-500 font-semibold' : 'text-gray-600'}`}>
+                                  {period.available === 0 ? 'เต็ม' : `ว่าง ${period.available} ที่`}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1287,15 +1403,26 @@ export default function ProductPoolDetailPage() {
                         variant="primary" 
                         size="lg" 
                         className="w-full"
+                        disabled={!selectedPeriod || selectedPeriod.available === 0}
+                        onClick={() => {
+                          if (selectedPeriod && selectedPeriod.available > 0) {
+                            setShowBookingModal(true)
+                          }
+                        }}
                       >
-                        จองเลย - ชำระเงินมัดจำ 30%
+                        {!selectedPeriod ? 'กรุณาเลือกรอบการเดินทาง' :
+                         selectedPeriod.available === 0 ? 'ทัวร์เต็ม' : 
+                         'จองเลย - ชำระเงินมัดจำ 30%'}
                       </Button>
                       <Button 
                         variant="outline" 
                         size="lg" 
                         className="w-full"
+                        disabled={!selectedPeriod || selectedPeriod.available === 0}
                       >
-                        สอบถามข้อมูลเพิ่มเติม
+                        {!selectedPeriod ? 'กรุณาเลือกรอบการเดินทาง' :
+                         selectedPeriod.available === 0 ? 'สอบถามรายการเต็ม' :
+                         'สอบถามข้อมูลเพิ่มเติม'}
                       </Button>
                     </div>
                   </div>
@@ -1539,11 +1666,15 @@ export default function ProductPoolDetailPage() {
                         variant="primary" 
                         size="lg" 
                         className="w-full"
-                        disabled={!selectedPeriod}
-                        onClick={() => setActiveTab('booking')}
+                        disabled={!selectedPeriod || selectedPeriod.available === 0}
+                        onClick={() => {
+                          if (selectedPeriod && selectedPeriod.available > 0) {
+                            setShowBookingModal(true)
+                          }
+                        }}
                       >
                         {!selectedPeriod ? 'เลือกรอบการเดินทาง' :
-                         selectedPeriod.available === 0 ? '💬 สอบถามราคา' :
+                         selectedPeriod.available === 0 ? '💬 ทัวร์เต็ม - สอบถามราคา' :
                          selectedPeriod.available <= 5 ? '🔥 จองด่วน - มัดจำ 30%' : 'จองเลย - มัดจำ 30%'}
                       </Button>
                     )
@@ -1555,15 +1686,26 @@ export default function ProductPoolDetailPage() {
                       size="sm" 
                       className={`${bookmarked ? 'bg-red-50 border-red-200 text-red-600' : ''}`}
                       onClick={toggleBookmark}
+                      disabled={!selectedPeriod || selectedPeriod.available === 0}
                     >
                       <Bookmark className={`w-4 h-4 mr-1 ${bookmarked ? 'fill-current' : ''}`} />
                       {bookmarked ? 'บันทึกแล้ว' : 'บันทึก'}
                     </Button>
-                    <Button variant="outline" size="sm" onClick={shareWhatsApp}>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={shareWhatsApp}
+                      disabled={!selectedPeriod || selectedPeriod.available === 0}
+                    >
                       <Phone className="w-4 h-4 mr-1" />
                       WhatsApp
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setShowMap(true)}>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setShowMap(true)}
+                      disabled={!selectedPeriod || selectedPeriod.available === 0}
+                    >
                       <QrCode className="w-4 h-4 mr-1" />
                       QR
                     </Button>
@@ -1796,6 +1938,22 @@ export default function ProductPoolDetailPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Booking Modal */}
+      {tour && selectedPeriod && (
+        <BookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          onConfirm={handleBookingConfirm}
+          tourSummary={{
+            tourName: tour.name,
+            dateRange: `${formatDateToThai(selectedPeriod.startAt)} - ${formatDateToThai(selectedPeriod.endAt)}`,
+            pricePerPerson: selectedPeriod.price,
+            travelerCount: travelers,
+            totalAmount: selectedPeriod.price * travelers
+          }}
+        />
       )}
     </div>
   )

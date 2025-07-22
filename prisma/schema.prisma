@@ -428,3 +428,80 @@ model OrderNote {
 
   @@map("order_notes")
 }
+
+// ============= EXISTING TW_ORDER TABLE =============
+// This model maps to the existing tw_order table structure
+
+model TwOrder {
+  id                           Int       @id @default(autoincrement())
+  orderCode                    String    @unique @map("order_code")
+  bookingId                    String?   @map("booking_id")
+  
+  // Agency and customer relations
+  agcyAgencyId                 Int       @map("agcy_agency_id")
+  customerId                   Int?      @map("customer_id")
+  parentOrderId                Int?      @map("parent_order_id")
+  
+  // Order details
+  orderType                    String    @map("order_type")
+  orderStatus                  String    @map("order_status")
+  paymentStatus                String    @map("payment_status")
+  
+  // Product relations
+  supplierId                   Int       @map("supplier_id")
+  productId                    Int       @map("product_id")
+  periodId                     Int       @map("period_id")
+  
+  // Snapshots (JSON fields)
+  productSnapshot              String    @map("product_snapshot") @db.Text
+  productPeriodSnapshot        String    @map("product_period_snapshot") @db.Text
+  
+  // Customer information
+  customerName                 String    @map("customer_name")
+  customerPhoneNumber          String    @map("customer_phone_number")
+  customerEmail                String    @map("customer_email")
+  customerAddress              String?   @map("customer_address") @db.Text
+  customerProvince             String?   @map("customer_province")
+  customerPostalCode           String?   @map("customer_postal_code")
+  
+  // Traveler counts
+  adultCount                   Int       @map("adult_count")
+  childWithBedCount            Int       @map("child_with_bed_count")
+  childNoBedCount              Int       @map("child_no_bed_count")
+  infantCount                  Int       @map("infant_count")
+  singleRoomCount              Int       @map("single_room_count")
+  extraRoomCount               Int       @map("extra_room_count")
+  
+  // Pricing
+  basePrice                    Decimal   @map("base_price")
+  totalAmount                  Decimal   @map("total_amount")
+  depositAmount                Decimal?  @map("deposit_amount")
+  remainingAmount              Decimal?  @map("remaining_amount")
+  currency                     String    @default("THB")
+  
+  // Commission
+  commissionCompany            Decimal   @map("commission_company")
+  commissionSeller             Decimal   @map("commission_seller")
+  
+  // Tour dates
+  departureDate                DateTime  @map("departure_date")
+  returnDate                   DateTime  @map("return_date")
+  durationDays                 Int       @map("duration_days")
+  durationNights               Int       @map("duration_nights")
+  
+  // Additional information
+  specialRequests              String?   @map("special_requests") @db.Text
+  
+  // Important dates
+  paymentDeadline              DateTime? @map("payment_deadline")
+  documentDeadline             DateTime? @map("document_deadline")
+  
+  // Timestamps
+  createdAt                    DateTime  @default(now()) @map("created_at")
+  updatedAt                    DateTime  @updatedAt @map("updated_at")
+  confirmedAt                  DateTime? @map("confirmed_at")
+  cancelledAt                  DateTime? @map("cancelled_at")
+  completedAt                  DateTime? @map("completed_at")
+
+  @@map("tw_order")
+}
