@@ -146,9 +146,6 @@ export default function CountryTourPage({ params }: { params: Promise<{ country:
               countries={countries}
               selectedCountry={selectedCountry}
               onCountryChange={setSelectedCountry}
-              sortOptions={sortOptions}
-              selectedSortBy={sortBy}
-              onSortByChange={setSortBy}
               onClearFilters={() => {
                 setSearchTerm('');
                 setSelectedCategory('ทั้งหมด');
