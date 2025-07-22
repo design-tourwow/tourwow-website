@@ -183,9 +183,6 @@ function FlashSalePageContent() {
               countries={countries}
               selectedCountry={selectedCountry}
               onCountryChange={setSelectedCountry}
-              sortOptions={sortOptions}
-              selectedSortBy={sortBy}
-              onSortByChange={setSortBy}
               onClearFilters={handleClearFilters}
             />
           </aside>
