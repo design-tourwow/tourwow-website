@@ -70,11 +70,12 @@ export const useThailandData = () => {
           fetchFailed = true;
         }
         // Fallback: try require from data/thailand (Node.js only)
-        if (fetchFailed && typeof window === 'undefined') {
-          provincesData = require('../../../data/thailand/provinces.json');
-          districtsData = require('../../../data/thailand/districts.json');
-          subDistrictsData = require('../../../data/thailand/sub-districts.json');
-        }
+        // ลบ fallback require Node.js only (deploy prod จะ error ถ้ามี)
+        // if (fetchFailed && typeof window === 'undefined') {
+        //   provincesData = require('../../../data/thailand/provinces.json');
+        //   districtsData = require('../../../data/thailand/districts.json');
+        //   subDistrictsData = require('../../../data/thailand/sub-districts.json');
+        // }
         if (!provincesData || !districtsData || !subDistrictsData) {
           throw new Error('Failed to load Thailand data');
         }
