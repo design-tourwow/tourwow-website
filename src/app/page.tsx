@@ -307,7 +307,7 @@ function HomeContent() {
                         {post.category}
                       </span>
                       <span className="text-xs text-gray-500">
-                        {new Date(post.date).toLocaleDateString('th-TH')}
+                        {post.date ? new Date(post.date).toLocaleDateString('th-TH') : ''}
                       </span>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
