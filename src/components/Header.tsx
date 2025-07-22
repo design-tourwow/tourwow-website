@@ -71,9 +71,9 @@ export default function Header() {
             </Link>
             <Link href="/wholesale-tours" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
               isActive('/wholesale-tours') 
-                ? 'text-purple-600 bg-purple-50 shadow-sm' 
+                ? 'text-white shadow-sm' 
                 : 'text-gray-700 hover:text-purple-600 hover:bg-purple-50'
-            }`}>
+            }`} style={isActive('/wholesale-tours') ? { backgroundImage: 'linear-gradient(to right top, #e15d93, #e280b6, #e2a1d2, #e3bfe7, #eadcf5, #dee3fe, #d2eaff, #caf0ff, #86ebf2, #4ce4c7, #55d783, #83c326)' } : {}}>
               Wholesale Tours
               {isActive('/wholesale-tours') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-purple-600 rounded-full"></div>}
             </Link>
