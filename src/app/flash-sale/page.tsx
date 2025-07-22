@@ -44,7 +44,13 @@ function FlashSalePageContent() {
   }, [searchParams])
 
   const categories = useMemo(() => ['ทั้งหมด', ...Array.from(new Set(flashSaleTours.map(t => t.category)))], [flashSaleTours])
-  const priceRanges = ['ทั้งหมด', 'ต่ำกว่า 15,000', '15,000 - 25,000', '25,000 - 35,000', '35,000 - 50,000', '50,000+']
+  const priceRanges = [
+    { name: 'ต่ำกว่า 10,000', count: 0 },
+    { name: '10,000-20,000', count: 0 },
+    { name: '20,000-30,000', count: 0 },
+    { name: '30,000-50,000', count: 0 },
+    { name: '50,000 ขึ้นไป', count: 0 },
+  ];
   const countries = useMemo(() => {
     const countryCount = flashSaleTours.reduce((acc, tour) => {
       acc[tour.country] = (acc[tour.country] || 0) + 1;
