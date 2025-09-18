@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile ATF Test - Tour Search 19</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f7f9fc;
+        }
+        .test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .device-header {
+            background: #333;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .viewport {
+            width: 390px;
+            height: 844px;
+            position: relative;
+            overflow: hidden;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .atf-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.7);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .atf-line::before {
+            content: '50% ATF LINE';
+            position: absolute;
+            right: 8px;
+            top: -16px;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        .instructions {
+            margin: 20px 0;
+            padding: 16px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+        .success-criteria {
+            margin: 20px 0;
+            padding: 16px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .measurements {
+            margin: 20px 0;
+            padding: 16px;
+            background: #fff3e0;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+        .measurement {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Mobile ATF Test - Tour Search 19</h1>
+    
+    <div class="instructions">
+        <h3>📱 Testing Instructions:</h3>
+        <ol>
+            <li>วัดว่าการ์ดทัวร์ใบแรกแสดงอย่างน้อย 50% เหนือ ATF line (เส้นแดง)</li>
+            <li>ตรวจสอบว่าฟอร์มค้นหาแสดงเฉพาะ 2 ฟิลด์: "ปลายทาง" และ "วันที่เดินทาง"</li>
+            <li>ทดสอบปุ่ม "ฟิลเตอร์เพิ่มเติม" เปิด Bottom Sheet</li>
+            <li>ตรวจสอบ Filter/Sort Bar แบบ sticky</li>
+        </ol>
+    </div>
+
+    <div class="success-criteria">
+        <h3>✅ เกณฑ์ตรวจรับ (Success Criteria):</h3>
+        <ul>
+            <li>การ์ดทัวร์ใบแรกมองเห็น ≥50% เหนือ ATF line</li>
+            <li>ฟอร์มค้นหาแสดงเฉพาะ 2 ฟิลด์บนมือถือ</li>
+            <li>Bottom Sheet ทำงานได้สำหรับฟิลเตอร์เพิ่มเติม</li>
+            <li>Filter Bar เป็น sticky และสูงไม่เกิน 48px</li>
+            <li>A11y และ UX ใช้งานได้ดี</li>
+        </ul>
+    </div>
+
+    <div class="controls">
+        <button onclick="refreshTest()">🔄 Refresh Test</button>
+        <button onclick="toggleATFLine()">👁️ Toggle ATF Line</button>
+        <button onclick="simulateKeyboard()">⌨️ Simulate Keyboard</button>
+    </div>
+
+    <div class="measurements">
+        <h3>📏 Viewport Measurements (iPhone 12):</h3>
+        <div class="measurement">
+            <span>Viewport:</span>
+            <span>390×844px</span>
+        </div>
+        <div class="measurement">
+            <span>ATF Line (50%):</span>
+            <span>422px from top</span>
+        </div>
+        <div class="measurement">
+            <span>Expected Search Height:</span>
+            <span>≤140px</span>
+        </div>
+        <div class="measurement">
+            <span>Expected Filter Bar:</span>
+            <span>≤48px</span>
+        </div>
+        <div class="measurement">
+            <span>Available for Tour Card:</span>
+            <span>≥234px</span>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="device-header">
+            📱 iPhone 12 (390×844) - Mobile ATF Test
+        </div>
+        <div class="viewport">
+            <div class="atf-line" id="atfLine"></div>
+            <div class="iframe-container">
+                <iframe 
+                    src="http://localhost:3002/tour-search-19" 
+                    id="testFrame"
+                    title="Tour Search 19 Mobile Test">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function refreshTest() {
+            document.getElementById('testFrame').src = document.getElementById('testFrame').src;
+        }
+
+        function toggleATFLine() {
+            const line = document.getElementById('atfLine');
+            line.style.display = line.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function simulateKeyboard() {
+            const viewport = document.querySelector('.viewport');
+            const isKeyboardShown = viewport.style.height === '500px';
+            
+            if (isKeyboardShown) {
+                viewport.style.height = '844px';
+                alert('Keyboard hidden - ตรวจสอบว่าการ์ดยังมองเห็นได้');
+            } else {
+                viewport.style.height = '500px';
+                alert('Keyboard shown (344px) - เลื่อนดูว่าการ์ดยังอยู่ในมุมมองไหม');
+            }
+        }
+
+        // Auto-refresh iframe every 30 seconds to get latest changes
+        setInterval(() => {
+            console.log('Auto-refreshing test iframe...');
+            document.getElementById('testFrame').src = document.getElementById('testFrame').src;
+        }, 30000);
+
+        // Show initial instructions
+        setTimeout(() => {
+            alert('🎯 Mobile ATF Test Ready!\n\nเส้นแดงคือ 50% ATF line\nตรวจสอบว่าการ์ดทัวร์แสดงเหนือเส้นนี้');
+        }, 1000);
+    </script>
+</body>
+</html>

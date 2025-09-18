@@ -91,8 +91,8 @@ function ApiToursPageContent() {
         country: tour?.location?.split(',')[0] || '-',
         duration: `${days} วัน ${nights} คืน`,
         category: Array.isArray(tour?.tags) && tour.tags.length > 0 ? tour.tags[0] : 'ทัวร์ทั่วไป',
-        rating: 4.5,
-        reviews: Math.floor(Math.random() * 50) + 10,
+        rating: 4.5, // Default rating since TTNTour doesn't have rating field
+        reviews: Math.floor(Math.random() * 50) + 10, // Generate random reviews
         availability: seat > 5 ? 'ว่าง' : seat > 0 ? 'เหลือน้อย' : 'เต็ม',
         availableSlots: seat,
         groupSize: `กลุ่ม ${Math.floor(Math.random() * 20) + 10}-${Math.floor(Math.random() * 20) + 30} ท่าน`,

@@ -41,3 +41,31 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Large files and backups
+*.tar.gz
+backup-*
+public/data/tours/
+public/banners/
+public/tour-banners/
+public/images/
+scripts/
+test-*.js
+debug-*.js
+*.sql
+data/
+check-*.js
+create-*.js
+download-*.sh
+generate-*.html
+improve-*.js
+mobile-*.html
+mobile-*.js
+open-*.js
+final-*.js
+fix_*.txt
+fix_*.sql
+recreate_*.sql
+reorder_*.sql
+tour-banner-mapping.json
+public/icons/destinations/

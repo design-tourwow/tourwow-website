@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Scroll Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .calendar-container {
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-xl font-bold mb-4">Calendar Scroll Test</h1>
+        
+        <!-- Simulate page content -->
+        <div class="mb-8">
+            <p class="mb-4">This is a test page to debug calendar scroll behavior.</p>
+            <div class="h-96 bg-blue-50 rounded p-4 overflow-y-scroll">
+                <h3 class="font-semibold mb-2">Background Scrollable Content</h3>
+                <div class="space-y-4">
+                    <div class="h-20 bg-blue-200 rounded"></div>
+                    <div class="h-20 bg-blue-300 rounded"></div>
+                    <div class="h-20 bg-blue-200 rounded"></div>
+                    <div class="h-20 bg-blue-300 rounded"></div>
+                    <div class="h-20 bg-blue-200 rounded"></div>
+                    <div class="h-20 bg-blue-300 rounded"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Test -->
+        <div class="relative" id="calendar-test">
+            <button 
+                id="calendar-btn"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-left flex items-center justify-between hover:border-blue-400 transition-colors"
+            >
+                <span>เลือกวันเดินทาง</span>
+                <span>📅</span>
+            </button>
+
+            <!-- Calendar Dropdown -->
+            <div 
+                id="calendar-dropdown" 
+                class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50"
+                style="max-height: 300px;"
+            >
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold">เลือกวันเดินทาง</h3>
+                        <button id="close-calendar" class="text-gray-400 hover:text-gray-600">✕</button>
+                    </div>
+
+                    <!-- Scrollable Calendar Content -->
+                    <div 
+                        id="calendar-scroll-area"
+                        class="calendar-container overflow-y-scroll border border-gray-100 rounded-lg"
+                        style="height: 200px; overscroll-behavior: contain;"
+                    >
+                        <div class="p-2 space-y-2">
+                            <!-- Generate calendar dates -->
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-blue-50 rounded-xl">
+                        <div class="text-sm text-blue-800">
+                            💡 <strong>เคล็ดลับ:</strong> ทดสอบ scroll behavior
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="mt-8">
+            <h3 class="font-semibold mb-2">Test Results:</h3>
+            <div id="test-log" class="bg-gray-50 p-3 rounded text-xs font-mono max-h-32 overflow-y-scroll">
+                Ready to test...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test logging
+        function log(message) {
+            const logElement = document.getElementById('test-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        // Generate calendar dates
+        function generateCalendarDates() {
+            const container = document.querySelector('#calendar-scroll-area > div');
+            const today = new Date();
+            
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                const dateElement = document.createElement('div');
+                dateElement.className = 'p-3 border border-gray-200 rounded hover:bg-blue-50 cursor-pointer';
+                dateElement.innerHTML = `
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="font-bold">${date.getDate()}</div>
+                            <div class="text-xs text-gray-500">${date.toLocaleDateString('th-TH', {weekday: 'short'})}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-red-600 font-bold">฿${(45900 + Math.floor(Math.random() * 5000)).toLocaleString()}</div>
+                            <div class="text-xs text-gray-500">เหลือ ${Math.floor(Math.random() * 10) + 1} ที่</div>
+                        </div>
+                    </div>
+                `;
+                
+                dateElement.addEventListener('click', () => {
+                    log(`Selected date: ${date.toDateString()}`);
+                    document.getElementById('calendar-dropdown').classList.add('hidden');
+                    document.getElementById('calendar-btn').querySelector('span').textContent = 
+                        date.toLocaleDateString('th-TH');
+                });
+                
+                container.appendChild(dateElement);
+            }
+        }
+
+        // Calendar controls
+        document.getElementById('calendar-btn').addEventListener('click', () => {
+            const dropdown = document.getElementById('calendar-dropdown');
+            dropdown.classList.toggle('hidden');
+            if (!dropdown.classList.contains('hidden')) {
+                log('Calendar opened');
+                // Focus scroll area for testing
+                document.getElementById('calendar-scroll-area').focus();
+            }
+        });
+
+        document.getElementById('close-calendar').addEventListener('click', () => {
+            document.getElementById('calendar-dropdown').classList.add('hidden');
+            log('Calendar closed');
+        });
+
+        // Enhanced scroll event monitoring
+        const scrollArea = document.getElementById('calendar-scroll-area');
+        let scrollTimeout;
+
+        scrollArea.addEventListener('scroll', (e) => {
+            log(`Calendar scroll: ${e.target.scrollTop}px`);
+            
+            // Clear previous timeout
+            clearTimeout(scrollTimeout);
+            
+            // Log after scroll ends
+            scrollTimeout = setTimeout(() => {
+                log(`Scroll ended at: ${e.target.scrollTop}px`);
+            }, 150);
+        });
+
+        // Monitor wheel events
+        scrollArea.addEventListener('wheel', (e) => {
+            log(`Wheel event: deltaY=${e.deltaY}, target=${e.target.tagName}`);
+            e.stopPropagation();
+        });
+
+        // Monitor parent scroll (should not happen)
+        window.addEventListener('scroll', () => {
+            log('⚠️ WINDOW SCROLL DETECTED - This should NOT happen when scrolling calendar!');
+        });
+
+        // Touch events for mobile
+        scrollArea.addEventListener('touchstart', () => {
+            log('Touch start on calendar');
+        });
+
+        scrollArea.addEventListener('touchmove', (e) => {
+            log(`Touch move: ${e.touches.length} touches`);
+            e.stopPropagation();
+        });
+
+        // Click outside to close
+        document.addEventListener('click', (e) => {
+            const calendarTest = document.getElementById('calendar-test');
+            if (!calendarTest.contains(e.target)) {
+                document.getElementById('calendar-dropdown').classList.add('hidden');
+            }
+        });
+
+        // Initialize
+        generateCalendarDates();
+        log('Calendar test initialized');
+        log('Instructions: Click "เลือกวันเดินทาง", then scroll in the calendar');
+        log('Watch this log for any window scroll events (should be none!)');
+    </script>
+</body>
+</html>

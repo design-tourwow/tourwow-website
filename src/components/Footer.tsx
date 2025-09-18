@@ -83,6 +83,345 @@ export default function Footer() {
           </div>
 
           <div>
+            <h4 className="text-lg font-semibold mb-4 text-white">การบ้าน</h4>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              {/* Template 1 */}
+              <div>
+                <h5 className="text-emerald-200 font-semibold mb-2">Template 1</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tours-new" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 1
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-new" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 1
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 2 */}
+              <div>
+                <h5 className="text-sky-200 font-semibold mb-2">Template 2</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tours-clean" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 2
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-clean" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 2
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 3 */}
+              <div>
+                <h5 className="text-pink-200 font-semibold mb-2">Template 3</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tours-vibrant" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 3
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-vibrant" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 3
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 4 */}
+              <div>
+                <h5 className="text-amber-200 font-semibold mb-2">Template 4</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-4" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 4
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-4" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 4
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 5 */}
+              <div>
+                <h5 className="text-orange-200 font-semibold mb-2">Template 5</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-5" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 5
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-5" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 5
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 6 */}
+              <div>
+                <h5 className="text-purple-200 font-semibold mb-2">Template 6</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-6" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 6
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-6" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 6
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 7 */}
+              <div>
+                <h5 className="text-teal-200 font-semibold mb-2">Template 7</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-7" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 7
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-7" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 7
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 8 */}
+              <div>
+                <h5 className="text-cyan-200 font-semibold mb-2">Template 8</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-8" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 8
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-8" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 8
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 9 */}
+              <div>
+                <h5 className="text-lime-200 font-semibold mb-2">Template 9</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-9" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 9
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-9" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 9
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 10 */}
+              <div>
+                <h5 className="text-rose-200 font-semibold mb-2">Template 10</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-10" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 10
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-10" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 10
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 11 */}
+              <div>
+                <h5 className="text-violet-200 font-semibold mb-2">Template 11</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-11" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 11
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-11" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 11
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 12 */}
+              <div>
+                <h5 className="text-emerald-300 font-semibold mb-2">Template 12</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-12" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 12
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-12" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 12
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 13 */}
+              <div>
+                <h5 className="text-indigo-300 font-semibold mb-2">Template 13</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-13" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 13
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-13" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 13
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 14 */}
+              <div>
+                <h5 className="text-pink-300 font-semibold mb-2">Template 14</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-14" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 14
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-14" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 14
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 15 */}
+              <div>
+                <h5 className="text-yellow-300 font-semibold mb-2">Template 15</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-15" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 15
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-15" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 15
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 16 */}
+              <div>
+                <h5 className="text-blue-300 font-semibold mb-2">Template 16</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-16" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 16
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-16" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 16
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 17 */}
+              <div>
+                <h5 className="text-green-300 font-semibold mb-2">Template 17</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-17" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 17
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-17" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 17
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Template 18 */}
+              <div>
+                <h5 className="text-red-300 font-semibold mb-2">Template 18</h5>
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/tour-search-18" className="text-blue-100 hover:text-white transition-colors">
+                      Tour search 18
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog-18" className="text-blue-100 hover:text-white transition-colors">
+                      Blog list 18
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            {/* Other menus */}
+            <div className="mt-6">
+              <h5 className="text-white font-semibold mb-2">เมนูอื่น</h5>
+              <ul className="flex flex-wrap gap-3">
+                <li>
+                  <Link href="/flash-sale" className="flex items-center gap-1 text-red-200 hover:text-white transition-colors">
+                    <span role="img" aria-label="ทัวร์ไฟไหม้">🔥</span> ทัวร์ไฟไหม้
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/api-tours" className="flex items-center gap-1 text-indigo-200 hover:text-white transition-colors">
+                    <span role="img" aria-label="ทัวร์ API">🧩</span> ทัวร์ API
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wholesale-tours" className="flex items-center gap-1 text-purple-200 hover:text-white transition-colors">
+                    <span role="img" aria-label="Wholesale Tours">🏷️</span> Wholesale Tours
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/api-test" className="flex items-center gap-1 text-green-200 hover:text-white transition-colors">
+                    <span role="img" aria-label="API Test">🧪</span> API Test
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
             <h4 className="text-lg font-semibold mb-4 text-white">ข้อมูลติดต่อ</h4>
             <ul className="space-y-3">
               <li className="flex items-center">

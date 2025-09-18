@@ -1,0 +1,1556 @@
+'use client'
+
+// TS33 Main Search Page - Mobile-First Tour Search
+// Completely isolated from existing tour-search implementations
+
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import { Kanit } from 'next/font/google'
+import { 
+  Search, MapPin, Calendar, Star, Filter, X, ChevronDown, 
+  Grid, List, SlidersHorizontal, TrendingUp, Clock, Users,
+  ArrowRight, Heart, Zap, Globe
+} from 'lucide-react'
+import Image from 'next/image'
+
+const kanit = Kanit({ 
+  subsets: ['latin', 'thai'],
+  weight: ['300', '400', '500', '600', '700']
+})
+
+// TS33 Isolated imports
+import { TS33_SEARCH_INDEX } from './data-etl'
+import type { 
+  TS33Tour, 
+  TS33SearchFilters, 
+  TS33SearchState, 
+  TS33SortOption,
+  TS33LeadData 
+} from './types'
+import { 
+  TS33Button, 
+  TS33Input, 
+  TS33Card, 
+  TS33Badge, 
+  TS33Skeleton,
+  TS33Modal,
+  TS33Toast,
+  TS33GlobalStyles
+} from './components/primitives'
+import { TS33LeadModal } from './components/LeadModal'
+import { ts33, TS33_DESIGN_TOKENS } from './lib/design-tokens'
+import { useTS33Analytics } from './lib/analytics'
+import { useTS33Accessibility, ts33Announcer, ts33FocusManager } from './lib/accessibility'
+import { ts33Performance } from './lib/seo'
+
+// ======================
+// Search & Filter Logic
+// ======================
+
+function useTS33Search() {
+  const [searchState, setSearchState] = useState<TS33SearchState>({
+    filters: {
+      keyword: '',
+      countries: [],
+      price_range: null,
+      duration: null,
+      themes: [],
+      months: [],
+      rating: null,
+      sort_by: 'recommended'
+    },
+    results: TS33_SEARCH_INDEX.tours,
+    loading: false,
+    error: null,
+    total_count: TS33_SEARCH_INDEX.tours.length,
+    has_more: false,
+    page: 1
+  })
+
+  const [viewMode, setViewMode] = useState<'card' | 'list'>('card')
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Apply filters and sorting
+  const applyFilters = useCallback((filters: TS33SearchFilters) => {
+    setSearchState(prev => ({ ...prev, loading: true }))
+    
+    // Simulate API delay for realistic UX
+    setTimeout(() => {
+      let filtered = TS33_SEARCH_INDEX.tours
+
+      // Keyword search
+      if (filters.keyword.trim()) {
+        const keyword = filters.keyword.toLowerCase()
+        filtered = filtered.filter(tour => 
+          tour.title.toLowerCase().includes(keyword) ||
+          tour.country.toLowerCase().includes(keyword) ||
+          tour.cities.some(city => city.toLowerCase().includes(keyword)) ||
+          tour.highlights.some(highlight => highlight.toLowerCase().includes(keyword))
+        )
+      }
+
+      // Country filter
+      if (filters.countries.length > 0) {
+        filtered = filtered.filter(tour => filters.countries.includes(tour.country))
+      }
+
+      // Price range filter
+      if (filters.price_range) {
+        const [min, max] = filters.price_range
+        filtered = filtered.filter(tour => 
+          tour.price_from >= min && tour.price_from <= max
+        )
+      }
+
+      // Duration filter
+      if (filters.duration) {
+        const durationOption = TS33_SEARCH_INDEX.filters.durations.find(d => d.id === filters.duration)
+        if (durationOption) {
+          filtered = filtered.filter(tour => 
+            tour.duration_days >= durationOption.min_days && 
+            tour.duration_days <= durationOption.max_days
+          )
+        }
+      }
+
+      // Theme filter
+      if (filters.themes.length > 0) {
+        filtered = filtered.filter(tour => 
+          filters.themes.some(theme => tour.themes.includes(theme))
+        )
+      }
+
+      // Rating filter
+      if (filters.rating !== null) {
+        filtered = filtered.filter(tour => tour.rating >= filters.rating!)
+      }
+
+      // Sorting
+      switch (filters.sort_by) {
+        case 'price_low':
+          filtered.sort((a, b) => a.price_from - b.price_from)
+          break
+        case 'price_high':
+          filtered.sort((a, b) => b.price_from - a.price_from)
+          break
+        case 'rating':
+          filtered.sort((a, b) => b.rating - a.rating)
+          break
+        case 'duration':
+          filtered.sort((a, b) => a.duration_days - b.duration_days)
+          break
+        case 'popularity':
+          filtered.sort((a, b) => b.reviews_count - a.reviews_count)
+          break
+        default: // recommended
+          filtered.sort((a, b) => (b.rating * b.reviews_count) - (a.rating * a.reviews_count))
+      }
+
+      setSearchState(prev => ({
+        ...prev,
+        filters,
+        results: filtered,
+        total_count: filtered.length,
+        loading: false,
+        error: null
+      }))
+    }, 300)
+  }, [])
+
+  return {
+    searchState,
+    viewMode,
+    setViewMode,
+    showFilters,
+    setShowFilters,
+    applyFilters
+  }
+}
+
+// ======================
+// Tour Card Component
+// ======================
+
+interface TS33TourCardProps {
+  tour: TS33Tour
+  variant: 'card' | 'list'
+  onViewDetails: (tour: TS33Tour) => void
+  onQuickBook: (tour: TS33Tour) => void
+}
+
+function TS33TourCard({ tour, variant, onViewDetails, onQuickBook }: TS33TourCardProps) {
+  const [isWishlisted, setIsWishlisted] = useState(false)
+  const [timeLeft, setTimeLeft] = useState<string>('')
+
+  // Flash Sale countdown timer
+  useEffect(() => {
+    if (!tour.is_flash_sale || !tour.flash_sale_end) return
+
+    const timer = setInterval(() => {
+      const endTime = new Date(tour.flash_sale_end!).getTime()
+      const now = new Date().getTime()
+      const distance = endTime - now
+
+      if (distance < 0) {
+        setTimeLeft('หมดเวลา')
+        clearInterval(timer)
+      } else {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+        
+        if (days > 0) {
+          setTimeLeft(`${days} วัน ${hours} ชม.`)
+        } else {
+          setTimeLeft(`${hours} ชม. ${minutes} นาที`)
+        }
+      }
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [tour.is_flash_sale, tour.flash_sale_end])
+
+  if (variant === 'list') {
+    return (
+      <TS33Card className="mb-4" hover>
+        <div style={{ display: 'flex', gap: ts33.space(4) }}>
+          {/* Image */}
+          <div style={{ 
+            position: 'relative', 
+            width: '120px', 
+            height: '90px', 
+            flexShrink: 0,
+            borderRadius: ts33.radius('md'),
+            overflow: 'hidden'
+          }}>
+            <Image
+              src={tour.image_url}
+              alt={tour.title}
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="120px"
+            />
+            {tour.badges.length > 0 && (
+              <div style={{ position: 'absolute', top: ts33.space(2), left: ts33.space(2) }}>
+                <TS33Badge variant="promotion" size="sm">
+                  {tour.badges[0]}
+                </TS33Badge>
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: ts33.space(2) }}>
+            <div>
+              <h3 style={{ 
+                margin: 0,
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+                fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold,
+                color: ts33.color('text.primary'),
+                lineHeight: TS33_DESIGN_TOKENS.typography.lineHeights.tight
+              }}>
+                {tour.title}
+              </h3>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: ts33.space(3),
+                marginTop: ts33.space(1),
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                color: ts33.color('text.secondary')
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: ts33.space(1) }}>
+                  <MapPin style={{ width: '12px', height: '12px' }} />
+                  {tour.country}
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: ts33.space(1) }}>
+                  <Clock style={{ width: '12px', height: '12px' }} />
+                  {tour.duration_days} วัน
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: ts33.space(1) }}>
+                  <Star style={{ width: '12px', height: '12px', color: '#fbbf24' }} />
+                  {tour.rating}
+                </span>
+              </div>
+            </div>
+
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'flex-end',
+              marginTop: 'auto'
+            }}>
+              <div>
+                <div style={{ 
+                  fontSize: TS33_DESIGN_TOKENS.typography.sizes.lg,
+                  fontWeight: TS33_DESIGN_TOKENS.typography.weights.bold,
+                  color: ts33.color('primary.600')
+                }}>
+                  ฿{tour.price_from.toLocaleString()}
+                </div>
+                <div style={{ 
+                  fontSize: TS33_DESIGN_TOKENS.typography.sizes.xs,
+                  color: ts33.color('text.tertiary')
+                }}>
+                  ต่อคน
+                </div>
+              </div>
+              
+              <TS33Button 
+                size="sm" 
+                onClick={() => onViewDetails(tour)}
+                rightIcon={<ArrowRight style={{ width: '14px', height: '14px' }} />}
+              >
+                ดูรายละเอียด
+              </TS33Button>
+            </div>
+          </div>
+        </div>
+      </TS33Card>
+    )
+  }
+
+  return (
+    <TS33Card className="mb-4" hover>
+      {/* Image Section */}
+      <div style={{ 
+        position: 'relative', 
+        height: '200px', 
+        marginBottom: ts33.space(3), // ลดจาก 4 เป็น 3
+        borderRadius: ts33.radius('md'),
+        overflow: 'hidden'
+      }}>
+        <Image
+          src={tour.image_url}
+          alt={tour.title}
+          fill
+          style={{ objectFit: 'cover' }}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+        
+        {/* Overlays */}
+        <div style={{ 
+          position: 'absolute', 
+          top: ts33.space(3), 
+          left: ts33.space(3),
+          right: ts33.space(3),
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: ts33.space(2) }}>
+            {/* Flash Sale Badge */}
+            {tour.is_flash_sale && timeLeft && (
+              <div style={{
+                background: 'linear-gradient(135deg, #ff512f 0%, #dd2476 100%)',
+                color: 'white',
+                padding: `${ts33.space(2)} ${ts33.space(3)}`,
+                borderRadius: ts33.radius('md'),
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                fontWeight: TS33_DESIGN_TOKENS.typography.weights.bold,
+                boxShadow: ts33.shadow('lg'),
+                display: 'inline-flex',
+                flexDirection: 'column',
+                gap: '2px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  🔥 FLASH SALE
+                </div>
+                <div style={{ 
+                  fontSize: TS33_DESIGN_TOKENS.typography.sizes.xs,
+                  opacity: 0.95
+                }}>
+                  เหลือ {timeLeft}
+                </div>
+              </div>
+            )}
+            
+            {/* Other badges */}
+            <div style={{ display: 'flex', gap: ts33.space(2) }}>
+              {tour.badges.map((badge, index) => (
+                <TS33Badge key={index} variant="promotion" size="sm">
+                  {badge}
+                </TS33Badge>
+              ))}
+            </div>
+          </div>
+          
+          <button
+            onClick={() => setIsWishlisted(!isWishlisted)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.9)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+            aria-label={isWishlisted ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}
+          >
+            <Heart 
+              style={{ 
+                width: '16px', 
+                height: '16px',
+                color: isWishlisted ? '#ef4444' : '#64748b',
+                fill: isWishlisted ? '#ef4444' : 'none'
+              }} 
+            />
+          </button>
+        </div>
+
+        {/* Duration Badge */}
+        <div style={{ 
+          position: 'absolute', 
+          bottom: ts33.space(3), 
+          left: ts33.space(3)
+        }}>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.9)',
+            padding: `${ts33.space(1)} ${ts33.space(2)}`,
+            borderRadius: ts33.radius('md'),
+            fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+            fontWeight: TS33_DESIGN_TOKENS.typography.weights.medium,
+            display: 'flex',
+            alignItems: 'center',
+            gap: ts33.space(1)
+          }}>
+            <Clock style={{ width: '14px', height: '14px' }} />
+            {tour.duration_days} วัน {tour.nights} คืน
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div>
+        {/* Title */}
+        <h3 style={{ 
+          margin: 0,
+          fontSize: TS33_DESIGN_TOKENS.typography.sizes.lg,
+          fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold,
+          color: ts33.color('text.primary'),
+          lineHeight: TS33_DESIGN_TOKENS.typography.lineHeights.tight,
+          marginBottom: ts33.space(2) // ลดจาก 3 เป็น 2
+        }}>
+          {tour.title}
+        </h3>
+
+        {/* Meta Info */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: ts33.space(4),
+          marginBottom: ts33.space(3), // ลดจาก 4 เป็น 3
+          fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+          color: ts33.color('text.secondary')
+        }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: ts33.space(1) }}>
+            <MapPin style={{ width: '14px', height: '14px' }} />
+            {tour.cities.slice(0, 2).join(', ')}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: ts33.space(1) }}>
+            <Users style={{ width: '14px', height: '14px' }} />
+            {tour.departures.filter(d => d.status === 'available').length} รอบ
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: ts33.space(1) }}>
+            <Star style={{ width: '14px', height: '14px', color: '#fbbf24', fill: '#fbbf24' }} />
+            {tour.rating} ({tour.reviews_count})
+          </span>
+        </div>
+
+        {/* Highlights */}
+        <div style={{ marginBottom: ts33.space(4) }}> {/* ลดจาก 5 เป็น 4 */}
+          <div style={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: ts33.space(2)
+          }}>
+            {tour.highlights.slice(0, 3).map((highlight, index) => (
+              <TS33Badge key={index} variant="primary" size="sm">
+                {highlight}
+              </TS33Badge>
+            ))}
+            {tour.highlights.length > 3 && (
+              <TS33Badge variant="default" size="sm">
+                +{tour.highlights.length - 3} อื่น ๆ
+              </TS33Badge>
+            )}
+          </div>
+        </div>
+
+        {/* Price & CTA */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'flex-end',
+          paddingTop: ts33.space(3), // ลดจาก 4 เป็น 3
+          borderTop: `1px solid ${ts33.color('border.primary')}`
+        }}>
+          <div>
+            {tour.is_flash_sale && tour.original_price && (
+              <div style={{
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+                color: ts33.color('text.tertiary'),
+                textDecoration: 'line-through',
+                marginBottom: ts33.space(1)
+              }}>
+                ฿{tour.original_price.toLocaleString()}
+              </div>
+            )}
+            <div style={{ 
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes['2xl'],
+              fontWeight: TS33_DESIGN_TOKENS.typography.weights.bold,
+              color: tour.is_flash_sale ? ts33.color('feature.promotion') : ts33.color('primary.600'),
+              lineHeight: 1
+            }}>
+              ฿{tour.price_from.toLocaleString()}
+              {tour.is_flash_sale && tour.discount_percentage && (
+                <span style={{
+                  fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                  color: ts33.color('feature.promotion'),
+                  marginLeft: ts33.space(2)
+                }}>
+                  (-{tour.discount_percentage}%)
+                </span>
+              )}
+            </div>
+            <div style={{ 
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+              color: ts33.color('text.tertiary')
+            }}>
+              เริ่มต้น / ต่อคน
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', gap: ts33.space(2) }}>
+            <TS33Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onQuickBook(tour)}
+              leftIcon={<Zap style={{ width: '14px', height: '14px' }} />}
+            >
+              จองด่วน
+            </TS33Button>
+            <TS33Button 
+              size="sm" 
+              onClick={() => onViewDetails(tour)}
+              rightIcon={<ArrowRight style={{ width: '14px', height: '14px' }} />}
+            >
+              ดูรายละเอียด
+            </TS33Button>
+          </div>
+        </div>
+      </div>
+    </TS33Card>
+  )
+}
+
+// ======================
+// Filter Drawer Component
+// ======================
+
+interface TS33FilterDrawerProps {
+  open: boolean
+  filters: TS33SearchFilters
+  onClose: () => void
+  onApply: (filters: TS33SearchFilters) => void
+  onClear: () => void
+}
+
+function TS33FilterDrawer({ open, filters, onClose, onApply, onClear }: TS33FilterDrawerProps) {
+  const [localFilters, setLocalFilters] = useState<TS33SearchFilters>(filters)
+
+  useEffect(() => {
+    setLocalFilters(filters)
+  }, [filters])
+
+  if (!open) return null
+
+  const handleApply = () => {
+    onApply(localFilters)
+    onClose()
+  }
+
+  const handleClear = () => {
+    const clearedFilters: TS33SearchFilters = {
+      keyword: '',
+      countries: [],
+      price_range: null,
+      duration: null,
+      themes: [],
+      months: [],
+      rating: null,
+      sort_by: 'recommended'
+    }
+    setLocalFilters(clearedFilters)
+    onClear()
+    onClose()
+  }
+
+  return (
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: ts33.color('surface.overlay'),
+      zIndex: TS33_DESIGN_TOKENS.zIndex.modal
+    }}>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: ts33.color('surface.primary'),
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {/* Header */}
+        <div style={{
+          padding: ts33.space(4),
+          borderBottom: `1px solid ${ts33.color('border.primary')}`,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <h2 style={{
+            margin: 0,
+            fontSize: TS33_DESIGN_TOKENS.typography.sizes.xl,
+            fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold
+          }}>
+            ตัวกรองการค้นหา
+          </h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: ts33.space(2),
+              cursor: 'pointer',
+              borderRadius: ts33.radius('md')
+            }}
+            aria-label="ปิดตัวกรอง"
+          >
+            <X style={{ width: '20px', height: '20px' }} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: ts33.space(4)
+        }}>
+          {/* Countries */}
+          <div style={{ marginBottom: ts33.space(6) }}>
+            <h3 style={{
+              margin: 0,
+              marginBottom: ts33.space(3),
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+              fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold
+            }}>
+              🌍 ประเทศปลายทาง
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: ts33.space(2)
+            }}>
+              {TS33_SEARCH_INDEX.countries.slice(0, 8).map((country) => {
+                const isSelected = localFilters.countries.includes(country.name)
+                return (
+                  <button
+                    key={country.code}
+                    onClick={() => {
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        countries: isSelected
+                          ? prev.countries.filter(c => c !== country.name)
+                          : [...prev.countries, country.name]
+                      }))
+                    }}
+                    style={{
+                      padding: ts33.space(3),
+                      border: `2px solid ${isSelected ? ts33.color('primary.500') : ts33.color('border.primary')}`,
+                      backgroundColor: isSelected ? ts33.color('primary.50') : ts33.color('surface.primary'),
+                      borderRadius: ts33.radius('md'),
+                      cursor: 'pointer',
+                      fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                      fontWeight: TS33_DESIGN_TOKENS.typography.weights.medium,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: ts33.space(2),
+                      minHeight: '44px'
+                    }}
+                  >
+                    <span style={{ fontSize: '16px' }}>
+                      {country.flag_code === 'jp' ? '🇯🇵' :
+                       country.flag_code === 'kr' ? '🇰🇷' :
+                       country.flag_code === 'tw' ? '🇹🇼' :
+                       country.flag_code === 'us' ? '🇺🇸' :
+                       country.flag_code === 'it' ? '🇮🇹' :
+                       country.flag_code === 'ch' ? '🇨🇭' : '🌍'}
+                    </span>
+                    {country.name}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Price Range */}
+          <div style={{ marginBottom: ts33.space(6) }}>
+            <h3 style={{
+              margin: 0,
+              marginBottom: ts33.space(3),
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+              fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold
+            }}>
+              💰 งบประมาณ
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: ts33.space(2)
+            }}>
+              {TS33_SEARCH_INDEX.filters.price_ranges.map((range) => {
+                const isSelected = localFilters.price_range?.[0] === range.min && 
+                                 localFilters.price_range?.[1] === range.max
+                return (
+                  <button
+                    key={range.id}
+                    onClick={() => {
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        price_range: isSelected ? null : [range.min, range.max]
+                      }))
+                    }}
+                    style={{
+                      padding: ts33.space(3),
+                      border: `2px solid ${isSelected ? ts33.color('secondary.500') : ts33.color('border.primary')}`,
+                      backgroundColor: isSelected ? ts33.color('secondary.50') : ts33.color('surface.primary'),
+                      borderRadius: ts33.radius('md'),
+                      cursor: 'pointer',
+                      fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                      fontWeight: TS33_DESIGN_TOKENS.typography.weights.medium,
+                      minHeight: '44px'
+                    }}
+                  >
+                    {range.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Duration */}
+          <div style={{ marginBottom: ts33.space(6) }}>
+            <h3 style={{
+              margin: 0,
+              marginBottom: ts33.space(3),
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+              fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold
+            }}>
+              ⏱️ ระยะเวลา
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: ts33.space(2)
+            }}>
+              {TS33_SEARCH_INDEX.filters.durations.map((duration) => {
+                const isSelected = localFilters.duration === duration.id
+                return (
+                  <button
+                    key={duration.id}
+                    onClick={() => {
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        duration: isSelected ? null : duration.id
+                      }))
+                    }}
+                    style={{
+                      padding: ts33.space(3),
+                      border: `2px solid ${isSelected ? ts33.color('feature.premium') : ts33.color('border.primary')}`,
+                      backgroundColor: isSelected ? '#fef3c7' : ts33.color('surface.primary'),
+                      borderRadius: ts33.radius('md'),
+                      cursor: 'pointer',
+                      fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                      fontWeight: TS33_DESIGN_TOKENS.typography.weights.medium,
+                      minHeight: '44px'
+                    }}
+                  >
+                    {duration.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Themes */}
+          <div style={{ marginBottom: ts33.space(6) }}>
+            <h3 style={{
+              margin: 0,
+              marginBottom: ts33.space(3),
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+              fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold
+            }}>
+              🎯 ธีมการเดินทาง
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: ts33.space(2)
+            }}>
+              {TS33_SEARCH_INDEX.filters.themes.map((theme) => {
+                const isSelected = localFilters.themes.includes(theme.id)
+                return (
+                  <button
+                    key={theme.id}
+                    onClick={() => {
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        themes: isSelected
+                          ? prev.themes.filter(t => t !== theme.id)
+                          : [...prev.themes, theme.id]
+                      }))
+                    }}
+                    style={{
+                      padding: ts33.space(3),
+                      border: `2px solid ${isSelected ? ts33.color('feature.popular') : ts33.color('border.primary')}`,
+                      backgroundColor: isSelected ? '#f3e8ff' : ts33.color('surface.primary'),
+                      borderRadius: ts33.radius('md'),
+                      cursor: 'pointer',
+                      fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                      fontWeight: TS33_DESIGN_TOKENS.typography.weights.medium,
+                      minHeight: '44px'
+                    }}
+                  >
+                    {theme.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: ts33.space(4),
+          borderTop: `1px solid ${ts33.color('border.primary')}`,
+          display: 'flex',
+          gap: ts33.space(3)
+        }}>
+          <TS33Button 
+            variant="outline" 
+            onClick={handleClear}
+            style={{ flex: 1 }}
+          >
+            ล้างตัวกรอง
+          </TS33Button>
+          <TS33Button 
+            onClick={handleApply}
+            style={{ flex: 2 }}
+          >
+            ค้นหา ({localFilters.countries.length + 
+                   (localFilters.price_range ? 1 : 0) + 
+                   (localFilters.duration ? 1 : 0) + 
+                   localFilters.themes.length} ตัวกรอง)
+          </TS33Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ======================
+// Main Page Component
+// ======================
+
+export default function TS33SearchPage() {
+  const {
+    searchState,
+    viewMode,
+    setViewMode,
+    showFilters,
+    setShowFilters,
+    applyFilters
+  } = useTS33Search()
+
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const [showLeadModal, setShowLeadModal] = useState(false)
+  const [selectedTour, setSelectedTour] = useState<TS33Tour | null>(null)
+  const [showToast, setShowToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+
+  // Analytics and Accessibility hooks
+  const analytics = useTS33Analytics()
+  const a11y = useTS33Accessibility()
+  
+  // Performance tracking
+  useEffect(() => {
+    ts33Performance.startTimer('page_load')
+    analytics.trackPageView('search', searchState.filters)
+    
+    return () => {
+      ts33Performance.endTimer('page_load')
+      ts33Performance.sendToAnalytics()
+    }
+  }, [])
+
+  // Announce search results to screen readers
+  useEffect(() => {
+    if (searchState.results.length > 0) {
+      const activeFilters = getActiveFilterLabels(searchState.filters)
+      ts33Announcer.announceSearchResults(searchState.results.length, activeFilters)
+    }
+  }, [searchState.results.length, searchState.filters])
+
+  // Helper function to get active filter labels
+  const getActiveFilterLabels = (filters: TS33SearchFilters): string[] => {
+    const labels: string[] = []
+    
+    if (filters.keyword) labels.push(`คำค้นหา: ${filters.keyword}`)
+    if (filters.countries.length > 0) {
+      const countryNames = filters.countries
+        .map(code => TS33_SEARCH_INDEX.countries.find(c => c.code === code)?.name)
+        .filter(Boolean)
+        .join(', ')
+      if (countryNames) labels.push(`ประเทศ: ${countryNames}`)
+    }
+    if (filters.themes.length > 0) {
+      const themeNames = filters.themes
+        .map(id => TS33_SEARCH_INDEX.filters.themes.find(t => t.id === id)?.label)
+        .filter(Boolean)
+        .join(', ')
+      if (themeNames) labels.push(`ธีม: ${themeNames}`)
+    }
+    
+    return labels
+  }
+
+  // Count active filters - moved here to avoid reference error
+  const activeFiltersCount = useMemo(() => {
+    return searchState.filters.countries.length +
+           (searchState.filters.price_range ? 1 : 0) +
+           (searchState.filters.duration ? 1 : 0) +
+           searchState.filters.months.length +
+           searchState.filters.themes.length +
+           (searchState.filters.rating ? 1 : 0)
+  }, [searchState.filters])
+
+  // Handle search input with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const startTime = Date.now()
+      
+      // Only apply if the keyword actually changed
+      if (searchState.filters.keyword !== searchKeyword) {
+        applyFilters({
+          ...searchState.filters,
+          keyword: searchKeyword
+        })
+        
+        // Track search performance
+        if (searchKeyword) {
+          setTimeout(() => {
+            analytics.trackSearch(
+              searchKeyword,
+              activeFiltersCount,
+              searchState.results.length,
+              Date.now() - startTime
+            )
+          }, 100)
+        }
+      }
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchKeyword, searchState.filters.keyword, applyFilters, searchState.filters, activeFiltersCount, searchState.results.length, analytics]) // Include all dependencies but check for changes
+
+
+  // Handle view details
+  const handleViewDetails = (tour: TS33Tour) => {
+    const position = searchState.results.findIndex(t => t.id === tour.id)
+    
+    // Track analytics
+    analytics.trackTourInteraction('view_details', tour, position + 1, viewMode)
+    
+    // Open canonical URL in new tab
+    window.open(tour.canonicalUrl, '_blank')
+  }
+
+  // Handle quick booking
+  const handleQuickBook = (tour: TS33Tour) => {
+    const position = searchState.results.findIndex(t => t.id === tour.id)
+    
+    // Track analytics and lead generation
+    analytics.trackTourInteraction('quick_book', tour, position + 1, viewMode)
+    analytics.trackLeadGeneration('opened', { tour, source: 'card_button' })
+    
+    // Save focus for accessibility
+    ts33FocusManager.saveFocus()
+    
+    setSelectedTour(tour)
+    setShowLeadModal(true)
+  }
+
+  // Handle lead submission
+  const [leadSubmitting, setLeadSubmitting] = useState(false)
+  
+  const handleLeadSubmit = async (leadData: TS33LeadData) => {
+    const startTime = Date.now()
+    setLeadSubmitting(true)
+    
+    try {
+      // Track lead form started
+      if (selectedTour) {
+        analytics.trackLeadGeneration('started', { tour: selectedTour })
+      }
+      
+      // Simulate API call to lead management system
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // In real implementation, this would call your CRM/lead API
+      // const response = await fetch('/api/leads', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(leadData)
+      // })
+      
+      // Track successful submission
+      if (selectedTour) {
+        analytics.trackLeadGeneration('submitted', {
+          tour: selectedTour,
+          completionTime: Date.now() - startTime,
+          leadData
+        })
+      }
+      
+      setShowLeadModal(false)
+      setSelectedTour(null)
+      
+      // Restore focus for accessibility
+      ts33FocusManager.restoreFocus()
+      
+      setShowToast({
+        message: 'ส่งข้อมูลเรียบร้อย! ทีมงานจะติดต่อกลับภายใน 24 ชม.',
+        type: 'success'
+      })
+      
+      // Announce success to screen readers
+      ts33Announcer.announce('ส่งข้อมูลเรียบร้อย ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง', 'assertive')
+      
+    } catch (error) {
+      console.error('Lead submission error:', error)
+      analytics.trackError('network', error instanceof Error ? error.message : 'Unknown error', 'LeadModal')
+      
+      setShowToast({
+        message: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
+        type: 'error'
+      })
+      
+      // Announce error to screen readers
+      ts33Announcer.announce('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'assertive')
+      
+    } finally {
+      setLeadSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: TS33GlobalStyles }} />
+      
+      <div className={kanit.className} style={{
+        minHeight: '100vh',
+        backgroundColor: ts33.color('surface.secondary'),
+        fontFamily: TS33_DESIGN_TOKENS.typography.fonts.sans.join(', ')
+      }}>
+        {/* Header Search Section */}
+        <div style={{
+          backgroundColor: ts33.color('surface.primary'),
+          borderBottom: `1px solid ${ts33.color('border.primary')}`,
+          padding: `${ts33.space(4)} 0`
+        }}>
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: `0 ${ts33.space(4)}`
+          }}>
+            {/* Page Title */}
+            <div style={{ marginBottom: ts33.space(6) }}>
+              <h1 style={{
+                margin: 0,
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes['3xl'],
+                fontWeight: TS33_DESIGN_TOKENS.typography.weights.bold,
+                color: ts33.color('text.primary'),
+                marginBottom: ts33.space(2)
+              }}>
+                ค้นหาทัวร์ต่างประเทศ
+              </h1>
+              <p style={{
+                margin: 0,
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.lg,
+                color: ts33.color('text.secondary')
+              }}>
+                เลือกจาก {TS33_SEARCH_INDEX.meta.total_tours}+ ทัวร์คุณภาพจากทั่วโลก
+              </p>
+            </div>
+
+            {/* Search Bar */}
+            <div style={{
+              display: 'flex',
+              gap: ts33.space(3),
+              marginBottom: ts33.space(4)
+            }}>
+              <div style={{ flex: 1 }}>
+                <TS33Input
+                  placeholder="ค้นหาทัวร์ ประเทศ หรือเมืองที่ต้องการ..."
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  leftIcon={<Search style={{ width: '16px', height: '16px' }} />}
+                  size="lg"
+                />
+              </div>
+              
+              <TS33Button
+                variant="outline"
+                size="lg"
+                onClick={() => setShowFilters(true)}
+                leftIcon={<SlidersHorizontal style={{ width: '16px', height: '16px' }} />}
+              >
+                ตัวกรอง
+                {activeFiltersCount > 0 && (
+                  <TS33Badge variant="primary" size="sm" className="ml-2">
+                    {activeFiltersCount}
+                  </TS33Badge>
+                )}
+              </TS33Button>
+            </div>
+
+            {/* Hero Cards - Country Selection */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: ts33.space(3),
+              marginTop: ts33.space(4)
+            }}>
+              {[
+                {
+                  name: 'ญี่ปุ่น',
+                  landmark: 'Mount Fuji',
+                  tours: 12,
+                  image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop&crop=center',
+                  gradient: 'linear-gradient(135deg, rgba(255, 182, 193, 0.9) 0%, rgba(255, 105, 135, 0.9) 100%)'
+                },
+                {
+                  name: 'เกาหลีใต้',
+                  landmark: 'Seoul Palace',
+                  tours: 8,
+                  image: 'https://images.unsplash.com/photo-1540042937982-1c365ff1f9b4?w=800&h=600&fit=crop&crop=center',
+                  gradient: 'linear-gradient(135deg, rgba(147, 51, 234, 0.9) 0%, rgba(79, 70, 229, 0.9) 100%)'
+                },
+                {
+                  name: 'ยุโรป',
+                  landmark: 'Eiffel Tower',
+                  tours: 15,
+                  image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=800&h=600&fit=crop&crop=center',
+                  gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(59, 130, 246, 0.9) 100%)'
+                },
+                {
+                  name: 'อเมริกา',
+                  landmark: 'New York',
+                  tours: 6,
+                  image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop&crop=center',
+                  gradient: 'linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(59, 130, 246, 0.9) 100%)'
+                }
+              ].map((country) => {
+                const isSelected = searchState.filters.countries.includes(country.name)
+                return (
+                  <button
+                    key={country.name}
+                    onClick={() => {
+                      applyFilters({
+                        ...searchState.filters,
+                        countries: isSelected 
+                          ? searchState.filters.countries.filter(c => c !== country.name)
+                          : [...searchState.filters.countries, country.name]
+                      })
+                    }}
+                    style={{
+                      position: 'relative',
+                      height: '160px',
+                      border: `3px solid ${isSelected ? ts33.color('primary.500') : 'transparent'}`,
+                      borderRadius: ts33.radius('xl'),
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      minHeight: '44px',
+                      backgroundImage: `url(${country.image})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      transform: isSelected ? 'scale(0.98)' : 'scale(1)',
+                      boxShadow: isSelected ? ts33.shadow('lg') : ts33.shadow('md')
+                    }}
+                  >
+                    {/* Selection Overlay (only for selected state) */}
+                    {isSelected && (
+                      <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'rgba(59, 130, 246, 0.3)',
+                        transition: 'all 0.3s ease'
+                      }} />
+                    )}
+                    
+                    {/* Content */}
+                    <div style={{
+                      position: 'relative',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      padding: ts33.space(4),
+                      color: 'white',
+                      textAlign: 'left'
+                    }}>
+                      {/* Top Section */}
+                      <div>
+                        <div style={{
+                          fontSize: TS33_DESIGN_TOKENS.typography.sizes.xs,
+                          fontWeight: TS33_DESIGN_TOKENS.typography.weights.medium,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          opacity: 0.9,
+                          marginBottom: ts33.space(1)
+                        }}>
+                          {country.landmark}
+                        </div>
+                        <div style={{
+                          fontSize: TS33_DESIGN_TOKENS.typography.sizes.xl,
+                          fontWeight: TS33_DESIGN_TOKENS.typography.weights.bold,
+                          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+                        }}>
+                          {country.name}
+                        </div>
+                      </div>
+                      
+                      {/* Bottom Section */}
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div style={{
+                          fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                          fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold,
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          backdropFilter: 'blur(10px)',
+                          padding: `${ts33.space(1)} ${ts33.space(2)}`,
+                          borderRadius: ts33.radius('full')
+                        }}>
+                          {country.tours} ทัวร์
+                        </div>
+                        
+                        {isSelected && (
+                          <div style={{
+                            width: '24px',
+                            height: '24px',
+                            backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backdropFilter: 'blur(10px)'
+                          }}>
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Controls Bar */}
+        <div style={{
+          backgroundColor: ts33.color('surface.primary'),
+          borderBottom: `1px solid ${ts33.color('border.primary')}`,
+          padding: ts33.space(4)
+        }}>
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            {/* Results Count */}
+            <div style={{
+              fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+              color: ts33.color('text.secondary')
+            }}>
+              {searchState.loading ? 'กำลังค้นหา...' : 
+               `พบ ${searchState.total_count} ทัวร์`}
+            </div>
+
+            {/* View & Sort Controls */}
+            <div style={{ display: 'flex', gap: ts33.space(3), alignItems: 'center' }}>
+              {/* View Mode Toggle */}
+              <div style={{
+                display: 'flex',
+                backgroundColor: ts33.color('surface.tertiary'),
+                borderRadius: ts33.radius('md'),
+                padding: '2px'
+              }}>
+                <button
+                  onClick={() => {
+                    analytics.track('view_mode_changed', {
+                      mode_from: viewMode,
+                      mode_to: 'card'
+                    })
+                    setViewMode('card')
+                  }}
+                  style={{
+                    padding: ts33.space(2),
+                    backgroundColor: viewMode === 'card' ? ts33.color('surface.primary') : 'transparent',
+                    border: 'none',
+                    borderRadius: ts33.radius('sm'),
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  aria-label="มุมมองการ์ด"
+                >
+                  <Grid style={{ 
+                    width: '16px', 
+                    height: '16px',
+                    color: viewMode === 'card' ? ts33.color('primary.600') : ts33.color('text.tertiary')
+                  }} />
+                </button>
+                <button
+                  onClick={() => {
+                    analytics.track('view_mode_changed', {
+                      mode_from: viewMode,
+                      mode_to: 'list'
+                    })
+                    setViewMode('list')
+                  }}
+                  style={{
+                    padding: ts33.space(2),
+                    backgroundColor: viewMode === 'list' ? ts33.color('surface.primary') : 'transparent',
+                    border: 'none',
+                    borderRadius: ts33.radius('sm'),
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  aria-label="มุมมองรายการ"
+                >
+                  <List style={{ 
+                    width: '16px', 
+                    height: '16px',
+                    color: viewMode === 'list' ? ts33.color('primary.600') : ts33.color('text.tertiary')
+                  }} />
+                </button>
+              </div>
+
+              {/* Sort Dropdown */}
+              <select
+                value={searchState.filters.sort_by}
+                onChange={(e) => applyFilters({
+                  ...searchState.filters,
+                  sort_by: e.target.value as TS33SortOption
+                })}
+                style={{
+                  padding: `${ts33.space(2)} ${ts33.space(3)}`,
+                  border: `1px solid ${ts33.color('border.primary')}`,
+                  borderRadius: ts33.radius('md'),
+                  backgroundColor: ts33.color('surface.primary'),
+                  fontSize: TS33_DESIGN_TOKENS.typography.sizes.sm,
+                  color: ts33.color('text.primary'),
+                  cursor: 'pointer',
+                  minHeight: '36px'
+                }}
+              >
+                <option value="recommended">แนะนำ</option>
+                <option value="price_low">ราคาต่ำ-สูง</option>
+                <option value="price_high">ราคาสูง-ต่ำ</option>
+                <option value="rating">คะแนนสูงสุด</option>
+                <option value="popularity">ความนิยม</option>
+                <option value="duration">ระยะเวลา</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Results Section */}
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: ts33.space(6)
+        }}>
+          {searchState.loading ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: viewMode === 'card' ? 
+                'repeat(auto-fill, minmax(320px, 1fr))' : '1fr',
+              gap: ts33.space(6)
+            }}>
+              {Array.from({ length: 6 }).map((_, index) => (
+                <TS33Card key={index} padding="md">
+                  {viewMode === 'card' ? (
+                    <div>
+                      <TS33Skeleton height="200px" className="mb-4" />
+                      <TS33Skeleton height="24px" className="mb-2" />
+                      <TS33Skeleton height="16px" width="60%" className="mb-4" />
+                      <div style={{ display: 'flex', gap: ts33.space(2), marginBottom: ts33.space(4) }}>
+                        <TS33Skeleton height="24px" width="60px" />
+                        <TS33Skeleton height="24px" width="80px" />
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <TS33Skeleton height="32px" width="100px" />
+                        <TS33Skeleton height="36px" width="120px" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', gap: ts33.space(4) }}>
+                      <TS33Skeleton width="120px" height="90px" />
+                      <div style={{ flex: 1 }}>
+                        <TS33Skeleton height="20px" className="mb-2" />
+                        <TS33Skeleton height="16px" width="70%" className="mb-3" />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <TS33Skeleton height="24px" width="80px" />
+                          <TS33Skeleton height="32px" width="100px" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </TS33Card>
+              ))}
+            </div>
+          ) : searchState.results.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: ts33.space(16)
+            }}>
+              <div style={{
+                fontSize: '48px',
+                marginBottom: ts33.space(4)
+              }}>
+                🔍
+              </div>
+              <h3 style={{
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.xl,
+                fontWeight: TS33_DESIGN_TOKENS.typography.weights.semibold,
+                color: ts33.color('text.primary'),
+                marginBottom: ts33.space(2)
+              }}>
+                ไม่พบทัวร์ที่ตรงกับเงื่อนไข
+              </h3>
+              <p style={{
+                fontSize: TS33_DESIGN_TOKENS.typography.sizes.base,
+                color: ts33.color('text.secondary'),
+                marginBottom: ts33.space(6)
+              }}>
+                ลองเปลี่ยนคำค้นหาหรือปรับตัวกรองใหม่
+              </p>
+              <TS33Button 
+                onClick={() => {
+                  setSearchKeyword('')
+                  applyFilters({
+                    keyword: '',
+                    countries: [],
+                    price_range: null,
+                    duration: null,
+                    themes: [],
+                    months: [],
+                    rating: null,
+                    sort_by: 'recommended'
+                  })
+                }}
+              >
+                ล้างตัวกรองทั้งหมด
+              </TS33Button>
+            </div>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: viewMode === 'card' ? 
+                'repeat(auto-fill, minmax(320px, 1fr))' : '1fr',
+              gap: ts33.space(4) // ลดจาก 6 เป็น 4
+            }}>
+              {searchState.results.map((tour) => (
+                <TS33TourCard
+                  key={tour.id}
+                  tour={tour}
+                  variant={viewMode}
+                  onViewDetails={handleViewDetails}
+                  onQuickBook={handleQuickBook}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Filter Drawer */}
+        <TS33FilterDrawer
+          open={showFilters}
+          filters={searchState.filters}
+          onClose={() => setShowFilters(false)}
+          onApply={applyFilters}
+          onClear={() => {
+            const clearedFilters: TS33SearchFilters = {
+              keyword: '',
+              countries: [],
+              price_range: null,
+              duration: null,
+              themes: [],
+              months: [],
+              rating: null,
+              sort_by: 'recommended'
+            }
+            applyFilters(clearedFilters)
+            setSearchKeyword('')
+          }}
+        />
+
+        {/* Lead Modal */}
+        <TS33LeadModal
+          open={showLeadModal}
+          tour={selectedTour}
+          on_close={() => {
+            // Track abandonment if tour is selected
+            if (selectedTour) {
+              analytics.trackLeadGeneration('abandoned', { 
+                tour: selectedTour,
+                lastField: 'modal_close',
+                timeSpent: 0
+              })
+            }
+            
+            setShowLeadModal(false)
+            setSelectedTour(null)
+            
+            // Restore focus for accessibility
+            ts33FocusManager.restoreFocus()
+          }}
+          on_submit={handleLeadSubmit}
+          loading={leadSubmitting}
+        />
+
+        {/* Toast */}
+        {showToast && (
+          <TS33Toast
+            message={showToast.message}
+            type={showToast.type}
+            onClose={() => setShowToast(null)}
+          />
+        )}
+      </div>
+    </>
+  )
+}

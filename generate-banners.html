@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Banner Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .banner {
+            width: 400px;
+            height: 300px;
+            position: relative;
+            margin: 20px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .banner-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
+        }
+        
+        .banner-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 24px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        
+        .banner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .banner-badge {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .banner-discount {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .banner-title {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .banner-duration {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+        
+        .banner-price {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        
+        .banner-price-current {
+            font-size: 28px;
+            font-weight: 800;
+            color: #10B981;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .banner-price-original {
+            font-size: 16px;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .banner-rating {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .star {
+            color: #FCD34D;
+            font-size: 16px;
+        }
+        
+        .country-flag {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 40px;
+            height: 30px;
+            border-radius: 4px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .banner-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .banner-highlights {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        
+        .highlight-tag {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* Country-specific gradients */
+        .japan { background: linear-gradient(135deg, #E53E3E 0%, #FD1D1D 50%, #FF6B6B 100%); }
+        .korea { background: linear-gradient(135deg, #3182CE 0%, #2B77CB 50%, #4299E1 100%); }
+        .china { background: linear-gradient(135deg, #D69E2E 0%, #ECC94B 50%, #F6E05E 100%); }
+        .taiwan { background: linear-gradient(135deg, #38A169 0%, #48BB78 50%, #68D391 100%); }
+        .europe { background: linear-gradient(135deg, #805AD5 0%, #9F7AEA 50%, #B794F6 100%); }
+        .australia { background: linear-gradient(135deg, #D53F8C 0%, #ED64A6 50%, #F687B3 100%); }
+        .newzealand { background: linear-gradient(135deg, #319795 0%, #4FD1C7 50%, #81E6D9 100%); }
+        .canada { background: linear-gradient(135deg, #E53E3E 0%, #FD1D1D 50%, #FF6B6B 100%); }
+        
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        button {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 4px;
+        }
+        
+        button:hover {
+            background: #2563EB;
+        }
+        
+        .download-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h3>Tour Banner Generator</h3>
+        <button onclick="downloadAllBanners()">Download All Banners</button>
+        <button onclick="downloadSingleBanner()">Download Single Banner</button>
+        <div class="download-info">
+            Click on any banner to select it for single download
+        </div>
+    </div>
+
+    <!-- Japan Tours -->
+    <div class="banner japan" id="japan-tokyo" data-filename="japan-tokyo-kyoto-osaka.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/jp.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">ยอดนิยม</div>
+                <div class="banner-discount">ลด 13%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.8</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">วัดคิโยมิซุ</div>
+                        <div class="highlight-tag">ภูเขาฟูจิ</div>
+                        <div class="highlight-tag">ชินจูกุ</div>
+                    </div>
+                    <div class="banner-title">ญี่ปุ่น โตเกียว-เกียวโต-โอซาก้า</div>
+                    <div class="banner-duration">7 วัน 6 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿45,900</div>
+                        <div class="banner-price-original">฿52,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner japan" id="japan-osaka" data-filename="japan-osaka-kyoto-nara.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/jp.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">โปรโมชั่น</div>
+                <div class="banner-discount">ลด 15%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.7</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">ปราสาทโอซาก้า</div>
+                        <div class="highlight-tag">วัดโทไดจิ</div>
+                        <div class="highlight-tag">กวางนารา</div>
+                    </div>
+                    <div class="banner-title">ญี่ปุ่น โอซาก้า-เกียวโต-นารา</div>
+                    <div class="banner-duration">5 วัน 4 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿32,900</div>
+                        <div class="banner-price-original">฿38,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner japan" id="japan-hokkaido" data-filename="japan-hokkaido-sapporo.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1569163139394-de4798e9a8c0?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/jp.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">พิเศษ</div>
+                <div class="banner-discount">ลด 12%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.8</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">เทศกาลหิมะ</div>
+                        <div class="highlight-tag">คลองโอตารุ</div>
+                        <div class="highlight-tag">ฟาร์มโทมิตะ</div>
+                    </div>
+                    <div class="banner-title">ญี่ปุ่น ฮอกไกโด ซัปโปโร</div>
+                    <div class="banner-duration">6 วัน 5 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿42,900</div>
+                        <div class="banner-price-original">฿48,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner japan" id="japan-takayama" data-filename="japan-takayama-shirakawa.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/jp.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">แนะนำ</div>
+                <div class="banner-discount">ลด 15%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.9</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">หมู่บ้านชิราคาวาโกะ</div>
+                        <div class="highlight-tag">ตลาดเช้า</div>
+                    </div>
+                    <div class="banner-title">ญี่ปุ่น ทาคายาม่า-ชิราคาวาโกะ</div>
+                    <div class="banner-duration">8 วัน 7 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿55,900</div>
+                        <div class="banner-price-original">฿65,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner japan" id="japan-disney" data-filename="japan-tokyo-disney.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1590766940554-634a7ed41d69?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/jp.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">ครอบครัว</div>
+                <div class="banner-discount">ลด 12%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.6</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">Disney Land</div>
+                        <div class="highlight-tag">Disney Sea</div>
+                        <div class="highlight-tag">ชิบูย่า</div>
+                    </div>
+                    <div class="banner-title">ญี่ปุ่น โตเกียวดิสนีย์แลนด์</div>
+                    <div class="banner-duration">4 วัน 3 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿28,900</div>
+                        <div class="banner-price-original">฿32,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Korea Tours -->
+    <div class="banner korea" id="korea-seoul" data-filename="korea-seoul-busan-jeju.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1538485399081-7c8ed7f69c91?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/kr.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">ยอดนิยม</div>
+                <div class="banner-discount">ลด 15%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.7</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">พระราชวัง</div>
+                        <div class="highlight-tag">เกาะเชจู</div>
+                        <div class="highlight-tag">หอคอยเอ็น</div>
+                    </div>
+                    <div class="banner-title">เกาหลี โซล-ปูซาน-เชจู</div>
+                    <div class="banner-duration">6 วัน 5 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿38,900</div>
+                        <div class="banner-price-original">฿45,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- China Tours -->
+    <div class="banner china" id="china-beijing" data-filename="china-beijing-shanghai.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/cn.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">แนะนำ</div>
+                <div class="banner-discount">ลด 15%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.7</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">กำแพงเมืองจีน</div>
+                        <div class="highlight-tag">พระราชวัง</div>
+                        <div class="highlight-tag">หอไข่มุก</div>
+                    </div>
+                    <div class="banner-title">จีน ปักกิ่ง-เซี่ยงไฮ้</div>
+                    <div class="banner-duration">7 วัน 6 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿38,900</div>
+                        <div class="banner-price-original">฿45,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taiwan Tours -->
+    <div class="banner taiwan" id="taiwan-taipei" data-filename="taiwan-taipei-alishan.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1470004914212-05527e49370b?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/tw.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">คุ้มค่า</div>
+                <div class="banner-discount">ลด 16%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.6</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">ตึกไทเป 101</div>
+                        <div class="highlight-tag">อาลีซาน</div>
+                        <div class="highlight-tag">ทะเลสาบ</div>
+                    </div>
+                    <div class="banner-title">ไต้หวัน ไทเป-อาลีซาน</div>
+                    <div class="banner-duration">5 วัน 4 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿26,900</div>
+                        <div class="banner-price-original">฿31,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Europe Tours -->
+    <div class="banner europe" id="europe-classic" data-filename="europe-france-italy-swiss.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/fr.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">พรีเมียม</div>
+                <div class="banner-discount">ลด 13%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.9</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">หอไอเฟล</div>
+                        <div class="highlight-tag">โคลอสเซียม</div>
+                        <div class="highlight-tag">เทือกเขาแอลป์</div>
+                    </div>
+                    <div class="banner-title">ยุโรป ฝรั่งเศส-อิตาลี-สวิส</div>
+                    <div class="banner-duration">12 วัน 11 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿129,900</div>
+                        <div class="banner-price-original">฿149,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Australia Tours -->
+    <div class="banner australia" id="australia-classic" data-filename="australia-sydney-melbourne.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/au.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">ธรรมชาติ</div>
+                <div class="banner-discount">ลด 12%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.6</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">โอเปร่าเฮาส์</div>
+                        <div class="highlight-tag">เกรทบาร์รีฟ</div>
+                        <div class="highlight-tag">แอร์ร็อค</div>
+                    </div>
+                    <div class="banner-title">ออสเตรเลีย ซิดนีย์-เมลเบิร์น</div>
+                    <div class="banner-duration">8 วัน 7 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿78,900</div>
+                        <div class="banner-price-original">฿89,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Zealand Tours -->
+    <div class="banner newzealand" id="newzealand-classic" data-filename="newzealand-auckland-queenstown.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/nz.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">ผจญภัย</div>
+                <div class="banner-discount">ลด 15%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.8</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">มิลฟอร์ดซาวด์</div>
+                        <div class="highlight-tag">โรโตรัว</div>
+                        <div class="highlight-tag">เทาโป</div>
+                    </div>
+                    <div class="banner-title">นิวซีแลนด์ ออกแลนด์-ควีนส์</div>
+                    <div class="banner-duration">10 วัน 9 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿98,900</div>
+                        <div class="banner-price-original">฿115,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canada Tours -->
+    <div class="banner canada" id="canada-classic" data-filename="canada-vancouver-calgary.png">
+        <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1519832979-6fa011b87667?w=400&h=300&fit=crop');"></div>
+        <div class="banner-overlay"></div>
+        <div class="country-flag" style="background-image: url('https://flagicons.lipis.dev/flags/4x3/ca.svg');"></div>
+        <div class="banner-content">
+            <div class="banner-header">
+                <div class="banner-badge">ธรรมชาติ</div>
+                <div class="banner-discount">ลด 15%</div>
+            </div>
+            <div class="banner-rating">
+                <span class="star">★</span>
+                <span>4.7</span>
+            </div>
+            <div class="banner-footer">
+                <div>
+                    <div class="banner-highlights">
+                        <div class="highlight-tag">แบนฟ์</div>
+                        <div class="highlight-tag">ไนแอการา</div>
+                        <div class="highlight-tag">สแตนลีย์พาร์ค</div>
+                    </div>
+                    <div class="banner-title">แคนาดา แวนคูเวอร์-แคลกะรี</div>
+                    <div class="banner-duration">9 วัน 8 คืน</div>
+                    <div class="banner-price">
+                        <div class="banner-price-current">฿115,900</div>
+                        <div class="banner-price-original">฿135,900</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedBanner = null;
+        
+        // Add click handlers to all banners
+        document.querySelectorAll('.banner').forEach(banner => {
+            banner.addEventListener('click', function() {
+                // Remove previous selection
+                document.querySelectorAll('.banner').forEach(b => b.style.border = 'none');
+                // Add selection border
+                this.style.border = '4px solid #3B82F6';
+                selectedBanner = this;
+            });
+        });
+        
+        function downloadSingleBanner() {
+            if (!selectedBanner) {
+                alert('กรุณาเลือก banner ที่ต้องการดาวน์โหลดก่อน');
+                return;
+            }
+            
+            html2canvas(selectedBanner, {
+                width: 400,
+                height: 300,
+                scale: 2,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = selectedBanner.dataset.filename || 'banner.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+            });
+        }
+        
+        function downloadAllBanners() {
+            const banners = document.querySelectorAll('.banner');
+            let completed = 0;
+            
+            banners.forEach((banner, index) => {
+                setTimeout(() => {
+                    html2canvas(banner, {
+                        width: 400,
+                        height: 300,
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true
+                    }).then(canvas => {
+                        canvas.toBlob(function(blob) {
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = banner.dataset.filename || `banner-${index + 1}.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            
+                            completed++;
+                            if (completed === banners.length) {
+                                alert('ดาวน์โหลด banner ทั้งหมดเสร็จสิ้น!');
+                            }
+                        });
+                    });
+                }, index * 500); // Delay each download by 500ms
+            });
+        }
+    </script>
+    
+    <!-- html2canvas library -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</body>
+</html>

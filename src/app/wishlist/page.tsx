@@ -104,8 +104,8 @@ export default function WishlistPage() {
               meals: parseInt(program.P_MEAL) || 0,
               highlights,
               tags,
-              rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
-              reviews: Math.floor(Math.random() * 50) + 10,
+              rating: parseFloat(program.P_RATING) || Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
+              reviews: parseInt(program.P_REVIEWS) || Math.floor(Math.random() * 50) + 10,
               availability: availableSlots <= 5 ? 'เหลือน้อย' : 'ว่าง',
               availableSlots,
               wholesaler: 'TTN',
@@ -246,49 +246,49 @@ export default function WishlistPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedTours.map((tour) => (
-              <div key={tour.id} className="bg-white rounded-xl shadow-lg border overflow-hidden hover:shadow-xl transition-shadow">
-                {/* Tour Image */}
-                <div className="relative h-48">
-                  <Image
-                    src={tour.image}
-                    alt={tour.title}
-                    fill
-                    className="object-cover"
-                  />
-                  
-                  {/* Remove from wishlist button */}
-                  <button
-                    onClick={() => removeFromWishlist(tour.id)}
-                    className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    <span className="text-xs bg-red-600 text-white px-2 py-1 rounded-full">
+              <div key={tour.id} className="bg-white rounded-xl shadow-lg border hover:shadow-xl transition-shadow">
+                {/* Header with badges and actions */}
+                <div className="p-4 border-b flex justify-between items-start">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs bg-red-600 text-white px-2 py-1 rounded-full w-fit">
                       ❤️ รายการโปรด
                     </span>
                     {tour.availability === 'เหลือน้อย' && (
-                      <span className="text-xs bg-orange-600 text-white px-2 py-1 rounded-full animate-pulse">
+                      <span className="text-xs bg-orange-600 text-white px-2 py-1 rounded-full animate-pulse w-fit">
                         🔥 เหลือน้อย
                       </span>
                     )}
                   </div>
-
-                  {/* Code badge */}
-                  <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-semibold text-gray-800">
-                    {tour.code}
+                  <div className="flex items-center gap-2">
+                    <span className="bg-gray-100 px-2 py-1 rounded-md text-xs font-semibold text-gray-800">
+                      {tour.code}
+                    </span>
+                    <button
+                      onClick={() => removeFromWishlist(tour.id)}
+                      className="bg-red-100 text-red-600 p-2 rounded-full hover:bg-red-200 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
-                {/* Tour Details */}
+                {/* Tour Details with Image */}
                 <div className="p-6">
                   <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">{tour.title}</h3>
                   
                   <div className="flex items-center text-gray-600 mb-3 text-sm">
                     <MapPin className="w-4 h-4 mr-1" />
                     {tour.location}
+                  </div>
+
+                  {/* Tour Image in Detail */}
+                  <div className="relative h-32 mb-4 rounded-lg overflow-hidden">
+                    <Image
+                      src={tour.image}
+                      alt={tour.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mb-4 text-sm">

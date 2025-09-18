@@ -1,0 +1,39 @@
+{
+  "name": "TourWow - ทัวร์คุณภาพ ราคาดี",
+  "short_name": "TourWow",
+  "description": "จองทัวร์ทั่วโลกได้ง่ายๆ บนมือถือ",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/tour-search-12",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "splash_pages": null,
+  "categories": ["travel", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "ค้นหาทัวร์",
+      "short_name": "ค้นหา",
+      "description": "ค้นหาทัวร์ที่คุณสนใจ",
+      "url": "/tour-search-12"
+    },
+    {
+      "name": "โปรโมชั่น",
+      "short_name": "โปรฯ",
+      "description": "ดูโปรโมชั่นพิเศษ",
+      "url": "/tour-search-12?promo=true"
+    }
+  ]
+}

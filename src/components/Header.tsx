@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Phone, ChevronDown, Globe } from 'lucide-react'
+import { Menu, X, Phone, ChevronDown, Globe, LogIn, UserPlus, ClipboardList, PlusCircle, LogOut, Shield, User } from 'lucide-react'
 import TourDropdown from './TourDropdown'
 import FlashSaleDropdown from './FlashSaleDropdown'
 import TestMenuDropdown from './TestMenuDropdown'
@@ -13,6 +13,14 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobileTourOpen, setIsMobileTourOpen] = useState(false)
   const pathname = usePathname()
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const u = localStorage.getItem('user')
+      setUser(u ? JSON.parse(u) : null)
+    }
+  }, [typeof window !== 'undefined' && typeof window.localStorage !== 'undefined' && localStorage.getItem('user')])
   
   const isActive = (path: string) => {
     if (path === '/' && pathname === '/') return true
@@ -32,7 +40,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-100">
+    <header className="bg-white shadow-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-100">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -59,38 +67,11 @@ export default function Header() {
               {isActive('/') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></div>}
             </Link>
             
-            <TourDropdown isActive={isActive('/tours')} />
-            <FlashSaleDropdown isActive={isActive('/flash-sale')} />
-            <Link href="/api-tours" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
-              isActive('/api-tours') 
-                ? 'text-indigo-600 bg-indigo-50 shadow-sm' 
-                : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
-            }`}>
-              ทัวร์ API
-              {isActive('/api-tours') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-indigo-600 rounded-full"></div>}
-            </Link>
-            <Link href="/wholesale-tours" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
-              isActive('/wholesale-tours') 
-                ? 'text-white shadow-sm' 
-                : 'text-gray-700 hover:text-purple-600 hover:bg-purple-50'
-            }`} style={isActive('/wholesale-tours') ? { backgroundImage: 'linear-gradient(to right top, #e15d93, #e280b6, #e2a1d2, #e3bfe7, #eadcf5, #dee3fe, #d2eaff, #caf0ff, #86ebf2, #4ce4c7, #55d783, #83c326)' } : {}}>
-              Wholesale Tours
-              {isActive('/wholesale-tours') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-purple-600 rounded-full"></div>}
-            </Link>
-            <Link href="/api-test" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
-              isActive('/api-test') 
-                ? 'text-green-600 bg-green-50 shadow-sm' 
-                : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
-            }`}>
-              API Test
-              {isActive('/api-test') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-green-600 rounded-full"></div>}
-            </Link>
-            
             <Link href="/product-pool" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
               isActive('/product-pool') 
-                ? 'text-blue-600 bg-blue-50 shadow-sm' 
+                ? 'text-white shadow-sm' 
                 : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-            }`}>
+            }`} style={isActive('/product-pool') ? { backgroundImage: 'linear-gradient(90deg, #dd0f19 0%, #ffffff 25%, #01247e 50%, #ffffff 75%, #dd0f19 100%)' } : {}}>
               Product Pool
               {isActive('/product-pool') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></div>}
             </Link>
@@ -112,17 +93,52 @@ export default function Header() {
               แกลเลอรี่
               {isActive('/gallery') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></div>}
             </Link>
+
+            {user && user.role === 'admin' && <Link href="/booking-info" className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
+              isActive('/booking-info') 
+                ? 'text-green-600 bg-green-50 shadow-sm' 
+                : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+            }`}>
+              📋 ข้อมูลการจอง
+              {isActive('/booking-info') && <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-green-600 rounded-full"></div>}
+            </Link>}
           </nav>
 
           {/* Desktop Right Section */}
           <div className="hidden lg:flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+            {/* <div className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
               <Phone size={16} className="text-blue-600" />
               <span className="font-medium">02-674-1500</span>
             </div>
             <Link href="/booking" className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               จองทัวร์
-            </Link>
+            </Link> */}
+            {/* Auth menu */}
+            {user ? (
+              <>
+                {user.role !== 'admin' && (
+                  <>
+                    <span className="flex items-center gap-2 mr-2">
+                      <User className="w-5 h-5 text-blue-600" />
+                      <span className="font-bold text-blue-700">{user.name}</span>
+                    </span>
+                    <Link href="/orders" className="px-4 py-2 rounded-lg font-medium text-blue-700 flex items-center gap-2">
+                      <ClipboardList className="w-5 h-5 text-blue-600" />
+                      การจองของฉัน
+                    </Link>
+                  </>
+                )}
+                <Link href="/auth/logout" className="px-4 py-2 rounded-lg font-medium text-gray-500 hover:bg-gray-100 flex items-center gap-2">
+                  {user.role === 'admin' && <><Shield className="w-5 h-5 text-blue-600" /><span className="font-bold text-blue-700">Admin</span></>}
+                  <LogOut className="w-5 h-5 text-blue-600" />ออกจากระบบ
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/login" className="px-4 py-2 rounded-lg font-medium text-blue-700 hover:bg-blue-50 flex items-center gap-2"><LogIn className="w-5 h-5 text-blue-600" />เข้าสู่ระบบ</Link>
+                <Link href="/auth/register" className="px-4 py-2 rounded-lg font-medium text-green-700 hover:bg-green-50 flex items-center gap-2"><UserPlus className="w-5 h-5 text-blue-600" />สมัครสมาชิก</Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -205,25 +221,6 @@ export default function Header() {
               </Link>
               
               <Link 
-                href="/api-tours"
-                className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
-                  isActive('/api-tours') ? 'text-indigo-600 bg-indigo-50' : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                ทัวร์ API
-              </Link>
-              <Link 
-                href="/wholesale-tours"
-                className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
-                  isActive('/wholesale-tours') ? 'text-purple-600 bg-purple-50' : 'text-gray-700 hover:text-purple-600 hover:bg-purple-50'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Wholesale Tours
-              </Link>
-              
-              <Link 
                 href="/product-pool"
                 className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
                   isActive('/product-pool') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
@@ -252,6 +249,16 @@ export default function Header() {
               >
                 แกลเลอรี่
               </Link>
+
+              {user && user.role === 'admin' && <Link 
+                href="/booking-info"
+                className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                  isActive('/booking-info') ? 'text-green-600 bg-green-50' : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                📋 ข้อมูลการจอง
+              </Link>}
               
               {/* Mobile Contact & CTA */}
               <div className="pt-4 border-t border-gray-100 space-y-3">
@@ -267,10 +274,43 @@ export default function Header() {
                   จองทัวร์
                 </Link>
               </div>
+              {/* Auth menu mobile */}
+              <div className="pt-4 border-t border-gray-100 space-y-2">
+                {user ? (
+                  <>
+                    {user.role !== 'admin' && (
+                      <>
+                        <span className="flex items-center gap-2 mr-2">
+                          <User className="w-5 h-5 text-blue-600" />
+                          <span className="font-bold text-blue-700">{user.name}</span>
+                        </span>
+                        <Link href="/orders" className="block px-4 py-3 rounded-lg font-medium text-blue-700 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                          <ClipboardList className="w-5 h-5 text-blue-600" />
+                          การจองของฉัน
+                        </Link>
+                      </>
+                    )}
+                    <Link href="/auth/logout" className="block px-4 py-3 rounded-lg font-medium text-gray-500 hover:bg-gray-100 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                      {user.role === 'admin' && <><Shield className="w-5 h-5 text-blue-600" /><span className="font-bold text-blue-700">Admin</span></>}
+                      <LogOut className="w-5 h-5 text-blue-600" />ออกจากระบบ
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/auth/login" className="block px-4 py-3 rounded-lg font-medium text-blue-700 hover:bg-blue-50 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}><LogIn className="w-5 h-5 text-blue-600" />เข้าสู่ระบบ</Link>
+                    <Link href="/auth/register" className="block px-4 py-3 rounded-lg font-medium text-green-700 hover:bg-green-50 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}><UserPlus className="w-5 h-5 text-blue-600" />สมัครสมาชิก</Link>
+                  </>
+                )}
+              </div>
             </nav>
           </div>
         )}
       </div>
+      <style jsx global>{`
+        a[href='/wholesale-tours']:hover {
+          cursor: url('/Wat_Suthiwararam_School_Logo.png'), pointer;
+        }
+      `}</style>
     </header>
   )
 }

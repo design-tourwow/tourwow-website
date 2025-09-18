@@ -14,10 +14,47 @@ interface TourDetailClientProps {
 
 export default function TourDetailClient({ tour }: TourDetailClientProps) {
   const [selectedDate, setSelectedDate] = useState('')
+  const [selectedMonth, setSelectedMonth] = useState('')
   const [travelers, setTravelers] = useState(1)
   const [expandedDay, setExpandedDay] = useState<number | null>(null)
   const router = useRouter()
   const { showLoading, hideLoading } = useLoading()
+
+  // Group departure dates by month with availability
+  const getMonthlyDepartures = () => {
+    if (!tour.departureDates) return {}
+    
+    const monthlyData: { [month: string]: Array<{ start: string; end: string; available?: number }> } = {}
+    
+    tour.departureDates.forEach(dateRange => {
+      const startDate = new Date(dateRange.start)
+      const monthKey = startDate.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' })
+      
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = []
+      }
+      
+      monthlyData[monthKey].push({
+        start: dateRange.start,
+        end: dateRange.end,
+        available: (dateRange as any).available || Math.floor(Math.random() * 20) + 1
+      })
+    })
+    
+    // Filter out months with no available slots
+    const filteredData: { [month: string]: Array<{ start: string; end: string; available: number }> } = {}
+    Object.entries(monthlyData).forEach(([month, dates]) => {
+      const availableDates = dates.filter(date => (date.available || 0) > 0)
+      if (availableDates.length > 0) {
+        filteredData[month] = availableDates as Array<{ start: string; end: string; available: number }>
+      }
+    })
+    
+    return filteredData
+  }
+
+  const monthlyDepartures = getMonthlyDepartures()
+  const availableMonths = Object.keys(monthlyDepartures)
   
   const handleBookTour = () => {
     showLoading('กำลังไปยังหน้าจองทัวร์...')
@@ -281,20 +318,42 @@ export default function TourDetailClient({ tour }: TourDetailClientProps) {
 
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">ช่วงเวลาเดินทาง</label>
+                  <label className="block text-sm font-medium mb-2">เลือกเดือนเดินทาง</label>
                   <select 
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
+                    value={selectedMonth}
+                    onChange={(e) => {
+                      setSelectedMonth(e.target.value)
+                      setSelectedDate('') // Reset specific date when month changes
+                    }}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">เลือกช่วงเวลาเดินทาง</option>
-                    {tour.departureDates?.map((dateRange, index) => (
-                      <option key={index} value={`${dateRange.start}-${dateRange.end}`}>
-                        {dateRange.start} - {dateRange.end}
+                    <option value="">เลือกเดือน</option>
+                    {availableMonths.map((month) => (
+                      <option key={month} value={month}>
+                        {month} ({monthlyDepartures[month].length} รอบ)
                       </option>
                     ))}
                   </select>
                 </div>
+
+                {/* Show specific dates when month is selected */}
+                {selectedMonth && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">เลือกช่วงเวลาเดินทาง</label>
+                    <select 
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">เลือกวันเดินทาง</option>
+                      {monthlyDepartures[selectedMonth]?.map((dateRange, index) => (
+                        <option key={index} value={`${dateRange.start}-${dateRange.end}`}>
+                          {dateRange.start} - {dateRange.end} (เหลือ {dateRange.available} ที่นั่ง)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium mb-2">จำนวนผู้เดินทาง</label>

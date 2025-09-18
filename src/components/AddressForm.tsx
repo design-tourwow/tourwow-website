@@ -37,7 +37,8 @@ export default function AddressForm({
     error,
     updateProvince,
     updateDistrict,
-    updateSubDistrict
+    updateSubDistrict,
+    addressData
   } = useAddressForm();
 
   const [provinceSearch, setProvinceSearch] = React.useState('');
@@ -114,7 +115,7 @@ export default function AddressForm({
         setProvinceSearch('');
       }
     }
-  }, [provinceId]);
+  }, [provinceId, provinces]);
 
   React.useEffect(() => {
     if (!districtTyping) {
@@ -125,7 +126,7 @@ export default function AddressForm({
         setDistrictSearch('');
       }
     }
-  }, [districtId]);
+  }, [districtId, availableDistricts]);
 
   React.useEffect(() => {
     if (!subDistrictTyping) {
@@ -136,7 +137,28 @@ export default function AddressForm({
         setSubDistrictSearch('');
       }
     }
-  }, [subDistrictId]);
+  }, [subDistrictId, availableSubDistricts]);
+
+  // Sync props id -> addressData ใน useAddressForm
+  React.useEffect(() => {
+    if (provinceId && provinceId !== addressData.provinceId) {
+      updateProvince(provinceId);
+    }
+    // ต้องเช็ค district หลัง province ถูก set แล้วเท่านั้น
+    if (
+      provinceId === addressData.provinceId &&
+      districtId && districtId !== addressData.districtId
+    ) {
+      updateDistrict(districtId);
+    }
+    // ต้องเช็ค subDistrict หลัง district ถูก set แล้วเท่านั้น
+    if (
+      districtId === addressData.districtId &&
+      subDistrictId && subDistrictId !== addressData.subDistrictId
+    ) {
+      updateSubDistrict(subDistrictId);
+    }
+  }, [provinceId, districtId, subDistrictId, addressData.provinceId, addressData.districtId, addressData.subDistrictId]);
 
   if (loading) {
     return (

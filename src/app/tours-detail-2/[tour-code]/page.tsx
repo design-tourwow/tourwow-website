@@ -444,8 +444,8 @@ export default function TourDetailPage() {
                   wordUrl: program.WORD || '',
                   wholesaler: 'TTN',
                   wholesalerColor: 'indigo',
-                  rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
-                  reviews: Math.floor(Math.random() * 50) + 10,
+                  rating: parseFloat(program.P_RATING) || Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
+                  reviews: parseInt(program.P_REVIEWS) || Math.floor(Math.random() * 50) + 10,
                   availability: availableSlots <= 5 ? 'เหลือน้อย' : 'ว่าง',
                   availableSlots
                 }
@@ -1149,7 +1149,7 @@ export default function TourDetailPage() {
                           <div className="font-semibold">Premium</div>
                           <div className="text-sm text-gray-600">แพ็คเกจพรีเมี่ยม</div>
                           <div className="text-lg font-bold text-orange-600 mt-1">
-                            ฿{Math.round((selectedPeriod?.price || tour.price) * 1.3).toLocaleString()}
+                            ฿{Math.round((selectedPeriod?.price || tour?.price || 0) * 1.3).toLocaleString()}
                           </div>
                         </button>
                       </div>
@@ -1167,8 +1167,8 @@ export default function TourDetailPage() {
                         </button>
                         <span className="text-lg font-semibold w-12 text-center">{travelers}</span>
                         <button
-                          onClick={() => setTravelers(Math.min(selectedPeriod?.available || tour.availableSlots, travelers + 1))}
-                          disabled={travelers >= (selectedPeriod?.available || tour.availableSlots)}
+                          onClick={() => setTravelers(Math.min(selectedPeriod?.available || tour?.availableSlots || 0, travelers + 1))}
+                          disabled={travelers >= (selectedPeriod?.available || tour?.availableSlots || 0)}
                           className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           +
@@ -1176,7 +1176,7 @@ export default function TourDetailPage() {
                         <span className="text-sm text-gray-600 ml-2">ท่าน</span>
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        สูงสุด {selectedPeriod?.available || tour.availableSlots} ท่าน (ที่นั่งว่าง)
+                        สูงสุด {selectedPeriod?.available || tour?.availableSlots || 0} ท่าน (ที่นั่งว่าง)
                       </div>
                     </div>
 
@@ -1207,7 +1207,7 @@ export default function TourDetailPage() {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span>ทัวร์ {selectedPackage} x {travelers} ท่าน</span>
-                          <span>฿{((selectedPeriod?.price || tour.price) * (selectedPackage === 'premium' ? 1.3 : 1) * travelers).toLocaleString()}</span>
+                          <span>฿{((selectedPeriod?.price || tour?.price || 0) * (selectedPackage === 'premium' ? 1.3 : 1) * travelers).toLocaleString()}</span>
                         </div>
                         {extraRooms > 0 && (
                           <div className="flex justify-between">
@@ -1246,11 +1246,11 @@ export default function TourDetailPage() {
                         <div className="space-y-3 text-sm">
                           <div className="flex items-center">
                             <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                            <span>โรงแรม {tour.hotelStar} ดาว</span>
+                            <span>โรงแรม {tour?.hotelStar || 0} ดาว</span>
                           </div>
                           <div className="flex items-center">
                             <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                            <span>อาหาร {tour.meals} มื้อ</span>
+                            <span>อาหาร {tour?.meals || 0} มื้อ</span>
                           </div>
                           <div className="flex items-center">
                             <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
@@ -1280,7 +1280,7 @@ export default function TourDetailPage() {
                         <div className="text-center mb-4">
                           <h4 className="text-xl font-bold text-orange-600">Premium Package</h4>
                           <div className="text-2xl font-bold text-orange-800 mt-2">
-                            ฿{Math.round((selectedPeriod?.price || tour.price) * 1.3).toLocaleString()}
+                            ฿{Math.round((selectedPeriod?.price || tour?.price || 0) * 1.3).toLocaleString()}
                           </div>
                           <div className="text-sm text-gray-600">ต่อท่าน</div>
                         </div>
@@ -1288,11 +1288,11 @@ export default function TourDetailPage() {
                         <div className="space-y-3 text-sm">
                           <div className="flex items-center">
                             <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                            <span>โรงแรม {tour.hotelStar + 1} ดาว</span>
+                            <span>โรงแรม {(tour?.hotelStar || 0) + 1} ดาว</span>
                           </div>
                           <div className="flex items-center">
                             <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                            <span>อาหาร {tour.meals + 2} มื้อ</span>
+                            <span>อาหาร {(tour?.meals || 0) + 2} มื้อ</span>
                           </div>
                           <div className="flex items-center">
                             <CheckCircle className="w-4 h-4 text-green-500 mr-2" />

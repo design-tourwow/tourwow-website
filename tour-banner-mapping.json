@@ -1,0 +1,98 @@
+[
+  {
+    "id": 0,
+    "filename": "japan-tokyo-kyoto.jpg",
+    "country": "Japan",
+    "city": "Tokyo & Kyoto",
+    "description": "Tokyo skyline with traditional temples",
+    "path": "/tour-banners/japan-tokyo-kyoto.jpg"
+  },
+  {
+    "id": 1,
+    "filename": "japan-tokyo-disney.jpg",
+    "country": "Japan",
+    "city": "Tokyo Disneyland",
+    "description": "Tokyo Disneyland magical castle",
+    "path": "/tour-banners/japan-tokyo-disney.jpg"
+  },
+  {
+    "id": 2,
+    "filename": "japan-osaka-kyoto-nara.jpg",
+    "country": "Japan",
+    "city": "Osaka & Kyoto",
+    "description": "Traditional Japanese shrine gates",
+    "path": "/tour-banners/japan-osaka-kyoto-nara.jpg"
+  },
+  {
+    "id": 3,
+    "filename": "japan-hokkaido-sapporo.jpg",
+    "country": "Japan",
+    "city": "Hokkaido",
+    "description": "Hokkaido winter snow landscape",
+    "path": "/tour-banners/japan-hokkaido-sapporo.jpg"
+  },
+  {
+    "id": 4,
+    "filename": "japan-takayama-shirakawa.jpg",
+    "country": "Japan",
+    "city": "Takayama & Shirakawa-go",
+    "description": "Traditional Japanese village in mountains",
+    "path": "/tour-banners/japan-takayama-shirakawa.jpg"
+  },
+  {
+    "id": 5,
+    "filename": "korea-seoul-busan-jeju.jpg",
+    "country": "South Korea",
+    "city": "Seoul & Busan",
+    "description": "Seoul modern cityscape at night",
+    "path": "/tour-banners/korea-seoul-busan-jeju.jpg"
+  },
+  {
+    "id": 6,
+    "filename": "taiwan-taipei-alishan.jpg",
+    "country": "Taiwan",
+    "city": "Taipei & Alishan",
+    "description": "Taipei 101 and city skyline",
+    "path": "/tour-banners/taiwan-taipei-alishan.jpg"
+  },
+  {
+    "id": 7,
+    "filename": "china-beijing-shanghai.jpg",
+    "country": "China",
+    "city": "Beijing & Shanghai",
+    "description": "Great Wall of China scenic view",
+    "path": "/tour-banners/china-beijing-shanghai.jpg"
+  },
+  {
+    "id": 8,
+    "filename": "europe-france-italy-swiss.jpg",
+    "country": "Europe",
+    "city": "France, Italy & Switzerland",
+    "description": "Swiss Alps mountain landscape",
+    "path": "/tour-banners/europe-france-italy-swiss.jpg"
+  },
+  {
+    "id": 9,
+    "filename": "australia-sydney-melbourne.jpg",
+    "country": "Australia",
+    "city": "Sydney & Melbourne",
+    "description": "Sydney Opera House and harbour",
+    "path": "/tour-banners/australia-sydney-melbourne.jpg"
+  },
+  {
+    "id": 10,
+    "filename": "canada-vancouver-calgary.jpg",
+    "country": "Canada",
+    "city": "Vancouver & Calgary",
+    "description": "Canadian Rocky Mountains landscape",
+    "path": "/tour-banners/canada-vancouver-calgary.jpg"
+  },
+  {
+    "id": 11,
+    "filename": "newzealand-auckland-queenstown.jpg",
+    "country": "New Zealand",
+    "city": "Auckland & Queenstown",
+    "description": "New Zealand dramatic mountain scenery",
+    "path": "/tour-banners/newzealand-auckland-queenstown.jpg"
+  }
+]

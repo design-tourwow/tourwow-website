@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { useParams } from 'next/navigation'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { 
@@ -12,13 +12,16 @@ import {
   Umbrella, Baby, Accessibility, DollarSign, Calculator, MessageCircle,
   Send, Bot, X, CloudSun, TrendingUp, Bookmark, QrCode, ExternalLink,
   Navigation, Zap, Monitor, ImageIcon, Map, Bell, BellOff, Languages,
-  Play, Video, BarChart3, Smartphone, Tablet, Eye
+  Play, Video, BarChart3, Smartphone, Tablet, Eye, UserPlus, LogIn
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import StarRating from '@/components/StarRating'
 import LoadingScreen from '@/components/LoadingScreen'
 import BookingModal, { BookingFormData } from '@/components/BookingModal'
 import { useThailandData } from '@/hooks/useThailandData'
+import Modal from '@/components/ui/Modal'
+import LoginForm from '@/components/LoginForm'
+import RegisterForm from '@/components/RegisterForm'
 
 // Custom CSS for mobile scrolling
 const customStyles = `
@@ -187,7 +190,7 @@ function mapRawToTour(raws: ProductPoolTourRaw[]): TourDetail | null {
 
   // สร้าง periods จากทุก rows
   const periods: Period[] = raws.map(raw => ({
-    id: raw.periodId,
+    id: raw.period_id,
     startAt: raw.periodStartAt,
     endAt: raw.periodEndAt,
     price: raw.periodPriceAdultDouble,
@@ -250,7 +253,7 @@ export default function ProductPoolDetailPage() {
   const [chatMessages, setChatMessages] = useState<Array<{id: string, text: string, sender: 'user' | 'bot', timestamp: Date}>>([])
   const [currentMessage, setCurrentMessage] = useState('')
   const [bookmarked, setBookmarked] = useState(false)
-  const [selectedPackage, setSelectedPackage] = useState<'standard' | 'premium'>('standard')
+  const [selectedPackage, setSelectedPackage] = useState<'standard' | 'premium' | null>(null)
   const [travelers, setTravelers] = useState(1)
   const [extraRooms, setExtraRooms] = useState(0)
   const [showImageGallery, setShowImageGallery] = useState(false)
@@ -260,6 +263,14 @@ export default function ProductPoolDetailPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<'th' | 'en'>('th')
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false)
   const [showBookingModal, setShowBookingModal] = useState(false)
+  const packageRef = useRef<HTMLDivElement>(null)
+  const travelerRef = useRef<HTMLDivElement>(null)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [authPendingBookingData, setAuthPendingBookingData] = useState<BookingFormData | null>(null)
+  const router = useRouter();
+  const [pendingRedirect, setPendingRedirect] = useState(false)
+  const [isGuestBooking, setIsGuestBooking] = useState(false)
   
   // Auto switch from booking tab if no periods are available
   useEffect(() => {
@@ -458,6 +469,12 @@ export default function ProductPoolDetailPage() {
 
   // Handle booking confirmation
   const handleBookingConfirm = async (formData: BookingFormData) => {
+    if (!isLoggedIn) {
+      setAuthPendingBookingData(formData)
+      setShowAuthModal(true)
+      setAuthMode('login')
+      return
+    }
     if (!tour || !selectedPeriod) return
     
     try {
@@ -491,10 +508,12 @@ export default function ProductPoolDetailPage() {
 
       console.log('🚀 Sending booking data:', orderData)
       
+      const jwt = !isGuestBooking && typeof window !== 'undefined' ? localStorage.getItem('jwt') : null;
       const response = await fetch('/api/tw-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(jwt ? { Authorization: `Bearer ${jwt}` } : {})
         },
         body: JSON.stringify(orderData),
       })
@@ -504,6 +523,8 @@ export default function ProductPoolDetailPage() {
       if (response.ok) {
         console.log('✅ Booking successful:', result)
         // BookingModal จะแสดง success modal อัตโนมัติ
+        setShowBookingModal(true)
+        setPendingRedirect(true)
       } else {
         console.error('❌ Booking failed:', result)
         alert('เกิดข้อผิดพลาดในการจอง: ' + result.error)
@@ -513,6 +534,20 @@ export default function ProductPoolDetailPage() {
       alert('เกิดข้อผิดพลาดในการจอง โปรดลองใหม่อีกครั้ง')
     }
   }
+
+  // Scroll to package when selectedPeriod changes
+  useEffect(() => {
+    if (selectedPeriod && packageRef.current) {
+      packageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [selectedPeriod])
+
+  // Scroll to traveler/room when selectedPackage changes
+  useEffect(() => {
+    if (selectedPackage && travelerRef.current) {
+      travelerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [selectedPackage])
 
   if (loading) {
     return (
@@ -552,6 +587,24 @@ export default function ProductPoolDetailPage() {
         </div>
       </div>
     )
+  }
+
+  const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('jwt')
+  const handleBookingClick = () => {
+    if (!isLoggedIn) {
+      setShowAuthModal(true)
+      setAuthMode('login')
+    } else {
+      setShowBookingModal(true)
+    }
+  }
+
+  const handleGuestBooking = () => {
+    setShowAuthModal(false)
+    setTimeout(() => {
+      setIsGuestBooking(true)
+      setShowBookingModal(true)
+    }, 350)
   }
 
   return (
@@ -768,7 +821,7 @@ export default function ProductPoolDetailPage() {
                                   }
                                   
                                   // AI Content Generator - สร้างเนื้อหาใหม่ที่ unique ตามแต่ละทัวร์
-                                  function generateUniqueContent(originalHighlights, tourData) {
+                                  function generateUniqueContent(originalHighlights: any, tourData: any) {
                                     // สร้าง unique seed จาก tour data
                                     const tourSeed = (tourData.tourwowCode || tourData.name || '').length % 10
                                     const contentSeed = originalHighlights.join('').length % 10
@@ -779,7 +832,7 @@ export default function ProductPoolDetailPage() {
                                     
                                     // สร้างเนื้อหาใหม่ตามประเภททัวร์และ unique pattern
                                     function generateByDestinationUnique() {
-                                      const country = tourData.location || tourData.country || tour.location || ''
+                                      const country = tourData.location || tourData.country || (tour?.location || '')
                                       
                                       if (country.includes('ญี่ปุ่น') || country.includes('Japan')) {
                                         const japanTemplates = [
@@ -1273,16 +1326,12 @@ export default function ProductPoolDetailPage() {
                     )}
 
                     {/* Package Selection */}
-                    <div>
+                    <div ref={packageRef}>
                       <h4 className="font-semibold mb-3">เลือกแพ็คเกจ</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div
-                          onClick={() => setSelectedPackage('standard')}
-                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                            selectedPackage === 'standard' 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-blue-300'
-                          }`}
+                          onClick={() => selectedPeriod && setSelectedPackage('standard')}
+                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedPackage === 'standard' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'} ${!selectedPeriod ? 'opacity-50 pointer-events-none' : ''}`}
                         >
                           <div className="flex justify-between items-start mb-2">
                             <h5 className="font-semibold">แพ็คเกจมาตรฐาน</h5>
@@ -1299,12 +1348,8 @@ export default function ProductPoolDetailPage() {
                         </div>
 
                         <div
-                          onClick={() => setSelectedPackage('premium')}
-                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                            selectedPackage === 'premium' 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-blue-300'
-                          }`}
+                          onClick={() => selectedPeriod && setSelectedPackage('premium')}
+                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedPackage === 'premium' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'} ${!selectedPeriod ? 'opacity-50 pointer-events-none' : ''}`}
                         >
                           <div className="flex justify-between items-start mb-2">
                             <h5 className="font-semibold">แพ็คเกจพรีเมียม</h5>
@@ -1324,20 +1369,21 @@ export default function ProductPoolDetailPage() {
                     </div>
 
                     {/* Travelers & Rooms */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" ref={travelerRef}>
                       <div>
                         <h4 className="font-semibold mb-3">จำนวนผู้เดินทาง</h4>
                         <div className="flex items-center gap-4">
                           <button
                             onClick={() => setTravelers(Math.max(1, travelers - 1))}
-                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50"
+                            disabled={!selectedPackage}
+                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             -
                           </button>
                           <span className="text-lg font-semibold w-12 text-center">{travelers}</span>
                           <button
                             onClick={() => setTravelers(Math.min(selectedPeriod?.available || tour.availableSlots || 10, travelers + 1))}
-                            disabled={travelers >= (selectedPeriod?.available || tour.availableSlots || 10)}
+                            disabled={!selectedPackage || travelers >= (selectedPeriod?.available || tour.availableSlots || 10)}
                             className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             +
@@ -1354,14 +1400,16 @@ export default function ProductPoolDetailPage() {
                         <div className="flex items-center gap-4">
                           <button
                             onClick={() => setExtraRooms(Math.max(0, extraRooms - 1))}
-                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50"
+                            disabled={!selectedPackage}
+                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             -
                           </button>
                           <span className="text-lg font-semibold w-12 text-center">{extraRooms}</span>
                           <button
                             onClick={() => setExtraRooms(extraRooms + 1)}
-                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50"
+                            disabled={!selectedPackage}
+                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             +
                           </button>
@@ -1403,16 +1451,16 @@ export default function ProductPoolDetailPage() {
                         variant="primary" 
                         size="lg" 
                         className="w-full"
-                        disabled={!selectedPeriod || selectedPeriod.available === 0}
+                        disabled={!selectedPeriod || selectedPeriod.available === 0 || !selectedPackage}
                         onClick={() => {
-                          if (selectedPeriod && selectedPeriod.available > 0) {
-                            setShowBookingModal(true)
+                          if (selectedPeriod && selectedPeriod.available > 0 && selectedPackage) {
+                            handleBookingClick()
                           }
                         }}
                       >
                         {!selectedPeriod ? 'กรุณาเลือกรอบการเดินทาง' :
                          selectedPeriod.available === 0 ? 'ทัวร์เต็ม' : 
-                         'จองเลย - ชำระเงินมัดจำ 30%'}
+                         !selectedPackage ? 'กรุณาเลือกแพ็กเกจ' : 'จองเลย - ชำระเงินมัดจำ 30%'}
                       </Button>
                       <Button 
                         variant="outline" 
@@ -1666,10 +1714,10 @@ export default function ProductPoolDetailPage() {
                         variant="primary" 
                         size="lg" 
                         className="w-full"
-                        disabled={!selectedPeriod || selectedPeriod.available === 0}
+                        disabled={!selectedPeriod || selectedPeriod.available === 0 || !selectedPackage}
                         onClick={() => {
-                          if (selectedPeriod && selectedPeriod.available > 0) {
-                            setShowBookingModal(true)
+                          if (selectedPeriod && selectedPeriod.available > 0 && selectedPackage) {
+                            handleBookingClick()
                           }
                         }}
                       >
@@ -1941,20 +1989,81 @@ export default function ProductPoolDetailPage() {
       )}
 
       {/* Booking Modal */}
-      {tour && selectedPeriod && (
+      {tour && selectedPeriod && !showAuthModal && (
         <BookingModal
           isOpen={showBookingModal}
-          onClose={() => setShowBookingModal(false)}
+          onClose={() => {
+            setShowBookingModal(false)
+            setIsGuestBooking(false)
+            if (pendingRedirect) {
+              setPendingRedirect(false)
+              router.push('/orders')
+            }
+          }}
           onConfirm={handleBookingConfirm}
           tourSummary={{
             tourName: tour.name,
-            dateRange: `${formatDateToThai(selectedPeriod.startAt)} - ${formatDateToThai(selectedPeriod.endAt)}`,
-            pricePerPerson: selectedPeriod.price,
+            dateRange: selectedPeriod ? `${formatDateToThai(selectedPeriod.startAt)} - ${formatDateToThai(selectedPeriod.endAt)}` : '',
+            pricePerPerson: selectedPeriod?.price || tour.price,
             travelerCount: travelers,
-            totalAmount: selectedPeriod.price * travelers
+            totalAmount: (selectedPeriod?.price || tour.price) * travelers
           }}
+          isGuestBooking={isGuestBooking}
         />
       )}
+      {/* Auth Modal */}
+      <Modal open={showAuthModal} onClose={() => setShowAuthModal(false)}>
+        <div className="w-full max-w-md mx-auto">
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <UserPlus className={`w-7 h-7 ${authMode==='register' ? 'text-green-600' : 'text-gray-400'}`} />
+              <LogIn className={`w-7 h-7 ${authMode==='login' ? 'text-blue-600' : 'text-gray-400'}`} />
+            </div>
+            <h2 className="text-2xl font-bold text-blue-900 mb-1">{authMode==='login' ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก'}</h2>
+            <p className="text-gray-500 text-sm mb-2">{authMode==='login' ? 'เข้าสู่ระบบเพื่อจองทัวร์และดูรายการจองของคุณ' : 'สมัครสมาชิกใหม่เพื่อเริ่มต้นจองทัวร์กับเรา'}</p>
+        </div>
+        <div className="flex justify-center mb-6">
+          <button className={`px-4 py-2 rounded-t-lg font-semibold transition-all duration-200 border-b-2 ${authMode==='login'?'bg-blue-50 text-blue-700 border-blue-500 shadow':'text-gray-500 border-transparent'} hover:bg-blue-100`} onClick={()=>setAuthMode('login')}>
+            <LogIn className="inline w-5 h-5 mr-1" /> เข้าสู่ระบบ
+          </button>
+          <button className={`px-4 py-2 rounded-t-lg font-semibold transition-all duration-200 border-b-2 ${authMode==='register'?'bg-green-50 text-green-700 border-green-500 shadow':'text-gray-500 border-transparent'} hover:bg-green-100`} onClick={()=>setAuthMode('register')}>
+            <UserPlus className="inline w-5 h-5 mr-1" /> สมัครสมาชิก
+          </button>
+        </div>
+        <div className="bg-gray-50 rounded-xl shadow-inner p-6">
+          {authMode==='login' ? (
+            <LoginForm
+              onSuccess={(user, token) => {
+                localStorage.setItem('jwt', token)
+                localStorage.setItem('user', JSON.stringify(user))
+                setShowAuthModal(false)
+                setTimeout(() => setShowBookingModal(true), 300)
+                setIsGuestBooking(false)
+              }}
+            />
+          ) : (
+            <RegisterForm
+              onSuccess={(user, token) => {
+                localStorage.setItem('jwt', token)
+                localStorage.setItem('user', JSON.stringify(user))
+                setShowAuthModal(false)
+                setTimeout(() => setShowBookingModal(true), 300)
+                setIsGuestBooking(false)
+              }}
+            />
+          )}
+          <div className="mt-6 text-center">
+            <button
+              className="inline-block px-5 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 font-semibold shadow hover:bg-blue-50 hover:text-blue-700 transition-all duration-150"
+              onClick={handleGuestBooking}
+            >
+              จองโดยไม่ต้องเข้าสู่ระบบ
+            </button>
+            <div className="text-xs text-gray-400 mt-2">* คุณจะไม่สามารถดู/แก้ไขรายการจองผ่านระบบได้</div>
+          </div>
+        </div>
+      </div>
+    </Modal>
     </div>
   )
 }

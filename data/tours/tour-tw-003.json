@@ -1,0 +1,241 @@
+{
+  "id": "tour-tw-003",
+  "slug": "tour-tw-003",
+  "title": "ทัวร์ไต้หวัน ไทเป เกาสง",
+  "country": "Taiwan",
+  "cities": [
+    "Taipei",
+    "Kaohsiung",
+    "Taichung"
+  ],
+  "duration_days": 4,
+  "nights": 3,
+  "price_from": 19900,
+  "currency": "THB",
+  "badges": [
+    "Limited"
+  ],
+  "rating": 4.6,
+  "reviews_count": 234,
+  "hero_images": [
+    "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=1200&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11508248467877-aec1b08de376?w=1000&h=600&fit=crop"
+  ],
+  "highlights": [
+    "ตลาดกลางคืน",
+    "น้ำพุร้อน",
+    "รถไฟความเร็วสูง"
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "ออกเดินทาง",
+      "details": [
+        "เดินทางจากกรุงเทพฯ"
+      ]
+    },
+    {
+      "day": 2,
+      "title": "เมืองหลัก",
+      "details": [
+        "ชมเมืองและสถานที่สำคัญ"
+      ]
+    },
+    {
+      "day": 3,
+      "title": "สถานที่ท่องเที่ยว",
+      "details": [
+        "เที่ยวชมสถานที่สำคัญ"
+      ]
+    },
+    {
+      "day": 4,
+      "title": "วัฒนธรรมท้องถิ่น",
+      "details": [
+        "สัมผัสวัฒนธรรมและอาหาร"
+      ]
+    }
+  ],
+  "gallery": [
+    "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11508248467877-aec1b08de376?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-21508248467877-aec1b08de376?w=600&q=80&h=600&fit=crop"
+  ],
+  "included": [
+    "ตั๋วเครื่องบินไป-กลับ",
+    "ที่พัก 4 ดาว",
+    "อาหารตามรายการ",
+    "รถรับส่งสนามบิน",
+    "ไกด์ท้องถิ่นพูดไทย",
+    "ประกันอุบัติเหตุ"
+  ],
+  "excluded": [
+    "ค่าทิปไกด์และคนขับรถ",
+    "ค่าธรรมเนียมวีซ่า (ถ้ามี)",
+    "ค่าใช้จ่ายส่วนตัว",
+    "ประกันการเดินทางแบบครอบคลุม"
+  ],
+  "policies": {
+    "deposit": 3000,
+    "cancellation": "ยกเลิกฟรีภายใน 7 วันก่อนเดินทาง",
+    "payment_options": [
+      "บัตรเครดิต",
+      "โอนเงิน",
+      "ผ่อนชำระ 0% 6 เดือน"
+    ]
+  },
+  "departures": [
+    {
+      "id": "dep-2025-09-10",
+      "start_date": "2025-09-10",
+      "end_date": "2025-09-13",
+      "date_label": "10–13 ก.ย. 2568",
+      "price": 21805,
+      "seats_left": 19,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-10-08",
+      "start_date": "2025-10-08",
+      "end_date": "2025-10-11",
+      "date_label": "8–11 ต.ค. 2568",
+      "price": 20086,
+      "seats_left": 3,
+      "status": "low"
+    },
+    {
+      "id": "dep-2025-11-12",
+      "start_date": "2025-11-12",
+      "end_date": "2025-11-15",
+      "date_label": "12–15 พ.ย. 2568",
+      "price": 20922,
+      "seats_left": 4,
+      "status": "low"
+    },
+    {
+      "id": "dep-2025-12-10",
+      "start_date": "2025-12-10",
+      "end_date": "2025-12-13",
+      "date_label": "10–13 ธ.ค. 2568",
+      "price": 19441,
+      "seats_left": 0,
+      "status": "soldout"
+    },
+    {
+      "id": "dep-2026-01-14",
+      "start_date": "2026-01-14",
+      "end_date": "2026-01-17",
+      "date_label": "14–17 ม.ค. 2569",
+      "price": 20466,
+      "seats_left": 1,
+      "status": "low"
+    },
+    {
+      "id": "dep-2026-02-11",
+      "start_date": "2026-02-11",
+      "end_date": "2026-02-14",
+      "date_label": "11–14 ก.พ. 2569",
+      "price": 21169,
+      "seats_left": 19,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-03-11",
+      "start_date": "2026-03-11",
+      "end_date": "2026-03-14",
+      "date_label": "11–14 มี.ค. 2569",
+      "price": 17481,
+      "seats_left": 1,
+      "status": "low"
+    },
+    {
+      "id": "dep-2026-04-08",
+      "start_date": "2026-04-08",
+      "end_date": "2026-04-11",
+      "date_label": "8–11 เม.ย. 2569",
+      "price": 17438,
+      "seats_left": 9,
+      "status": "available"
+    }
+  ],
+  "addons": [
+    {
+      "code": "INS10",
+      "label": "ประกันการเดินทาง",
+      "price": 899
+    },
+    {
+      "code": "HKUP",
+      "label": "อัปเกรดโรงแรม",
+      "price": 2500
+    },
+    {
+      "code": "SEAT",
+      "label": "เลือกที่นั่งเครื่องบิน",
+      "price": 500
+    },
+    {
+      "code": "WIFI",
+      "label": "WiFi ไม่จำกัด",
+      "price": 299
+    }
+  ],
+  "faqs": [
+    {
+      "q": "ต้องขอวีซ่าหรือไม่?",
+      "a": "สัญชาติไทยสามารถเดินทางได้โดยไม่ต้องขอวีซ่าล่วงหน้า หรือขอวีซ่าตอนถึงแล้วแต่ประเทศปลายทาง"
+    },
+    {
+      "q": "อาหารฮาลาล/เจ มีหรือไม่?",
+      "a": "แจ้งความต้องการพิเศษล่วงหน้าได้ เราจะประสานงานให้ตามความต้องการ"
+    },
+    {
+      "q": "น้ำหนักกระเป๋าเท่าไหร่?",
+      "a": "กระเป๋าใต้ท้องเครื่อง 23 กก. กระเป๋าถือขึ้นเครื่อง 7 กก."
+    },
+    {
+      "q": "สามารถยกเลิก/คืนเงินได้หรือไม่?",
+      "a": "สามารถยกเลิกได้ตามเงื่อนไขของแต่ละโปรแกรม โดยอาจมีค่าธรรมเนียมตามระยะเวลาที่ยกเลิก"
+    }
+  ],
+  "related": [
+    {
+      "id": "tour-jp-001",
+      "title": "ทัวร์ญี่ปุ่น โตเกียว เกียวโต",
+      "price_from": 45900,
+      "thumb": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-kr-002",
+      "title": "ทัวร์เกาหลีใต้ โซล ปูซาน",
+      "price_from": 38500,
+      "thumb": "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-sg-004",
+      "title": "ทัวร์สิงคโปร์ มาเลเซีย",
+      "price_from": 24900,
+      "thumb": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-vn-005",
+      "title": "ทัวร์เวียดนาม ฮานอย โฮจิมินห์",
+      "price_from": 16900,
+      "thumb": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&h=600&fit=crop"
+    }
+  ],
+  "licenses": {
+    "tourism_license": "11/2567",
+    "airline_partners": [
+      "TG",
+      "QR",
+      "EK"
+    ]
+  },
+  "seo": {
+    "title": "ทัวร์ไต้หวัน ไทเป เกาสง ราคาเริ่ม 19,900",
+    "description": "ทัวร์ไต้หวัน ไทเป เกาสง ตลาดกลางคืน น้ำพุร้อน รถไฟความเร็วสูง พร้อมไกด์ไทย",
+    "og_image": "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=800&h=600&fit=crop"
+  }
+}

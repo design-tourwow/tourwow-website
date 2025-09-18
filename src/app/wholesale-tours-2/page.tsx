@@ -828,7 +828,13 @@ function WholesaleToursPageContent() {
   }, [selectedWholesalers, ttnTours, ttnPlusTours, superbTours, bestindoTours])
 
   const categories = useMemo(() => ['ทั้งหมด', ...Array.from(new Set(convertedTours.map(t => t.category)))], [convertedTours])
-  const priceRanges = ['ทั้งหมด', 'ต่ำกว่า 25,000', '25,000-35,000', '35,000-50,000', 'มากกว่า 50,000']
+  const priceRanges = [
+    { name: 'ทั้งหมด', count: 0 },
+    { name: 'ต่ำกว่า 25,000', count: 0 },
+    { name: '25,000-35,000', count: 0 },
+    { name: '35,000-50,000', count: 0 },
+    { name: 'มากกว่า 50,000', count: 0 }
+  ]
   const countries = useMemo(() => {
     const countryCount = convertedTours.reduce((acc, tour) => {
       acc[tour.country] = (acc[tour.country] || 0) + 1;
@@ -1184,9 +1190,7 @@ function WholesaleToursPageContent() {
               countries={countries}
               selectedCountry={selectedCountry}
               onCountryChange={setSelectedCountry}
-              sortOptions={sortOptions}
-              selectedSortBy={sortBy}
-              onSortByChange={setSortBy}
+              
               onClearFilters={handleClearFilters}
               // Wholesale props
               wholesalers={wholesalers}

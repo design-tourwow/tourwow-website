@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile UX/UI Checklist - Tour Search 24</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .checklist {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .check-item:hover {
+            background: #f8f9fa;
+        }
+        input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .section-title {
+            color: #2563eb;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .test-link {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 12px 0;
+            font-weight: 500;
+        }
+        .test-link:hover {
+            background: #2563eb;
+        }
+        .mobile-sizes {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .size-button {
+            padding: 8px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .size-button:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .improvement-note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Mobile UX/UI Testing Checklist</h1>
+    <p><strong>Tour Detail Page: /tour-search-24/{id}</strong></p>
+    
+    <a href="http://localhost:4000/tour-search-24/tour-turkey-009" class="test-link" target="_blank">
+        🚀 Open Tour Detail Page
+    </a>
+
+    <div class="mobile-sizes">
+        <div class="size-button" onclick="resizeWindow(375, 667)">📱 iPhone SE</div>
+        <div class="size-button" onclick="resizeWindow(375, 812)">📱 iPhone X</div>
+        <div class="size-button" onclick="resizeWindow(414, 896)">📱 iPhone 11</div>
+        <div class="size-button" onclick="resizeWindow(768, 1024)">📱 iPad</div>
+        <div class="size-button" onclick="resizeWindow(1024, 768)">💻 Desktop</div>
+    </div>
+
+    <div class="checklist">
+        <h2 class="section-title">📱 Mobile First Design</h2>
+        <label class="check-item">
+            <input type="checkbox" id="mobile-layout">
+            <span>Layout ปรับตัวได้ดีในมือถือ (375px width)</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="touch-targets">
+            <span>ปุ่มทุกปุ่มใหญ่พอสำหรับการแตะ (min 44px)</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="readable-text">
+            <span>ตัวอักษรอ่านง่าย ไม่เล็กเกินไป</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="sticky-cta">
+            <span>Sticky booking bar ที่ด้านล่าง ใช้งานได้ดี</span>
+        </label>
+    </div>
+
+    <div class="checklist">
+        <h2 class="section-title">🔥 Flash Sale & Urgency</h2>
+        <label class="check-item">
+            <input type="checkbox" id="flash-banner">
+            <span>Flash sale banner แสดงผล และมี countdown timer</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="urgency-indicators">
+            <span>ตัวชี้วัดความเร่งด่วน (เหลือที่นั่ง, จำนวนคนดู)</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="price-comparison">
+            <span>แสดงราคาเดิม vs ราคาลด</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="animated-elements">
+            <span>Animation ที่เหมาะสม (pulse, bounce) ไม่มากเกินไป</span>
+        </label>
+    </div>
+
+    <div class="checklist">
+        <h2 class="section-title">💰 CTA & Conversion</h2>
+        <label class="check-item">
+            <input type="checkbox" id="primary-cta">
+            <span>CTA หลัก (จองเลย!) โดดเด่น และชัดเจน</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="secondary-cta">
+            <span>CTA รอง (แชท, โทร) เข้าถึงง่าย</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="trust-signals">
+            <span>Trust indicators (รีวิว, รางวัล, การันตี) มองเห็นได้ชัด</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="payment-options">
+            <span>ตัวเลือกการชำระเงินแสดงชัดเจน (ผ่อน 0%)</span>
+        </label>
+    </div>
+
+    <div class="checklist">
+        <h2 class="section-title">📈 Upselling & Cross-selling</h2>
+        <label class="check-item">
+            <input type="checkbox" id="related-tours">
+            <span>ทัวร์ที่เกี่ยวข้อง แสดงอย่างน่าสนใจ</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="addon-services">
+            <span>บริการเสริม (ประกัน, อัปเกรด) เข้าถึงง่าย</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="discount-codes">
+            <span>โค้ดส่วนลด/โปรโมชั่นพิเศษ มองเห็นได้</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="combo-offers">
+            <span>ข้อเสนอแบบแพ็คเกจ (จองวันนี้รับส่วนลด)</span>
+        </label>
+    </div>
+
+    <div class="checklist">
+        <h2 class="section-title">⭐ Social Proof & Reviews</h2>
+        <label class="check-item">
+            <input type="checkbox" id="review-highlights">
+            <span>รีวิวเด่นๆ แสดงผลน่าสนใจ มีรูปภาพ</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="rating-display">
+            <span>คะแนนรีวิว แสดงเด่นชัด</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="social-count">
+            <span>จำนวนคนที่เดินทางแล้ว แสดงผล</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="review-interaction">
+            <span>สามารถดูรีวิวเพิ่มเติมได้ง่าย</span>
+        </label>
+    </div>
+
+    <div class="checklist">
+        <h2 class="section-title">🎨 Visual & UX</h2>
+        <label class="check-item">
+            <input type="checkbox" id="image-quality">
+            <span>รูปภาพคมชัด โหลดเร็ว</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="color-contrast">
+            <span>สีสัน contrast ดี อ่านง่าย</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="loading-states">
+            <span>Loading states ทำงานได้ดี</span>
+        </label>
+        <label class="check-item">
+            <input type="checkbox" id="error-handling">
+            <span>Error handling ใช้งานได้</span>
+        </label>
+    </div>
+
+    <div class="improvement-note">
+        <strong>📝 หมายเหตุการปรับปรุง:</strong><br>
+        ✅ เพิ่ม Flash Sale Banner พร้อม countdown timer<br>
+        ✅ ปรับปรุง Mobile Sticky Booking Bar<br>
+        ✅ เพิ่ม Trust Indicators<br>
+        ✅ ปรับปรุง Reviews Section ให้น่าสนใจมากขึ้น<br>
+        ✅ เพิ่ม Related Tours สำหรับ Cross-selling<br>
+        ✅ เพิ่ม Urgency Indicators<br>
+        ✅ ปรับปรุงข้อมูลราคา แสดง Flash Sale<br>
+        ✅ เพิ่ม Social Proof Elements<br>
+    </div>
+
+    <script>
+        function resizeWindow(width, height) {
+            const popup = window.open('http://localhost:4000/tour-search-24/tour-turkey-009', 'mobileTest', `width=${width},height=${height},scrollbars=yes,resizable=yes`);
+            if (popup) {
+                popup.focus();
+                setTimeout(() => {
+                    popup.resizeTo(width, height);
+                }, 100);
+            }
+        }
+
+        // Auto-save checklist state
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                localStorage.setItem(e.target.id, e.target.checked);
+            }
+        });
+
+        // Restore checklist state
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                const saved = localStorage.getItem(checkbox.id);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

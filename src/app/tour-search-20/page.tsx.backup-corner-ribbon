@@ -1,0 +1,3496 @@
+'use client';
+
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { ChevronDown, Search, Calendar, DollarSign, Clock, MapPin, Star, Heart, Share2, Check, Filter, Grid, List, X, ChevronRight, Plane, Users, Globe, Shield, AlertCircle, TrendingUp, Award, Sparkles, Camera, Mountain, Ship, Building2, TreePine, Coffee, Utensils, ShoppingBag, Info, Eye, MessageCircle, FileText } from 'lucide-react';
+
+// Mock tour data - using deterministic values based on index
+const mockTours = Array.from({ length: 48 }, (_, i) => ({
+  id: `tour-${i + 1}`,
+  title: [
+    'ญี่ปุ่น โตเกียว โอซาก้า เกียวโต 6 วัน 5 คืน',
+    'ฝรั่งเศส ปารีส โปรวองซ์ 8 วัน 7 คืน',
+    'อิตาลี โรม ฟลอเรนซ์ เวนิส 7 วัน 6 คืน',
+    'สวิตเซอร์แลนด์ จุงเฟรา อินเทอร์ลาเคน 5 วัน 4 คืน',
+    'เกาหลีใต้ โซล พูซาน เชจู 5 วัน 4 คืน',
+    'สิงคโปร์ มาเลเซีย 4 วัน 3 คืน',
+    'ตุรกี อิสตันบูล คัปปาโดเกีย 9 วัน 8 คืน',
+    'อียิปต์ ไคโร ลุกซอร์ 7 วัน 6 คืน',
+    'ดูไบ อาบูดาบี 5 วัน 4 คืน',
+    'ออสเตรเลีย ซิดนีย์ เมลเบิร์น 7 วัน 6 คืน'
+  ][i % 10],
+  location: ['ญี่ปุ่น', 'ฝรั่งเศส', 'อิตาลี', 'สวิตเซอร์แลนด์', 'เกาหลีใต้', 'สิงคโปร์-มาเลเซีย', 'ตุรกี', 'อียิปต์', 'ดูไบ', 'ออสเตรเลีย'][i % 10],
+  rating: 4.5 + ((i * 0.3) % 0.5),
+  reviews: 50 + ((i * 17) % 450),
+  price: 25000 + ((i * 2000) % 75000),
+  originalPrice: i % 3 === 0 ? 30000 + ((i * 2500) % 90000) : null,
+  duration: ['3 วัน 2 คืน', '4 วัน 3 คืน', '5 วัน 4 คืน', '6 วัน 5 คืน', '7 วัน 6 คืน', '8 วัน 7 คืน', '9 วัน 8 คืน'][i % 7],
+  departureMonths: 'ก.ย. - ธ.ค. 2025',
+  airline: ['Thai Airways', 'Singapore Airlines', 'Emirates', 'Qatar Airways', 'ANA', 'EVA Air'][i % 6],
+  highlights: [
+    ['ภูเขาไฟฟูจิ', 'วัดทอง', 'ช้อปปิ้งชินจูกุ'],
+    ['หอไอเฟล', 'พิพิธภัณฑ์ลูฟวร์', 'ล่องเรือแม่น้ำแซน'],
+    ['โคลอสเซียม', 'หอเอนปิซา', 'ล่องเรือกอนโดลา'],
+    ['ยอดเขาจุงเฟรา', 'ทะเลสาบเจนีวา', 'รถไฟสายโรแมนติก'],
+    ['พระราชวังเคียงบก', 'หมู่บ้านบุกชอน', 'เกาะเชจู'],
+    ['มารีน่าเบย์', 'ยูนิเวอร์แซล', 'คาเมรอนไฮแลนด์'],
+    ['บอลลูนคัปปาโดเกีย', 'สุเหร่าสีน้ำเงิน', 'ตลาดแกรนด์บาซาร์'],
+    ['พีระมิด', 'หุบผากษัตริย์', 'ล่องเรือไนล์'],
+    ['บุรจญ์คาลิฟา', 'ซาฟารีทะเลทราย', 'ตลาดทอง'],
+    ['โอเปร่าเฮาส์', 'เกรทแบริเออร์รีฟ', 'สวนสัตว์โคอาลา']
+  ][i % 10],
+  badge: i % 4 === 0 ? ['ลดราคา', 'ยอดนิยม', 'Eco Tour', 'ที่นั่งเหลือน้อย'][i % 4] : null,
+  seatsLeft: i % 5 === 0 ? 2 + (i % 8) : null,
+  soldOut: i % 20 === 19,
+  image: [
+    'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=720&h=480&fit=crop&auto=format', // Mount Fuji, Japan
+    'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=720&h=480&fit=crop&auto=format', // Paris Eiffel Tower
+    'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=720&h=480&fit=crop&auto=format', // Rome Colosseum
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=720&h=480&fit=crop&auto=format', // Swiss Alps
+    'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=720&h=480&fit=crop&auto=format', // Seoul city
+    'https://images.unsplash.com/photo-1508964942454-1a56651d54ac?w=720&h=480&fit=crop&auto=format', // Singapore skyline
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=720&h=480&fit=crop&auto=format', // Turkey landscape
+    'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=720&h=480&fit=crop&auto=format', // Egypt pyramids
+    'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=720&h=480&fit=crop&auto=format', // Dubai skyline
+    'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=720&h=480&fit=crop&auto=format'  // Sydney Opera House
+  ][i % 10],
+  includesTax: i % 2 === 0,
+  tourType: ['พักผ่อน', 'ผจญภัย', 'หรูหรา', 'ครอบครัว', 'ธรรมชาติ'][i % 5],
+  hasVisa: i % 2 === 1,
+  guideLanguage: ['ไทย', 'ไทย-อังกฤษ', 'อังกฤษ'][i % 3],
+  isPrivate: i % 5 === 4
+}));
+
+export default function TourSearch20Page() {
+  // State management
+  const [tours, setTours] = useState(mockTours.slice(0, 12));
+  const [filteredTours, setFilteredTours] = useState(mockTours.slice(0, 12));
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState('recommend');
+  const [showFilters, setShowFilters] = useState(false);
+  const [compareList, setCompareList] = useState<string[]>([]);
+  const [savedList, setSavedList] = useState<string[]>([]);
+  const [showCompareSheet, setShowCompareSheet] = useState(false);
+  const [quickViewTour, setQuickViewTour] = useState<any>(null);
+  const [page, setPage] = useState(1);
+  
+  // Search state
+  const [destination, setDestination] = useState('');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [budget, setBudget] = useState({ min: '', max: '' });
+  const [duration, setDuration] = useState('');
+  const [travelers, setTravelers] = useState('2');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDateType, setSelectedDateType] = useState<'start' | 'end'>('start');
+  const [showBudgetPicker, setShowBudgetPicker] = useState(false);
+  const [showDurationPicker, setShowDurationPicker] = useState(false);
+  const [openFilterSections, setOpenFilterSections] = useState<string[]>([]);
+  
+  // Filter state
+  const [filters, setFilters] = useState({
+    // จุดหมาย/ภูมิศาสตร์
+    countries: [] as string[],
+    continents: [] as string[],
+    climates: [] as string[],
+    
+    // เวลา/ช่วงเดินทาง
+    months: [] as string[],
+    durationRange: { min: 1, max: 30 },
+    weekdays: [] as string[],
+    festivals: [] as string[],
+    
+    // ราคา/งบประมาณ
+    priceRange: { min: 0, max: 200000 },
+    includeTax: null as boolean | null,
+    includeVisa: null as boolean | null,
+    paymentType: [] as string[],
+    
+    // การเดินทาง/ขนส่ง
+    airlines: [] as string[],
+    airports: [] as string[],
+    seatClass: [] as string[],
+    stops: [] as string[],
+    
+    // ที่พัก
+    hotelStars: [] as string[],
+    hotelTypes: [] as string[],
+    hotelLocations: [] as string[],
+    
+    // ประเภททัวร์/กลุ่มเป้าหมาย
+    tourTypes: [] as string[],
+    groupSizes: [] as string[],
+    guideLanguages: [] as string[],
+    targetAge: [] as string[],
+    
+    // กิจกรรม/ไฮไลต์
+    activityTypes: [] as string[],
+    specialActivities: [] as string[],
+    landmarks: [] as string[],
+    
+    // เงื่อนไข/บริการ
+    visaRequirement: [] as string[],
+    insurance: null as boolean | null,
+    meals: [] as string[],
+    transport: [] as string[],
+    
+    // คุณภาพ/รีวิว
+    minRating: 0,
+    minReviews: 0,
+    certifications: [] as string[],
+    
+    // โปรโมชั่น/พิเศษ
+    hasDiscount: false,
+    earlyBird: false,
+    lastMinute: false,
+    limitedSeats: false,
+    ecoFriendly: false,
+    
+    // ธีม/สไตล์
+    themes: [] as string[],
+    styles: [] as string[]
+  });
+
+  // Refs
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const searchSectionRef = useRef<HTMLDivElement>(null);
+  const searchFieldRef = useRef<HTMLDivElement>(null);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const budgetPickerRef = useRef<HTMLDivElement>(null);
+  const durationPickerRef = useRef<HTMLDivElement>(null);
+
+  // Quick filter chips with state
+  const [activeQuickFilters, setActiveQuickFilters] = useState<string[]>([]);
+  
+  const quickFilters = [
+    { id: 'popular', label: 'ยอดนิยม', emoji: '🔥', type: 'popular' },
+    { id: 'promotion', label: 'โปรโมชั่น', emoji: '💰', type: 'promotion' },
+    { id: 'luxury', label: 'หรูหรา', emoji: '✨', type: 'luxury' },
+    { id: 'family', label: 'ครอบครัว', emoji: '👨‍👩‍👧‍👦', type: 'family' },
+    { id: 'nature', label: 'ธรรมชาติ', emoji: '🌿', type: 'nature' },
+    { id: 'adventure', label: 'ผจญภัย', emoji: '🏔️', type: 'adventure' }
+  ];
+
+  const toggleQuickFilter = (filterId: string) => {
+    setActiveQuickFilters(prev => 
+      prev.includes(filterId) 
+        ? prev.filter(id => id !== filterId)
+        : [...prev, filterId]
+    );
+  };
+
+  // Search suggestions
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const allSuggestions = ['ญี่ปุ่น', 'เกาหลีใต้', 'ยุโรป', 'อิตาลี', 'ฝรั่งเศส', 'สวิตเซอร์แลนด์', 'ตุรกี', 'อียิปต์', 'ดูไบ', 'ออสเตรเลีย', 'สิงคโปร์', 'มาเลเซีย', 'โตเกียว', 'โอซาก้า', 'เกียวโต', 'ปารีส', 'โรม', 'ฟลอเรนซ์', 'เวนิส', 'ซิดนีย์', 'เมลเบิร์น'];
+  
+  // Filter suggestions based on input
+  const filteredSuggestions = useMemo(() => {
+    if (!destination) return allSuggestions.slice(0, 6);
+    return allSuggestions.filter(suggestion => 
+      suggestion.toLowerCase().includes(destination.toLowerCase())
+    ).slice(0, 8);
+  }, [destination]);
+
+  // Close suggestions on scroll or click outside
+  useEffect(() => {
+    const handleScroll = () => {
+      if (showSuggestions && searchSectionRef.current) {
+        const rect = searchSectionRef.current.getBoundingClientRect();
+        // ปิดเมื่อ search section ออกจากมุมมอง (scroll ผ่านไปแล้ว)
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          setShowSuggestions(false);
+        }
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchFieldRef.current && !searchFieldRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    if (showSuggestions) {
+      window.addEventListener('scroll', handleScroll, true);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSuggestions]);
+
+  // Close date picker on scroll or click outside
+  useEffect(() => {
+    const handleScroll = () => {
+      if (showDatePicker && searchSectionRef.current) {
+        const rect = searchSectionRef.current.getBoundingClientRect();
+        // ปิดเมื่อ search section ออกจากมุมมอง (scroll ผ่านไปแล้ว)
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          setShowDatePicker(false);
+        }
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+        setShowDatePicker(false);
+      }
+    };
+
+    if (showDatePicker) {
+      window.addEventListener('scroll', handleScroll, true);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDatePicker]);
+
+  // Close budget picker on scroll or click outside
+  useEffect(() => {
+    const handleScroll = () => {
+      if (showBudgetPicker && searchSectionRef.current) {
+        const rect = searchSectionRef.current.getBoundingClientRect();
+        // ปิดเมื่อ search section ออกจากมุมมอง (scroll ผ่านไปแล้ว)
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          setShowBudgetPicker(false);
+        }
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (budgetPickerRef.current && !budgetPickerRef.current.contains(event.target as Node)) {
+        setShowBudgetPicker(false);
+      }
+    };
+
+    if (showBudgetPicker) {
+      window.addEventListener('scroll', handleScroll, true);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showBudgetPicker]);
+
+  // Close duration picker on scroll or click outside
+  useEffect(() => {
+    const handleScroll = () => {
+      if (showDurationPicker && searchSectionRef.current) {
+        const rect = searchSectionRef.current.getBoundingClientRect();
+        // ปิดเมื่อ search section ออกจากมุมมอง (scroll ผ่านไปแล้ว)
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          setShowDurationPicker(false);
+        }
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (durationPickerRef.current && !durationPickerRef.current.contains(event.target as Node)) {
+        setShowDurationPicker(false);
+      }
+    };
+
+    if (showDurationPicker) {
+      window.addEventListener('scroll', handleScroll, true);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDurationPicker]);
+
+  // Infinite scroll
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          loadMoreTours();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [hasMore, loading]);
+
+  const loadMoreTours = useCallback(() => {
+    if (loading) return;
+    
+    setLoading(true);
+    setTimeout(() => {
+      const nextPage = page + 1;
+      const startIdx = nextPage * 12;
+      const endIdx = startIdx + 12;
+      const newTours = mockTours.slice(startIdx, endIdx);
+      
+      if (newTours.length > 0) {
+        setTours(prev => [...prev, ...newTours]);
+        setFilteredTours(prev => [...prev, ...newTours]);
+        setPage(nextPage);
+      } else {
+        setHasMore(false);
+      }
+      setLoading(false);
+    }, 800);
+  }, [page, loading]);
+
+  const handleSearch = () => {
+    // Implement search logic
+    console.log('Searching...', { destination, dateRange, budget, duration, travelers });
+  };
+
+  const handleReset = () => {
+    setDestination('');
+    setDateRange({ start: '', end: '' });
+    setBudget({ min: '', max: '' });
+    setDuration('');
+    setTravelers('2');
+  };
+
+  const toggleCompare = (tourId: string) => {
+    setCompareList(prev => {
+      if (prev.includes(tourId)) {
+        return prev.filter(id => id !== tourId);
+      }
+      if (prev.length < 4) {
+        return [...prev, tourId];
+      }
+      return prev;
+    });
+  };
+
+  const toggleSave = (tourId: string) => {
+    setSavedList(prev => 
+      prev.includes(tourId) 
+        ? prev.filter(id => id !== tourId)
+        : [...prev, tourId]
+    );
+  };
+
+  // Date helper functions
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('th-TH', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  const generateCalendar = () => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDay = firstDay.getDay();
+    
+    const days = [];
+    
+    // Empty cells for days before month starts
+    for (let i = 0; i < startDay; i++) {
+      days.push(null);
+    }
+    
+    // Days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push(new Date(currentYear, currentMonth, day));
+    }
+    
+    return days;
+  };
+
+  const handleDateSelect = (date: Date) => {
+    const formattedDate = formatDate(date);
+    if (selectedDateType === 'start') {
+      setDateRange(prev => ({ ...prev, start: formattedDate }));
+      setSelectedDateType('end');
+    } else {
+      setDateRange(prev => ({ ...prev, end: formattedDate }));
+      setShowDatePicker(false);
+    }
+  };
+
+  // Budget ranges
+  const budgetRanges = [
+    { label: 'น้อยกว่า 10,000 บาท', value: { min: 0, max: 9999 } },
+    { label: '10,000 - 15,000 บาท', value: { min: 10000, max: 15000 } },
+    { label: '15,000 - 20,000 บาท', value: { min: 15000, max: 20000 } },
+    { label: '20,000 - 25,000 บาท', value: { min: 20000, max: 25000 } },
+    { label: '25,000 - 30,000 บาท', value: { min: 25000, max: 30000 } },
+    { label: 'มากกว่า 30,000 บาท', value: { min: 30000, max: 999999 } }
+  ];
+
+  const handleBudgetSelect = (range: typeof budgetRanges[0]) => {
+    setBudget({
+      min: range.value.min.toString(),
+      max: range.value.max === 999999 ? '' : range.value.max.toString()
+    });
+    setShowBudgetPicker(false);
+  };
+
+  const getBudgetDisplayText = () => {
+    if (!budget.min && !budget.max) return '';
+    
+    const selectedRange = budgetRanges.find(range => 
+      range.value.min.toString() === budget.min && 
+      (range.value.max === 999999 ? budget.max === '' : range.value.max.toString() === budget.max)
+    );
+    
+    if (selectedRange) {
+      return selectedRange.label;
+    }
+    
+    if (budget.min && budget.max) {
+      return `${parseInt(budget.min).toLocaleString()} - ${parseInt(budget.max).toLocaleString()} บาท`;
+    } else if (budget.min) {
+      return `เริ่มต้น ${parseInt(budget.min).toLocaleString()} บาท`;
+    } else if (budget.max) {
+      return `ไม่เกิน ${parseInt(budget.max).toLocaleString()} บาท`;
+    }
+    
+    return '';
+  };
+
+  // Duration options
+  const durationOptions = [
+    { label: '3 วัน 2 คืน', value: '3d2n' },
+    { label: '4 วัน 3 คืน', value: '4d3n' },
+    { label: '5 วัน 4 คืน', value: '5d4n' },
+    { label: '6 วัน 5 คืน', value: '6d5n' },
+    { label: '7 วัน 6 คืน', value: '7d6n' },
+    { label: '8 วัน 7 คืน', value: '8d7n' },
+    { label: '9 วัน 8 คืน', value: '9d8n' },
+    { label: '10+ วัน', value: '10+' }
+  ];
+
+  const handleDurationSelect = (option: typeof durationOptions[0]) => {
+    setDuration(option.value);
+    setShowDurationPicker(false);
+  };
+
+  const getDurationDisplayText = () => {
+    const selectedOption = durationOptions.find(option => option.value === duration);
+    return selectedOption ? selectedOption.label : '';
+  };
+
+  // Filter options data
+  const filterOptions = {
+    // จุดหมาย/ภูมิศาสตร์
+    countries: ['ญี่ปุ่น', 'เกาหลีใต้', 'ฝรั่งเศส', 'อิตาลี', 'สวิตเซอร์แลนด์', 'ตุรกี', 'อียิปต์', 'ดูไบ', 'ออสเตรเลีย', 'สิงคโปร์', 'มาเลเซีย', 'จีน', 'อินเดีย', 'นิวซีแลนด์', 'แคนาดา', 'สหรัฐอเมริกา', 'บราซิล', 'อาร์เจนตินา', 'เปรู', 'เคนยา', 'แทนซาเนีย', 'โมร็อกโก'],
+    continents: ['เอเชีย', 'ยุโรป', 'อเมริกาเหนือ', 'อเมริกาใต้', 'โอเชียเนีย', 'แอฟริกา'],
+    climates: ['เมืองหนาว', 'เมืองร้อน', '4 ฤดู', 'เขตร้อนชื้น', 'ทะเลทราย', 'ภูเขาสูง'],
+    
+    // เวลา/ช่วงเดินทาง
+    months: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+    weekdays: ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'],
+    festivals: ['ปีใหม่', 'สงกรานต์', 'ลอยกระทง', 'วาเลนไทน์', 'ฮาโลวีน', 'คริสต์มาส', 'ตรุษจีน', 'เทศกาลดอกซากุระ'],
+    
+    // ราคา/งบประมาณ
+    paymentType: ['จ่ายเต็ม', 'ผ่อนชำระ', 'มัดจำ 30%', 'บัตรเครดิต', 'โอนธนาคาร'],
+    
+    // การเดินทาง/ขนส่ง
+    airlines: ['Thai Airways', 'Singapore Airlines', 'Emirates', 'Qatar Airways', 'ANA', 'EVA Air', 'Japan Airlines', 'Korean Air', 'Cathay Pacific', 'Malaysia Airlines', 'Scoot', 'AirAsia', 'Jetstar'],
+    airports: ['สุวรรณภูมิ (BKK)', 'ดอนเมือง (DMK)', 'เชียงใหม่ (CNX)', 'หาดใหญ่ (HDY)', 'ภูเก็ต (HKT)', 'อุดรธานี (UTH)'],
+    seatClass: ['Economy', 'Premium Economy', 'Business', 'First Class'],
+    stops: ['เที่ยวบินตรง', '1 ต่อเครื่อง', '2+ ต่อเครื่อง'],
+    
+    // ที่พัก
+    hotelStars: ['3 ดาว', '4 ดาว', '5 ดาว', 'Boutique', 'Luxury Resort'],
+    hotelTypes: ['โรงแรม', 'รีสอร์ท', 'บูติก', 'Local Stay', 'Airbnb', 'Hostel', 'Villa'],
+    hotelLocations: ['ใจกลางเมือง', 'ชายหาด', 'ภูเขา', 'ใกล้สนามบิน', 'ย่านช้อปปิ้ง', 'ย่านประวัติศาสตร์'],
+    
+    // ประเภททัวร์/กลุ่มเป้าหมาย
+    tourTypes: ['พักผ่อน', 'ผจญภัย', 'หรูหรา', 'ครอบครัว', 'ธรรมชาติ', 'ศิลปวัฒนธรรม', 'อาหาร', 'ช้อปปิ้ง', 'ประวัติศาสตร์', 'ศาสนา'],
+    groupSizes: ['Private (1-4)', 'กลุ่มเล็ก (5-15)', 'กลุ่มกลาง (16-25)', 'กลุ่มใหญ่ (26+)'],
+    guideLanguages: ['ไทย', 'อังกฤษ', 'ไทย+อังกฤษ', 'จีน', 'ญี่ปุ่น', 'เกาหลี'],
+    targetAge: ['Family', 'Senior (55+)', 'Young Adult (18-35)', 'Honeymoon', 'Students', 'Business'],
+    
+    // กิจกรรม/ไฮไลต์
+    activityTypes: ['ธรรมชาติ', 'วัฒนธรรม', 'ช้อปปิ้ง', 'อาหาร', 'ผจญภัย', 'กีฬา', 'สปา', 'ถ่ายรูป', 'เรียนรู้'],
+    specialActivities: ['Safari', 'Cruise', 'Trekking', 'Diving', 'Cooking Class', 'Hot Air Balloon', 'Bungee Jump', 'Skydiving', 'Whale Watching', 'Northern Lights'],
+    landmarks: ['UNESCO World Heritage', 'วัด/โบสถ์', 'พิพิธภัณฑ์', 'ตลาดท้องถิ่น', 'สวนสาธารณะ', 'ชายหาด', 'ภูเขา', 'น้ำตก', 'ถ้ำ', 'ปราสาท'],
+    
+    // เงื่อนไข/บริการ
+    visaRequirement: ['ไม่ต้องวีซ่า', 'วีซ่าออนไลน์', 'วีซ่าปกติ', 'มีบริการขอวีซ่า'],
+    meals: ['ครบทุกมื้อ', 'อาหารเช้า+เย็น', 'อาหารเช้าอย่างเดียว', 'ไม่รวมอาหาร', 'Halal Food', 'Vegetarian'],
+    transport: ['รวมรถรับส่ง', 'รถโค้ชปรับอากาศ', 'รถตู้', 'รถไฟ', 'เรือ', 'ไม่รวมรถรับส่ง'],
+    
+    // คุณภาพ/รีวิว
+    certifications: ['SHA+', 'Amazing Thailand', 'TripAdvisor Excellence', 'ISO Certified', 'Green Tourism'],
+    
+    // ธีม/สไตล์
+    themes: ['Romantic', 'Adventure', 'Cultural', 'Relaxation', 'Photography', 'Spiritual', 'Wellness', 'Gastronomy', 'Wildlife', 'Architecture'],
+    styles: ['Classic', 'Modern', 'Local Experience', 'Luxury', 'Budget', 'Backpacker', 'Glamping', 'Sustainable']
+  };
+
+  // Toggle filter section
+  const toggleFilterSection = (sectionId: string) => {
+    setOpenFilterSections(prev => 
+      prev.includes(sectionId) 
+        ? prev.filter(id => id !== sectionId)
+        : [...prev, sectionId]
+    );
+  };
+
+  const TourCard = ({ tour }: { tour: any }) => {
+    const isComparing = compareList.includes(tour.id);
+    const isSaved = savedList.includes(tour.id);
+    const discount = tour.originalPrice ? Math.round(((tour.originalPrice - tour.price) / tour.originalPrice) * 100) : 0;
+    
+    // Generate random values for urgency/trust signals based on tour ID
+    const tourIndex = parseInt(tour.id.split('-')[1]);
+    const viewersCount = 8 + (tourIndex % 15);
+    const lastBookedHours = 1 + (tourIndex % 6);
+    const hasFlashSale = tourIndex % 4 === 0;
+    const hasEarlyBird = tourIndex % 3 === 0;
+    const hasGroupDiscount = tourIndex % 5 === 0;
+
+    return (
+      <article className="tour-card">
+        <div className="card-image-wrapper">
+          <img
+            src={tour.image}
+            alt={tour.title}
+            width={720}
+            height={480}
+            className="card-image"
+            loading="lazy"
+          />
+          {tour.originalPrice && (
+            <div className="corner-ribbon">
+              <span className="ribbon-text">-{discount}%</span>
+            </div>
+          )}
+          {tour.badge && (
+            <span className={`badge badge-${tour.badge.toLowerCase().replace(/\s+/g, '-')}`}>
+              {tour.badge}
+            </span>
+          )}
+          {tour.soldOut && (
+            <span className="badge badge-soldout">เต็มแล้ว</span>
+          )}
+          {tour.seatsLeft && tour.seatsLeft <= 5 && !tour.soldOut && (
+            <span className="badge badge-limited">เหลือ {tour.seatsLeft} ที่นั่ง</span>
+          )}
+          {/* Urgency: Live viewers indicator */}
+          {!tour.soldOut && viewersCount > 10 && (
+            <div className="live-viewers">
+              <span className="live-dot"></span>
+              <span>{viewersCount} คนกำลังดู</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="card-content">
+          <div className="card-header">
+            <h3 className="card-title">
+              <a href={`/tours/${tour.id}`} className="card-link">
+                {tour.title}
+              </a>
+            </h3>
+            <p className="card-location">
+              <MapPin className="icon-inline" />
+              {tour.location}
+            </p>
+          </div>
+
+          <div className="card-rating">
+            <div className="rating-stars">
+              <Star className="star-icon" />
+              <span className="rating-value">{tour.rating.toFixed(1)}</span>
+            </div>
+            <span className="review-count">({tour.reviews} รีวิว)</span>
+            {/* Trust Signal: Best Seller */}
+            {tour.reviews > 200 && (
+              <span className="trust-badge bestseller">⭐ Best Seller</span>
+            )}
+          </div>
+          
+          {/* Trust Signal: Last booked */}
+          {!tour.soldOut && lastBookedHours <= 3 && (
+            <div className="last-booked">
+              <Clock className="icon-inline" />
+              <span>จองล่าสุด {lastBookedHours} ชม.ที่แล้ว</span>
+            </div>
+          )}
+
+          <div className="card-highlights">
+            {tour.highlights.slice(0, 3).map((highlight: string, idx: number) => (
+              <span key={idx} className="highlight-item">
+                {idx === 0 && <Mountain className="icon-inline" />}
+                {idx === 1 && <Camera className="icon-inline" />}
+                {idx === 2 && <ShoppingBag className="icon-inline" />}
+                {highlight}
+              </span>
+            ))}
+          </div>
+
+          <div className="card-details">
+            <span className="detail-item">
+              <Clock className="icon-inline" />
+              {tour.duration}
+            </span>
+            <span className="detail-item">
+              <Calendar className="icon-inline" />
+              {tour.departureMonths}
+            </span>
+            {tour.airline && (
+              <span className="detail-item">
+                <Plane className="icon-inline" />
+                {tour.airline}
+              </span>
+            )}
+          </div>
+
+          {/* Upsell Opportunities */}
+          <div className="upsell-section">
+            {hasFlashSale && !tour.soldOut && (
+              <div className="flash-sale-timer">
+                <span className="flash-icon">⚡</span>
+                <span>Flash Sale จบใน 23:59:00</span>
+              </div>
+            )}
+            
+            {hasEarlyBird && (
+              <div className="early-bird">
+                <span className="early-icon">🐦</span>
+                <span>จองล่วงหน้า 60 วัน ลด 10%</span>
+              </div>
+            )}
+            
+            {hasGroupDiscount && (
+              <div className="group-discount">
+                <span className="group-icon">👥</span>
+                <span>4 ท่านขึ้นไป ลดเพิ่ม 5%</span>
+              </div>
+            )}
+            
+            <div className="payment-options">
+              <span className="payment-badge">💳 ผ่อน 0% 3 เดือน</span>
+              <span className="payment-badge">✅ การันตีคืนเงิน</span>
+            </div>
+          </div>
+
+          <div className="card-price">
+            <div className="price-wrapper">
+              {tour.originalPrice && (
+                <>
+                  <span className="price-original">฿{tour.originalPrice.toLocaleString()}</span>
+                </>
+              )}
+              <span className="price-current">
+                <span className="price-label">เริ่มต้น</span>
+                <span className="price-amount">฿{tour.price.toLocaleString()}</span>
+                <span className="price-unit">/ท่าน</span>
+              </span>
+              <span className="price-tax">
+                {tour.includesTax ? 'รวมภาษีแล้ว' : 'ยังไม่รวมภาษี'}
+              </span>
+            </div>
+          </div>
+
+          <div className="card-actions">
+            <div className="action-buttons">
+              <button
+                className={`btn-icon btn-compare ${isComparing ? 'active' : ''}`}
+                onClick={() => toggleCompare(tour.id)}
+                aria-label="เปรียบเทียบ"
+              >
+                <Check className="icon" />
+              </button>
+              <button
+                className={`btn-icon btn-save ${isSaved ? 'active' : ''}`}
+                onClick={() => toggleSave(tour.id)}
+                aria-label="บันทึก"
+              >
+                <Heart className="icon" />
+              </button>
+              <button
+                className="btn-icon btn-share"
+                aria-label="แชร์"
+              >
+                <Share2 className="icon" />
+              </button>
+            </div>
+            <div className="action-cta">
+              <button 
+                className="btn btn-secondary btn-detail"
+                onClick={() => setQuickViewTour(tour)}
+              >
+                <Eye className="icon-inline" />
+                ดูรายละเอียด
+              </button>
+              <button 
+                className={`btn btn-primary btn-book ${tour.soldOut ? 'btn-notify' : ''} ${!tour.soldOut && tour.seatsLeft && tour.seatsLeft <= 3 ? 'btn-urgent' : ''}`}
+                disabled={tour.soldOut}
+              >
+                {tour.soldOut ? (
+                  <>📧 แจ้งเตือนรอบใหม่</>
+                ) : tour.seatsLeft && tour.seatsLeft <= 3 ? (
+                  <>🔥 จองด่วน!</>
+                ) : (
+                  <>✨ จองเลย</>
+                )}
+              </button>
+            </div>
+            
+            {/* Additional CTAs */}
+            <div className="action-extra">
+              <button className="btn-text btn-whatsapp">
+                <MessageCircle className="icon-inline" />
+                <span>สอบถามผ่าน LINE</span>
+              </button>
+              <button className="btn-text btn-quote">
+                <FileText className="icon-inline" />
+                <span>ขอใบเสนอราคา</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    );
+  };
+
+  return (
+    <>
+      <style jsx global>{`
+        :root {
+          /* Colors */
+          --color-primary: #0B1F3B;
+          --color-accent: #FFB400;
+          --color-bg: #FFFFFF;
+          --color-bg-soft: #F7F9FC;
+          --color-border: #E5EAF0;
+          --color-text: #1A1D29;
+          --color-muted: #586077;
+          --color-success: #2E7D32;
+          --color-error: #D32F2F;
+          --color-info: #1976D2;
+          --color-warning: #FF8F00;
+
+          /* Typography */
+          --fs-sm: 14px;
+          --fs-base: 16px;
+          --fs-lg: 18px;
+          --fs-xl: 22px;
+          --fs-2xl: 28px;
+          --fs-3xl: 32px;
+          --fs-4xl: 40px;
+          --lh-body: 1.5;
+          --lh-heading: 1.3;
+
+          /* Spacing */
+          --space-1: 8px;
+          --space-2: 12px;
+          --space-3: 16px;
+          --space-4: 24px;
+          --space-6: 32px;
+          --space-8: 48px;
+          --space-10: 64px;
+
+          /* Border radius */
+          --radius-2: 8px;
+          --radius-3: 12px;
+
+          /* Shadows */
+          --shadow-1: 0 2px 10px rgba(0, 0, 0, 0.06);
+          --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+          /* Layout */
+          --max-content: 1200px;
+          --atf-search-max-h-desktop: 160px;
+          --atf-search-max-h-tablet: 200px;
+          --atf-search-max-h-mobile: 220px;
+        }
+
+        .tour-search-20 {
+          min-height: 100vh;
+          background: var(--color-bg);
+        }
+
+        /* Micro Search Section */
+        .micro-search-section {
+          background: var(--color-bg-soft);
+          padding: var(--space-4) 0;
+          max-height: var(--atf-search-max-h-desktop);
+          overflow: visible;
+          position: relative;
+        }
+
+        .micro-search-container {
+          max-width: var(--max-content);
+          margin: 0 auto;
+          padding: 0 var(--space-3);
+        }
+
+        .micro-search {
+          background: var(--color-bg);
+          border-radius: var(--radius-3);
+          padding: var(--space-3);
+          box-shadow: var(--shadow-1);
+          display: flex;
+          gap: var(--space-2);
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        .search-field {
+          flex: 1;
+          min-width: 200px;
+          position: relative;
+        }
+
+        .search-field.destination-field {
+          min-width: 280px;
+        }
+
+        .search-input {
+          width: 100%;
+          height: 48px;
+          padding: 0 var(--space-3);
+          padding-left: 40px;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          font-size: var(--fs-base);
+          transition: all 0.2s ease;
+          background: var(--color-bg);
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: var(--color-info);
+          box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 20px;
+          height: 20px;
+          color: var(--color-muted);
+        }
+
+        .search-actions {
+          display: flex;
+          gap: var(--space-2);
+        }
+
+        .btn {
+          padding: 0 var(--space-4);
+          height: 48px;
+          border-radius: var(--radius-2);
+          font-size: var(--fs-base);
+          font-weight: 500;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-1);
+        }
+
+        .btn-primary {
+          background: var(--color-accent);
+          color: var(--color-primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+          background: #FFA000;
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-1);
+        }
+
+        .btn-secondary {
+          background: var(--color-bg);
+          color: var(--color-text);
+          border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+          background: var(--color-bg-soft);
+        }
+
+        .btn-ghost {
+          background: transparent;
+          color: var(--color-muted);
+          border: none;
+        }
+
+        .btn-ghost:hover:not(:disabled) {
+          color: var(--color-text);
+          background: var(--color-bg-soft);
+        }
+
+        .btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Suggestions dropdown */
+        .suggestions-dropdown {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          margin-top: 4px;
+          box-shadow: var(--shadow-2);
+          z-index: 10;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+
+        .suggestion-item {
+          padding: var(--space-2) var(--space-3);
+          cursor: pointer;
+          transition: background 0.15s ease;
+        }
+
+        .suggestion-item:hover {
+          background: var(--color-bg-soft);
+        }
+
+        /* Date picker */
+        .date-picker {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          margin-top: 4px;
+          box-shadow: var(--shadow-2);
+          z-index: 10;
+          padding: var(--space-3);
+          min-width: 300px;
+        }
+
+        .date-picker-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--space-3);
+          padding-bottom: var(--space-2);
+          border-bottom: 1px solid var(--color-border);
+        }
+
+        .date-picker-title {
+          font-weight: 600;
+          color: var(--color-text);
+        }
+
+        .date-picker-type {
+          font-size: var(--fs-sm);
+          color: var(--color-muted);
+        }
+
+        .calendar-grid {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: 4px;
+        }
+
+        .calendar-day {
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          background: transparent;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: var(--fs-sm);
+          transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover:not(:disabled) {
+          background: var(--color-bg-soft);
+        }
+
+        .calendar-day.today {
+          background: var(--color-accent);
+          color: var(--color-primary);
+          font-weight: 600;
+        }
+
+        .calendar-day.selected {
+          background: var(--color-primary);
+          color: white;
+        }
+
+        .calendar-day:disabled {
+          color: var(--color-muted);
+          cursor: not-allowed;
+        }
+
+        .calendar-day-header {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--color-muted);
+          text-align: center;
+          padding: var(--space-1);
+        }
+
+        .date-picker-quick {
+          margin-top: var(--space-3);
+          padding-top: var(--space-2);
+          border-top: 1px solid var(--color-border);
+        }
+
+        .quick-date-option {
+          display: block;
+          width: 100%;
+          padding: var(--space-1) var(--space-2);
+          background: transparent;
+          border: none;
+          text-align: left;
+          cursor: pointer;
+          border-radius: 4px;
+          font-size: var(--fs-sm);
+          color: var(--color-text);
+          transition: background 0.2s ease;
+        }
+
+        .quick-date-option:hover {
+          background: var(--color-bg-soft);
+        }
+
+        /* Budget picker */
+        .budget-picker {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          margin-top: 4px;
+          box-shadow: var(--shadow-2);
+          z-index: 10;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+
+        .budget-option {
+          padding: var(--space-2) var(--space-3);
+          cursor: pointer;
+          transition: background 0.15s ease;
+          border-bottom: 1px solid var(--color-border);
+          font-size: var(--fs-base);
+        }
+
+        .budget-option:last-child {
+          border-bottom: none;
+        }
+
+        .budget-option:hover {
+          background: var(--color-bg-soft);
+        }
+
+        .budget-option.selected {
+          background: var(--color-primary);
+          color: white;
+        }
+
+        /* Duration picker */
+        .duration-picker {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          margin-top: 4px;
+          box-shadow: var(--shadow-2);
+          z-index: 10;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+
+        .duration-option {
+          padding: var(--space-2) var(--space-3);
+          cursor: pointer;
+          transition: background 0.15s ease;
+          border-bottom: 1px solid var(--color-border);
+          font-size: var(--fs-base);
+        }
+
+        .duration-option:last-child {
+          border-bottom: none;
+        }
+
+        .duration-option:hover {
+          background: var(--color-bg-soft);
+        }
+
+        .duration-option.selected {
+          background: var(--color-primary);
+          color: white;
+        }
+
+        /* Results section */
+        .results-section {
+          max-width: var(--max-content);
+          margin: 0 auto;
+          padding: var(--space-4) var(--space-3);
+        }
+
+        /* Results toolbar */
+        .results-toolbar {
+          background: var(--color-bg);
+          border-bottom: 1px solid var(--color-border);
+          padding: var(--space-3) 0;
+          margin-bottom: var(--space-4);
+          position: sticky;
+          top: 0;
+          z-index: 5;
+        }
+
+        .toolbar-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: var(--space-3);
+          flex-wrap: wrap;
+        }
+
+        .toolbar-left {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          flex: 1;
+        }
+
+        .results-count {
+          font-size: var(--fs-lg);
+          color: var(--color-text);
+          font-weight: 500;
+        }
+
+        .sort-dropdown {
+          position: relative;
+        }
+
+        .sort-select {
+          appearance: none;
+          padding: var(--space-1) var(--space-3);
+          padding-right: 36px;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          background: var(--color-bg);
+          font-size: var(--fs-base);
+          cursor: pointer;
+          height: 40px;
+        }
+
+        .sort-icon {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 16px;
+          height: 16px;
+          pointer-events: none;
+          color: var(--color-muted);
+        }
+
+        .toolbar-right {
+          display: flex;
+          gap: var(--space-2);
+          align-items: center;
+        }
+
+        .view-toggle {
+          display: flex;
+          background: var(--color-bg-soft);
+          border-radius: var(--radius-2);
+          padding: 4px;
+        }
+
+        .view-btn {
+          padding: var(--space-1) var(--space-2);
+          background: transparent;
+          border: none;
+          border-radius: calc(var(--radius-2) - 4px);
+          cursor: pointer;
+          color: var(--color-muted);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+          background: var(--color-bg);
+          color: var(--color-text);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-filter {
+          padding: var(--space-1) var(--space-3);
+          height: 40px;
+          background: var(--color-primary);
+          color: white;
+          border: none;
+          border-radius: var(--radius-2);
+          display: flex;
+          align-items: center;
+          gap: var(--space-1);
+          cursor: pointer;
+          font-size: var(--fs-base);
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+
+        .btn-filter:hover {
+          background: #0A1A2E;
+        }
+
+        /* Quick filter chips */
+        .quick-filters {
+          display: flex;
+          gap: var(--space-2);
+          margin-bottom: var(--space-4);
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding: var(--space-2) 0;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-filters::-webkit-scrollbar {
+          display: none;
+        }
+
+        .quick-filter {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-1);
+          padding: 10px 16px;
+          background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-soft) 100%);
+          border: 1px solid var(--color-border);
+          border-radius: 22px;
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--color-text);
+          white-space: nowrap;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: hidden;
+          min-width: max-content;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+          min-height: 44px;
+        }
+
+        .filter-shimmer {
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+          transition: left 0.5s ease;
+          pointer-events: none;
+        }
+
+        .quick-filter:hover .filter-shimmer {
+          left: 100%;
+        }
+
+        .quick-filter:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .quick-filter.active {
+          color: white;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .quick-filter.active .filter-shimmer {
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .filter-emoji {
+          font-size: 16px;
+          transition: transform 0.2s ease;
+          display: inline-block;
+        }
+
+        .quick-filter:hover .filter-emoji {
+          transform: scale(1.1);
+        }
+
+        .quick-filter.active .filter-emoji {
+          transform: scale(1.05);
+        }
+
+        /* Filter type specific colors - subtle theme integration */
+        .quick-filter[data-filter-type="popular"] {
+          border-color: #E5E7EB;
+          background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+
+        .quick-filter[data-filter-type="popular"]:hover {
+          border-color: var(--color-accent);
+          background: linear-gradient(135deg, #FFF9E6 0%, #FFF5CC 100%);
+          color: var(--color-primary);
+        }
+
+        .quick-filter[data-filter-type="popular"].active {
+          background: linear-gradient(135deg, var(--color-accent) 0%, #E6A200 100%);
+          border-color: var(--color-accent);
+          color: var(--color-primary);
+        }
+
+        .quick-filter[data-filter-type="promotion"] {
+          border-color: #E5E7EB;
+          background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+
+        .quick-filter[data-filter-type="promotion"]:hover {
+          border-color: var(--color-accent);
+          background: linear-gradient(135deg, #FFF9E6 0%, #FFF5CC 100%);
+          color: var(--color-primary);
+        }
+
+        .quick-filter[data-filter-type="promotion"].active {
+          background: linear-gradient(135deg, var(--color-accent) 0%, #E6A200 100%);
+          border-color: var(--color-accent);
+          color: var(--color-primary);
+        }
+
+        .quick-filter[data-filter-type="luxury"] {
+          border-color: #E5E7EB;
+          background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+
+        .quick-filter[data-filter-type="luxury"]:hover {
+          border-color: var(--color-primary);
+          background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+          color: var(--color-primary);
+        }
+
+        .quick-filter[data-filter-type="luxury"].active {
+          background: linear-gradient(135deg, var(--color-primary) 0%, #0A1A2E 100%);
+          border-color: var(--color-primary);
+          color: white;
+        }
+
+        .quick-filter[data-filter-type="family"] {
+          border-color: #E5E7EB;
+          background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+
+        .quick-filter[data-filter-type="family"]:hover {
+          border-color: var(--color-info);
+          background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+          color: var(--color-info);
+        }
+
+        .quick-filter[data-filter-type="family"].active {
+          background: linear-gradient(135deg, var(--color-info) 0%, #0284C7 100%);
+          border-color: var(--color-info);
+          color: white;
+        }
+
+        .quick-filter[data-filter-type="nature"] {
+          border-color: #E5E7EB;
+          background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+
+        .quick-filter[data-filter-type="nature"]:hover {
+          border-color: #10B981;
+          background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+          color: #059669;
+        }
+
+        .quick-filter[data-filter-type="nature"].active {
+          background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+          border-color: #10B981;
+          color: white;
+        }
+
+        .quick-filter[data-filter-type="adventure"] {
+          border-color: #E5E7EB;
+          background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+
+        .quick-filter[data-filter-type="adventure"]:hover {
+          border-color: var(--color-accent);
+          background: linear-gradient(135deg, #FFF9E6 0%, #FFF5CC 100%);
+          color: var(--color-primary);
+        }
+
+        .quick-filter[data-filter-type="adventure"].active {
+          background: linear-gradient(135deg, var(--color-accent) 0%, #E6A200 100%);
+          border-color: var(--color-accent);
+          color: var(--color-primary);
+        }
+
+        /* Tour grid */
+        .tours-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: var(--space-4);
+          margin-bottom: var(--space-6);
+        }
+
+        .tours-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-4);
+          margin-bottom: var(--space-6);
+        }
+
+        /* Tour card */
+        .tour-card {
+          background: var(--color-bg);
+          border-radius: var(--radius-3);
+          overflow: hidden;
+          box-shadow: var(--shadow-1);
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+
+        .tour-card:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-2);
+        }
+
+        .card-image-wrapper {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          overflow: hidden;
+          background: var(--color-bg-soft);
+          min-height: 240px;
+        }
+
+        .card-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        .tour-card:hover .card-image {
+          transform: scale(1.05);
+        }
+
+        .badge {
+          position: absolute;
+          top: var(--space-2);
+          left: var(--space-2);
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 600;
+          text-transform: uppercase;
+          z-index: 1;
+        }
+
+        .badge-ลดราคา {
+          background: var(--color-error);
+          color: white;
+        }
+
+        .badge-ยอดนิยม {
+          background: var(--color-accent);
+          color: var(--color-primary);
+        }
+
+        .badge-eco-tour {
+          background: var(--color-success);
+          color: white;
+        }
+
+        .badge-limited,
+        .badge-ที่นั่งเหลือน้อย {
+          background: var(--color-warning);
+          color: white;
+        }
+
+        .badge-soldout {
+          background: var(--color-muted);
+          color: white;
+        }
+
+        .card-content {
+          padding: var(--space-3);
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+          flex: 1;
+        }
+
+        .card-header {
+          margin-bottom: var(--space-1);
+        }
+
+        .card-title {
+          font-size: var(--fs-lg);
+          font-weight: 600;
+          line-height: var(--lh-heading);
+          color: var(--color-text);
+          margin: 0 0 var(--space-1) 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .card-link {
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .card-link:hover {
+          color: var(--color-primary);
+        }
+
+        .card-location {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: var(--color-muted);
+          font-size: var(--fs-sm);
+          margin: 0;
+        }
+
+        .icon-inline {
+          width: 16px;
+          height: 16px;
+          flex-shrink: 0;
+        }
+
+        .card-rating {
+          display: flex;
+          align-items: center;
+          gap: var(--space-1);
+        }
+
+        .rating-stars {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .star-icon {
+          width: 16px;
+          height: 16px;
+          color: var(--color-accent);
+          fill: var(--color-accent);
+        }
+
+        .rating-value {
+          font-weight: 600;
+          color: var(--color-text);
+        }
+
+        .review-count {
+          color: var(--color-muted);
+          font-size: var(--fs-sm);
+        }
+
+        .card-highlights {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+        }
+
+        .highlight-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: var(--fs-sm);
+          color: var(--color-muted);
+        }
+
+        .card-details {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+          padding-top: var(--space-2);
+          border-top: 1px solid var(--color-border);
+        }
+
+        .detail-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: var(--fs-sm);
+          color: var(--color-text);
+        }
+
+        .card-price {
+          margin-top: auto;
+          padding-top: var(--space-2);
+        }
+
+        .price-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .price-original {
+          color: var(--color-muted);
+          text-decoration: line-through;
+          font-size: var(--fs-sm);
+        }
+
+        .corner-ribbon {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, #FF3B30 0%, #FF6B35 30%, #FF9500 100%);
+          clip-path: polygon(0 0, 100% 0, 0 100%);
+          z-index: 15;
+          box-shadow: 0 6px 15px rgba(255, 59, 48, 0.4);
+          animation: ribbon-pulse 3s ease-in-out infinite;
+        }
+
+        .corner-ribbon::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.3) 0%, 
+            rgba(255, 255, 255, 0) 50%, 
+            rgba(255, 255, 255, 0.2) 100%);
+          clip-path: polygon(0 0, 100% 0, 0 100%);
+          animation: ribbon-shimmer 2s ease-in-out infinite;
+        }
+
+        .corner-ribbon::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 60%);
+          clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+
+        .ribbon-text {
+          position: absolute;
+          top: 12px;
+          left: 8px;
+          color: white;
+          font-size: 11px;
+          font-weight: 800;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+          transform: rotate(-45deg);
+          letter-spacing: 0.3px;
+          line-height: 1;
+          text-align: center;
+        }
+
+        @keyframes ribbon-pulse {
+          0%, 100% {
+            box-shadow: 0 6px 15px rgba(255, 59, 48, 0.4);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 8px 25px rgba(255, 59, 48, 0.6);
+            transform: scale(1.05);
+          }
+        }
+
+        @keyframes ribbon-shimmer {
+          0% {
+            background: linear-gradient(135deg, 
+              rgba(255, 255, 255, 0.3) 0%, 
+              rgba(255, 255, 255, 0) 50%, 
+              rgba(255, 255, 255, 0.2) 100%);
+          }
+          50% {
+            background: linear-gradient(135deg, 
+              rgba(255, 255, 255, 0.5) 0%, 
+              rgba(255, 255, 255, 0.2) 50%, 
+              rgba(255, 255, 255, 0.4) 100%);
+          }
+          100% {
+            background: linear-gradient(135deg, 
+              rgba(255, 255, 255, 0.3) 0%, 
+              rgba(255, 255, 255, 0) 50%, 
+              rgba(255, 255, 255, 0.2) 100%);
+          }
+        }
+
+        .price-current {
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+        }
+
+        .price-label {
+          font-size: var(--fs-sm);
+          color: var(--color-muted);
+        }
+
+        .price-amount {
+          font-size: var(--fs-xl);
+          font-weight: 700;
+          color: var(--color-primary);
+        }
+
+        .price-unit {
+          font-size: var(--fs-sm);
+          color: var(--color-muted);
+        }
+
+        .price-tax {
+          font-size: 14px;
+          color: var(--color-muted);
+        }
+
+        .card-actions {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+          margin-top: var(--space-3);
+          padding-top: var(--space-3);
+          border-top: 1px solid var(--color-border);
+          overflow: hidden;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: var(--space-1);
+        }
+
+        .btn-icon {
+          width: 44px;
+          height: 44px;
+          border: 1px solid var(--color-border);
+          background: var(--color-bg);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+          border-color: var(--color-primary);
+          color: var(--color-primary);
+        }
+
+        .btn-icon.active {
+          background: var(--color-primary);
+          color: white;
+          border-color: var(--color-primary);
+        }
+
+        .btn-icon .icon {
+          width: 18px;
+          height: 18px;
+        }
+
+        .action-cta {
+          display: flex;
+          gap: var(--space-1);
+        }
+
+        .action-cta .btn {
+          padding: var(--space-2) var(--space-3);
+          height: 44px;
+          font-size: 14px;
+          min-width: 120px;
+          white-space: nowrap;
+        }
+        
+        /* New CTA & Upsell Styles */
+        .live-viewers {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          backdrop-filter: blur(10px);
+          z-index: 2;
+        }
+        
+        .live-dot {
+          width: 8px;
+          height: 8px;
+          background: #ff4444;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.2); }
+        }
+        
+        .last-booked {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 14px;
+          color: var(--color-success);
+          margin-top: 8px;
+          padding: 4px 8px;
+          background: rgba(34, 197, 94, 0.1);
+          border-radius: var(--radius-1);
+          width: fit-content;
+        }
+        
+        .trust-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 600;
+          margin-left: 8px;
+        }
+        
+        .trust-badge.bestseller {
+          background: linear-gradient(135deg, #FFD700, #FFA500);
+          color: white;
+        }
+        
+        .upsell-section {
+          padding: 12px 0;
+          border-top: 1px solid var(--color-border);
+          margin-top: 12px;
+        }
+        
+        .flash-sale-timer {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px;
+          background: linear-gradient(135deg, #FF6B6B, #FF8787);
+          color: white;
+          border-radius: var(--radius-2);
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 8px;
+          animation: flashPulse 2s infinite;
+        }
+        
+        @keyframes flashPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        
+        .early-bird, .group-discount {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 10px;
+          background: var(--color-bg-soft);
+          border-left: 3px solid var(--color-accent);
+          margin-bottom: 6px;
+          font-size: 14px;
+        }
+        
+        .payment-options {
+          display: flex;
+          gap: 8px;
+          margin-top: 8px;
+        }
+        
+        .payment-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 4px 8px;
+          background: var(--color-bg-soft);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-1);
+          font-size: 14px;
+          color: var(--color-muted);
+        }
+        
+        .btn-urgent {
+          animation: urgentPulse 1.5s infinite;
+          background: linear-gradient(135deg, #FF6B6B, #FF4757) !important;
+        }
+        
+        @keyframes urgentPulse {
+          0%, 100% { box-shadow: 0 2px 10px rgba(255, 71, 87, 0.3); }
+          50% { box-shadow: 0 2px 20px rgba(255, 71, 87, 0.5); }
+        }
+        
+        .btn-book {
+          font-weight: 600;
+          transition: all 0.3s ease;
+        }
+        
+        .btn-detail {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        
+        .action-extra {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px solid var(--color-border);
+        }
+        
+        .btn-text {
+          background: none;
+          border: none;
+          color: var(--color-info);
+          font-size: 14px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 4px 8px;
+          border-radius: var(--radius-1);
+          transition: all 0.2s ease;
+        }
+        
+        .btn-text:hover {
+          background: var(--color-bg-soft);
+          transform: translateY(-1px);
+        }
+        
+        .btn-text .icon-inline {
+          width: 14px;
+          height: 14px;
+        }
+
+        /* List view */
+        .tours-list .tour-card {
+          flex-direction: row;
+          height: auto;
+        }
+
+        .tours-list .card-image-wrapper {
+          width: 300px;
+          min-height: 200px;
+          flex-shrink: 0;
+        }
+
+        .tours-list .card-content {
+          flex: 1;
+        }
+
+        /* Compare bar */
+        .compare-bar {
+          position: sticky;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: var(--color-primary);
+          color: white;
+          padding: var(--space-3);
+          box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+          z-index: 10;
+        }
+
+        .compare-bar-content {
+          max-width: var(--max-content);
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: var(--space-3);
+        }
+
+        .compare-items {
+          display: flex;
+          gap: var(--space-2);
+          flex: 1;
+          overflow-x: auto;
+        }
+
+        .compare-item {
+          display: flex;
+          align-items: center;
+          gap: var(--space-1);
+          padding: var(--space-1) var(--space-2);
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: var(--radius-2);
+          white-space: nowrap;
+          font-size: var(--fs-sm);
+        }
+
+        .compare-item-remove {
+          background: transparent;
+          border: none;
+          color: white;
+          cursor: pointer;
+          padding: 0;
+          display: flex;
+          align-items: center;
+        }
+
+        .compare-actions {
+          display: flex;
+          gap: var(--space-2);
+        }
+
+        /* Modal base */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 100;
+          padding: var(--space-3);
+        }
+
+        .modal-content {
+          background: var(--color-bg);
+          border-radius: var(--radius-3);
+          max-width: 900px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+          position: relative;
+        }
+
+        .modal-header {
+          padding: var(--space-4);
+          border-bottom: 1px solid var(--color-border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .modal-title {
+          font-size: var(--fs-xl);
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .modal-close {
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          padding: var(--space-1);
+          color: var(--color-muted);
+        }
+
+        .modal-close:hover {
+          color: var(--color-text);
+        }
+
+        .modal-body {
+          padding: var(--space-4);
+        }
+
+        /* Filter drawer */
+        .filter-drawer {
+          position: fixed;
+          top: 0;
+          left: -320px;
+          bottom: 0;
+          width: 320px;
+          background: var(--color-bg);
+          box-shadow: var(--shadow-2);
+          transition: left 0.3s ease;
+          z-index: 50;
+          overflow-y: auto;
+          overscroll-behavior: contain;
+        }
+
+        .filter-drawer.open {
+          left: 0;
+        }
+
+        .filter-drawer-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.3);
+          z-index: 49;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+          display: none;
+        }
+
+        .filter-drawer-overlay.open {
+          display: block;
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        .filter-header {
+          padding: var(--space-4);
+          border-bottom: 1px solid var(--color-border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .filter-title {
+          font-size: var(--fs-lg);
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .filter-content {
+          padding: var(--space-4);
+          height: calc(100vh - 140px);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+        }
+
+        .filter-section {
+          margin-bottom: var(--space-4);
+        }
+
+        .filter-section-title {
+          font-size: var(--fs-base);
+          font-weight: 600;
+          margin-bottom: var(--space-2);
+        }
+
+        .filter-options {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-1);
+        }
+
+        .filter-option {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+        }
+
+        .filter-checkbox {
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+        }
+
+        .filter-label {
+          flex: 1;
+          cursor: pointer;
+          font-size: var(--fs-base);
+        }
+
+        .filter-footer {
+          padding: var(--space-4);
+          border-top: 1px solid var(--color-border);
+          display: flex;
+          gap: var(--space-2);
+        }
+
+        .filter-section-collapsible {
+          margin-bottom: var(--space-3);
+        }
+
+        .filter-section-toggle {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          background: none;
+          border: none;
+          padding: var(--space-2) 0;
+          cursor: pointer;
+          font-size: var(--fs-base);
+          font-weight: 600;
+          color: var(--color-text);
+          border-bottom: 1px solid var(--color-border);
+        }
+
+        .filter-section-toggle:hover {
+          color: var(--color-primary);
+        }
+
+        .filter-section-toggle .icon {
+          width: 20px;
+          height: 20px;
+          transition: transform 0.2s ease;
+        }
+
+        .filter-section-toggle.open .icon {
+          transform: rotate(180deg);
+        }
+
+        .filter-section-content {
+          padding: var(--space-3) 0;
+          display: none;
+        }
+
+        .filter-section-content.open {
+          display: block;
+        }
+
+        .filter-checkbox-group {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+          max-height: 200px;
+          overflow-y: auto;
+          overscroll-behavior: contain;
+        }
+
+        .filter-checkbox-item {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          padding: var(--space-1) 0;
+        }
+
+        .filter-checkbox {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+          accent-color: var(--color-primary);
+        }
+
+        .filter-checkbox-label {
+          flex: 1;
+          cursor: pointer;
+          font-size: var(--fs-sm);
+          color: var(--color-text);
+        }
+
+        .filter-checkbox-count {
+          font-size: 14px;
+          color: var(--color-muted);
+          background: var(--color-bg-soft);
+          padding: 2px 6px;
+          border-radius: 10px;
+        }
+
+        .filter-range-slider {
+          margin: var(--space-2) 0;
+        }
+
+        .filter-range-input {
+          width: 100%;
+          height: 6px;
+          background: var(--color-bg-soft);
+          border-radius: 3px;
+          outline: none;
+          cursor: pointer;
+        }
+
+        .filter-range-input::-webkit-slider-thumb {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          background: var(--color-primary);
+          border-radius: 50%;
+          cursor: pointer;
+        }
+
+        .filter-range-labels {
+          display: flex;
+          justify-content: space-between;
+          font-size: var(--fs-sm);
+          color: var(--color-muted);
+          margin-top: var(--space-1);
+        }
+
+        .filter-toggle-group {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+        }
+
+        .filter-toggle-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: var(--space-2);
+          background: var(--color-bg-soft);
+          border-radius: var(--radius-2);
+        }
+
+        .filter-toggle-switch {
+          position: relative;
+          width: 44px;
+          height: 24px;
+          background: var(--color-border);
+          border-radius: 12px;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+
+        .filter-toggle-switch.active {
+          background: var(--color-primary);
+        }
+
+        .filter-toggle-switch::before {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          width: 20px;
+          height: 20px;
+          background: white;
+          border-radius: 50%;
+          transition: transform 0.2s ease;
+        }
+
+        .filter-toggle-switch.active::before {
+          transform: translateX(20px);
+        }
+
+        .filter-search {
+          margin-bottom: var(--space-2);
+        }
+
+        .filter-search-input {
+          width: 100%;
+          padding: var(--space-1) var(--space-2);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-2);
+          font-size: var(--fs-sm);
+        }
+
+        .filter-search-input:focus {
+          outline: none;
+          border-color: var(--color-primary);
+        }
+
+        /* Loading states */
+        .skeleton {
+          background: linear-gradient(90deg, var(--color-bg-soft) 25%, #e8ecf2 50%, var(--color-bg-soft) 75%);
+          background-size: 200% 100%;
+          animation: loading 1.5s ease-in-out infinite;
+          border-radius: var(--radius-2);
+        }
+
+        @keyframes loading {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+
+        .skeleton-card {
+          background: var(--color-bg);
+          border-radius: var(--radius-3);
+          box-shadow: var(--shadow-1);
+          overflow: hidden;
+        }
+
+        .skeleton-image {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          background: var(--color-bg-soft);
+        }
+
+        .skeleton-content {
+          padding: var(--space-3);
+        }
+
+        .skeleton-line {
+          height: 20px;
+          margin-bottom: var(--space-2);
+        }
+
+        .skeleton-line.short {
+          width: 60%;
+        }
+
+        /* Empty state */
+        .empty-state {
+          text-align: center;
+          padding: var(--space-10) var(--space-4);
+        }
+
+        .empty-icon {
+          width: 64px;
+          height: 64px;
+          margin: 0 auto var(--space-4);
+          color: var(--color-muted);
+        }
+
+        .empty-title {
+          font-size: var(--fs-xl);
+          font-weight: 600;
+          margin-bottom: var(--space-2);
+          color: var(--color-text);
+        }
+
+        .empty-description {
+          font-size: var(--fs-base);
+          color: var(--color-muted);
+          margin-bottom: var(--space-4);
+        }
+
+        .empty-actions {
+          display: flex;
+          gap: var(--space-2);
+          justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 1199px) {
+          .micro-search-section {
+            max-height: var(--atf-search-max-h-tablet);
+          }
+
+          .tours-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .card-image-wrapper {
+            min-height: 220px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .micro-search-section {
+            max-height: var(--atf-search-max-h-mobile);
+            padding: var(--space-3) 0;
+          }
+
+          .micro-search {
+            flex-direction: column;
+            padding: var(--space-2);
+          }
+
+          .search-field {
+            width: 100%;
+            min-width: 0;
+          }
+
+          .search-field.destination-field {
+            min-width: 0;
+          }
+
+          .search-input {
+            height: 44px;
+            font-size: var(--fs-sm);
+          }
+
+          .search-actions {
+            width: 100%;
+            justify-content: space-between;
+          }
+
+          .btn {
+            height: 44px;
+            font-size: var(--fs-sm);
+            flex: 1;
+          }
+
+          .tours-grid {
+            grid-template-columns: 1fr;
+            gap: var(--space-3);
+          }
+
+          .tours-list .tour-card {
+            flex-direction: column;
+          }
+
+          .tours-list .card-image-wrapper {
+            width: 100%;
+          }
+
+          .card-image-wrapper {
+            min-height: 180px;
+          }
+
+          .toolbar-content {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .toolbar-left {
+            justify-content: space-between;
+          }
+
+          .toolbar-right {
+            justify-content: space-between;
+          }
+
+          .filter-drawer {
+            width: 100%;
+            height: auto;
+            top: auto;
+            left: 0;
+            bottom: -100%;
+            transition: bottom 0.3s ease;
+          }
+
+          .filter-drawer.open {
+            bottom: 0;
+          }
+
+          .modal-content {
+            max-height: 100vh;
+            border-radius: 0;
+          }
+
+          .compare-bar-content {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .quick-filters {
+            padding-bottom: var(--space-2);
+          }
+          
+          /* Mobile specific button fixes */
+          .action-cta {
+            display: flex;
+            flex-direction: row;
+            gap: var(--space-1);
+            width: 100%;
+          }
+          
+          .action-cta .btn {
+            flex: 1;
+            height: 48px;
+            font-size: 15px;
+            padding: var(--space-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          
+          .action-cta .btn .icon-inline {
+            flex-shrink: 0;
+          }
+          
+          .action-extra {
+            flex-direction: row;
+            justify-content: space-between;
+            padding: var(--space-2) 0;
+          }
+          
+          .btn-text {
+            font-size: 14px;
+            padding: var(--space-2);
+          }
+          
+          .upsell-section {
+            font-size: 14px;
+          }
+          
+          .flash-sale-timer, .early-bird, .group-discount {
+            font-size: 14px;
+            padding: var(--space-2) var(--space-3);
+          }
+          
+          .payment-badge {
+            font-size: 14px;
+            padding: var(--space-1) var(--space-2);
+          }
+          
+          .card-content {
+            padding: var(--space-3);
+            overflow: hidden;
+          }
+          
+          .card-title {
+            font-size: 16px;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+          
+          .tour-card {
+            overflow: hidden;
+          }
+          
+          .card-actions {
+            flex-direction: row;
+            flex-wrap: wrap;
+            overflow: visible;
+          }
+          
+          .action-buttons {
+            order: 2;
+            width: 100%;
+            justify-content: center;
+            margin-top: var(--space-2);
+          }
+          
+          .action-cta {
+            order: 1;
+            width: 100%;
+          }
+          
+          .action-extra {
+            order: 3;
+            width: 100%;
+          }
+          
+          .card-price {
+            padding: var(--space-3) 0;
+          }
+          
+          .price-amount {
+            font-size: 20px;
+          }
+          
+          .btn-filter {
+            min-width: 100px;
+            font-size: 14px;
+          }
+        }
+
+        /* Accessibility */
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+
+        *:focus-visible {
+          outline: 2px solid var(--color-info);
+          outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *,
+          *::before,
+          *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      `}</style>
+
+      <main className="tour-search-20">
+        {/* Micro Search Section */}
+        <section className="micro-search-section" ref={searchSectionRef}>
+          <div className="micro-search-container">
+            <div className="micro-search">
+              <div className="search-field destination-field" ref={searchFieldRef}>
+                <Globe className="search-icon" />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="ค้นหาจุดหมาย..."
+                  value={destination}
+                  onChange={(e) => {
+                    setDestination(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                />
+                {showSuggestions && filteredSuggestions.length > 0 && (
+                  <div className="suggestions-dropdown">
+                    {filteredSuggestions.map((suggestion, idx) => (
+                      <div
+                        key={idx}
+                        className="suggestion-item"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setDestination(suggestion);
+                          setShowSuggestions(false);
+                        }}
+                      >
+                        {suggestion}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="search-field" ref={datePickerRef}>
+                <Calendar className="search-icon" />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="วันที่เดินทาง"
+                  value={dateRange.start && dateRange.end ? `${dateRange.start} - ${dateRange.end}` : dateRange.start || ''}
+                  onFocus={() => {
+                    setShowDatePicker(true);
+                    setSelectedDateType('start');
+                  }}
+                  onClick={() => {
+                    setShowDatePicker(true);
+                    setSelectedDateType('start');
+                  }}
+                  readOnly
+                />
+                {showDatePicker && (
+                  <div className="date-picker">
+                    <div className="date-picker-header">
+                      <div className="date-picker-title">
+                        {new Date().toLocaleDateString('th-TH', { month: 'long', year: 'numeric' })}
+                      </div>
+                      <div className="date-picker-type">
+                        {selectedDateType === 'start' ? 'เลือกวันเริ่มต้น' : 'เลือกวันสิ้นสุด'}
+                      </div>
+                    </div>
+                    
+                    <div className="calendar-grid">
+                      <div className="calendar-day-header">อา</div>
+                      <div className="calendar-day-header">จ</div>
+                      <div className="calendar-day-header">อ</div>
+                      <div className="calendar-day-header">พ</div>
+                      <div className="calendar-day-header">พฤ</div>
+                      <div className="calendar-day-header">ศ</div>
+                      <div className="calendar-day-header">ส</div>
+                      
+                      {generateCalendar().map((date, idx) => {
+                        if (!date) {
+                          return <div key={idx}></div>;
+                        }
+                        
+                        const today = new Date();
+                        const isToday = date.toDateString() === today.toDateString();
+                        const isPast = date < today;
+                        
+                        return (
+                          <button
+                            key={idx}
+                            className={`calendar-day ${isToday ? 'today' : ''}`}
+                            disabled={isPast}
+                            onClick={() => handleDateSelect(date)}
+                            onMouseDown={(e) => e.preventDefault()}
+                          >
+                            {date.getDate()}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    
+                    <div className="date-picker-quick">
+                      <button 
+                        className="quick-date-option"
+                        onClick={() => {
+                          const today = new Date();
+                          const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+                          setDateRange({
+                            start: formatDate(today),
+                            end: formatDate(nextMonth)
+                          });
+                          setShowDatePicker(false);
+                        }}
+                      >
+                        เดือนนี้
+                      </button>
+                      <button 
+                        className="quick-date-option"
+                        onClick={() => {
+                          const today = new Date();
+                          const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+                          const monthAfter = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
+                          setDateRange({
+                            start: formatDate(nextMonth),
+                            end: formatDate(monthAfter)
+                          });
+                          setShowDatePicker(false);
+                        }}
+                      >
+                        เดือนหน้า
+                      </button>
+                      <button 
+                        className="quick-date-option"
+                        onClick={() => {
+                          const today = new Date();
+                          const threeMonthsLater = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate());
+                          setDateRange({
+                            start: formatDate(today),
+                            end: formatDate(threeMonthsLater)
+                          });
+                          setShowDatePicker(false);
+                        }}
+                      >
+                        3 เดือนข้างหน้า
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="search-field" ref={budgetPickerRef}>
+                <DollarSign className="search-icon" />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="งบประมาณ"
+                  value={getBudgetDisplayText()}
+                  onFocus={() => setShowBudgetPicker(true)}
+                  onClick={() => setShowBudgetPicker(true)}
+                  readOnly
+                />
+                {showBudgetPicker && (
+                  <div className="budget-picker">
+                    {budgetRanges.map((range, idx) => {
+                      const isSelected = 
+                        range.value.min.toString() === budget.min && 
+                        (range.value.max === 999999 ? budget.max === '' : range.value.max.toString() === budget.max);
+                      
+                      return (
+                        <div
+                          key={idx}
+                          className={`budget-option ${isSelected ? 'selected' : ''}`}
+                          onClick={() => handleBudgetSelect(range)}
+                          onMouseDown={(e) => e.preventDefault()}
+                        >
+                          {range.label}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              <div className="search-field" ref={durationPickerRef}>
+                <Clock className="search-icon" />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="ระยะเวลา"
+                  value={getDurationDisplayText()}
+                  onFocus={() => setShowDurationPicker(true)}
+                  onClick={() => setShowDurationPicker(true)}
+                  readOnly
+                />
+                {showDurationPicker && (
+                  <div className="duration-picker">
+                    {durationOptions.map((option, idx) => {
+                      const isSelected = option.value === duration;
+                      
+                      return (
+                        <div
+                          key={idx}
+                          className={`duration-option ${isSelected ? 'selected' : ''}`}
+                          onClick={() => handleDurationSelect(option)}
+                          onMouseDown={(e) => e.preventDefault()}
+                        >
+                          {option.label}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              <div className="search-actions">
+                <button className="btn btn-primary" onClick={handleSearch}>
+                  <Search className="icon-inline" />
+                  ค้นหา
+                </button>
+                <button className="btn btn-ghost" onClick={handleReset}>
+                  รีเซ็ต
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Results Section */}
+        <section className="results-section">
+          {/* Results Toolbar */}
+          <div className="results-toolbar">
+            <div className="toolbar-content">
+              <div className="toolbar-left">
+                <span className="results-count">พบ {filteredTours.length} ทัวร์</span>
+                <div className="sort-dropdown">
+                  <select
+                    className="sort-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <option value="recommend">แนะนำ</option>
+                    <option value="price-low">ราคาต่ำสุด</option>
+                    <option value="price-high">ราคาสูงสุด</option>
+                    <option value="rating">เรตติ้งสูงสุด</option>
+                    <option value="departure">ออกเดินทางเร็วสุด</option>
+                  </select>
+                  <ChevronDown className="sort-icon" />
+                </div>
+              </div>
+              <div className="toolbar-right">
+                <div className="view-toggle">
+                  <button
+                    className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                    onClick={() => setViewMode('grid')}
+                    aria-label="มุมมองตาราง"
+                  >
+                    <Grid className="icon-inline" />
+                  </button>
+                  <button
+                    className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                    onClick={() => setViewMode('list')}
+                    aria-label="มุมมองรายการ"
+                  >
+                    <List className="icon-inline" />
+                  </button>
+                </div>
+                <button className="btn-filter" onClick={() => setShowFilters(true)}>
+                  <Filter className="icon-inline" />
+                  ฟิลเตอร์เพิ่มเติม
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Filters */}
+          <div className="quick-filters">
+            {quickFilters.map((filter) => {
+              const isActive = activeQuickFilters.includes(filter.id);
+              return (
+                <button
+                  key={filter.id}
+                  className={`quick-filter ${isActive ? 'active' : ''}`}
+                  onClick={() => toggleQuickFilter(filter.id)}
+                  data-filter-type={filter.type}
+                >
+                  <span className="filter-emoji">{filter.emoji}</span>
+                  <span className="filter-text">{filter.label}</span>
+                  <span className="filter-shimmer"></span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tours Grid/List */}
+          <div className={viewMode === 'grid' ? 'tours-grid' : 'tours-list'}>
+            {filteredTours.map((tour) => (
+              <TourCard key={tour.id} tour={tour} />
+            ))}
+          </div>
+
+          {/* Loading indicator */}
+          {loading && (
+            <div className={viewMode === 'grid' ? 'tours-grid' : 'tours-list'}>
+              {[1, 2, 3].map((i) => (
+                <div key={`skeleton-${i}`} className="skeleton-card">
+                  <div className="skeleton skeleton-image"></div>
+                  <div className="skeleton-content">
+                    <div className="skeleton skeleton-line"></div>
+                    <div className="skeleton skeleton-line short"></div>
+                    <div className="skeleton skeleton-line"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Infinite scroll trigger */}
+          <div ref={loadMoreRef} style={{ height: '1px' }}></div>
+
+          {/* Empty state */}
+          {filteredTours.length === 0 && !loading && (
+            <div className="empty-state">
+              <AlertCircle className="empty-icon" />
+              <h2 className="empty-title">ไม่พบทัวร์ที่ตรงกับการค้นหา</h2>
+              <p className="empty-description">
+                ลองปรับเปลี่ยนเงื่อนไขการค้นหาหรือล้างฟิลเตอร์เพื่อดูทัวร์ทั้งหมด
+              </p>
+              <div className="empty-actions">
+                <button className="btn btn-primary" onClick={handleReset}>
+                  ล้างการค้นหา
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Compare Bar */}
+        {compareList.length > 0 && (
+          <div className="compare-bar">
+            <div className="compare-bar-content">
+              <div className="compare-items">
+                {compareList.map((tourId) => {
+                  const tour = tours.find(t => t.id === tourId);
+                  return tour ? (
+                    <div key={tourId} className="compare-item">
+                      {tour.title.substring(0, 20)}...
+                      <button
+                        className="compare-item-remove"
+                        onClick={() => toggleCompare(tourId)}
+                        aria-label="ลบออกจากการเปรียบเทียบ"
+                      >
+                        <X className="icon-inline" />
+                      </button>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+              <div className="compare-actions">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setCompareList([])}
+                >
+                  ล้างทั้งหมด
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setShowCompareSheet(true)}
+                >
+                  เปรียบเทียบตอนนี้ ({compareList.length})
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Filter Drawer */}
+        <div className={`filter-drawer-overlay ${showFilters ? 'open' : ''}`} onClick={() => setShowFilters(false)}></div>
+        <aside 
+          className={`filter-drawer ${showFilters ? 'open' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="filter-header">
+            <h2 className="filter-title">ฟิลเตอร์ขั้นสูง</h2>
+            <button className="modal-close" onClick={() => setShowFilters(false)}>
+              <X className="icon-inline" />
+            </button>
+          </div>
+          <div className="filter-content">
+            {/* จุดหมาย/ภูมิศาสตร์ */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('destination') ? 'open' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleFilterSection('destination');
+                }}
+              >
+                <span>🌍 จุดหมาย/ภูมิศาสตร์</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('destination') ? 'open' : ''}`}>
+                <div className="filter-search">
+                  <input 
+                    type="text" 
+                    className="filter-search-input" 
+                    placeholder="ค้นหาประเทศ..."
+                  />
+                </div>
+                <div className="filter-checkbox-group">
+                  {filterOptions.countries.slice(0, 10).map((country) => (
+                    <div key={country} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`country-${country}`} />
+                      <label htmlFor={`country-${country}`} className="filter-checkbox-label">{country}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 50) + 5}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* เวลา/ช่วงเดินทาง */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('time') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('time')}
+              >
+                <span>⏱️ เวลา/ช่วงเดินทาง</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('time') ? 'open' : ''}`}>
+                <div className="filter-range-slider">
+                  <label>ระยะเวลา: {filters.durationRange.min} - {filters.durationRange.max} วัน</label>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="30" 
+                    value={filters.durationRange.max}
+                    className="filter-range-input"
+                  />
+                  <div className="filter-range-labels">
+                    <span>1 วัน</span>
+                    <span>30 วัน</span>
+                  </div>
+                </div>
+                <div className="filter-checkbox-group">
+                  {filterOptions.months.slice(0, 8).map((month) => (
+                    <div key={month} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`month-${month}`} />
+                      <label htmlFor={`month-${month}`} className="filter-checkbox-label">{month}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 30) + 10}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* การเดินทาง/ขนส่ง */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('transport') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('transport')}
+              >
+                <span>✈️ การเดินทาง/ขนส่ง</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('transport') ? 'open' : ''}`}>
+                <div className="filter-checkbox-group">
+                  {filterOptions.airlines.slice(0, 8).map((airline) => (
+                    <div key={airline} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`airline-${airline}`} />
+                      <label htmlFor={`airline-${airline}`} className="filter-checkbox-label">{airline}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 25) + 3}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ที่พัก */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('hotel') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('hotel')}
+              >
+                <span>🏨 ที่พัก</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('hotel') ? 'open' : ''}`}>
+                <div className="filter-checkbox-group">
+                  {filterOptions.hotelStars.map((star) => (
+                    <div key={star} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`star-${star}`} />
+                      <label htmlFor={`star-${star}`} className="filter-checkbox-label">{star}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 40) + 15}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ประเภททัวร์ */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('tourtype') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('tourtype')}
+              >
+                <span>👥 ประเภททัวร์</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('tourtype') ? 'open' : ''}`}>
+                <div className="filter-checkbox-group">
+                  {filterOptions.tourTypes.map((type) => (
+                    <div key={type} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`type-${type}`} />
+                      <label htmlFor={`type-${type}`} className="filter-checkbox-label">{type}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 35) + 8}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* กิจกรรม/ไฮไลต์ */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('activity') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('activity')}
+              >
+                <span>🎯 กิจกรรม/ไฮไลต์</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('activity') ? 'open' : ''}`}>
+                <div className="filter-checkbox-group">
+                  {filterOptions.activityTypes.map((activity) => (
+                    <div key={activity} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`activity-${activity}`} />
+                      <label htmlFor={`activity-${activity}`} className="filter-checkbox-label">{activity}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 20) + 5}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* เงื่อนไข/บริการ */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('service') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('service')}
+              >
+                <span>📋 เงื่อนไข/บริการ</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('service') ? 'open' : ''}`}>
+                <div className="filter-toggle-group">
+                  <div className="filter-toggle-item">
+                    <span>รวมประกันการเดินทาง</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                  <div className="filter-toggle-item">
+                    <span>รวมภาษี</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                  <div className="filter-toggle-item">
+                    <span>รวมวีซ่า</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                </div>
+                <div className="filter-checkbox-group">
+                  {filterOptions.visaRequirement.map((visa) => (
+                    <div key={visa} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`visa-${visa}`} />
+                      <label htmlFor={`visa-${visa}`} className="filter-checkbox-label">{visa}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 30) + 10}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* คุณภาพ/รีวิว */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('quality') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('quality')}
+              >
+                <span>⭐ คุณภาพ/รีวิว</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('quality') ? 'open' : ''}`}>
+                <div className="filter-range-slider">
+                  <label>เรตติ้งขั้นต่ำ: {filters.minRating} ดาว</label>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="5" 
+                    step="0.5"
+                    value={filters.minRating}
+                    className="filter-range-input"
+                  />
+                  <div className="filter-range-labels">
+                    <span>0 ดาว</span>
+                    <span>5 ดาว</span>
+                  </div>
+                </div>
+                <div className="filter-checkbox-group">
+                  {filterOptions.certifications.map((cert) => (
+                    <div key={cert} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`cert-${cert}`} />
+                      <label htmlFor={`cert-${cert}`} className="filter-checkbox-label">{cert}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 15) + 3}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* โปรโมชั่น/พิเศษ */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('promotion') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('promotion')}
+              >
+                <span>🏷️ โปรโมชั่น/พิเศษ</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('promotion') ? 'open' : ''}`}>
+                <div className="filter-toggle-group">
+                  <div className="filter-toggle-item">
+                    <span>มีส่วนลด</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                  <div className="filter-toggle-item">
+                    <span>Early Bird</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                  <div className="filter-toggle-item">
+                    <span>Last Minute Deal</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                  <div className="filter-toggle-item">
+                    <span>เหลือที่นั่งน้อย</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                  <div className="filter-toggle-item">
+                    <span>Eco-Friendly</span>
+                    <div className="filter-toggle-switch"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ธีม/สไตล์ */}
+            <div className="filter-section-collapsible">
+              <button 
+                className={`filter-section-toggle ${openFilterSections.includes('theme') ? 'open' : ''}`}
+                onClick={() => toggleFilterSection('theme')}
+              >
+                <span>🎭 ธีม/สไตล์</span>
+                <ChevronDown className="icon" />
+              </button>
+              <div className={`filter-section-content ${openFilterSections.includes('theme') ? 'open' : ''}`}>
+                <div className="filter-checkbox-group">
+                  {filterOptions.themes.slice(0, 8).map((theme) => (
+                    <div key={theme} className="filter-checkbox-item">
+                      <input type="checkbox" className="filter-checkbox" id={`theme-${theme}`} />
+                      <label htmlFor={`theme-${theme}`} className="filter-checkbox-label">{theme}</label>
+                      <span className="filter-checkbox-count">{Math.floor(Math.random() * 25) + 5}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="filter-footer">
+            <button className="btn btn-secondary" style={{ flex: 1 }}>
+              ล้างทั้งหมด
+            </button>
+            <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => setShowFilters(false)}>
+              ใช้ฟิลเตอร์ (240)
+            </button>
+          </div>
+        </aside>
+
+        {/* Quick View Modal */}
+        {quickViewTour && (
+          <div className="modal-overlay" onClick={() => setQuickViewTour(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2 className="modal-title">{quickViewTour.title}</h2>
+                <button className="modal-close" onClick={() => setQuickViewTour(null)}>
+                  <X className="icon-inline" />
+                </button>
+              </div>
+              <div className="modal-body">
+                <img
+                  src={quickViewTour.image}
+                  alt={quickViewTour.title}
+                  width={900}
+                  height={600}
+                  className="card-image"
+                  style={{ width: '100%', height: 'auto', borderRadius: 'var(--radius-2)' }}
+                />
+                <div style={{ marginTop: 'var(--space-4)' }}>
+                  <p><strong>ราคาเริ่มต้น:</strong> ฿{quickViewTour.price.toLocaleString()}/ท่าน</p>
+                  <p><strong>ระยะเวลา:</strong> {quickViewTour.duration}</p>
+                  <p><strong>ช่วงเดินทาง:</strong> {quickViewTour.departureMonths}</p>
+                  <p><strong>สายการบิน:</strong> {quickViewTour.airline}</p>
+                  <div style={{ marginTop: 'var(--space-4)', display: 'flex', gap: 'var(--space-2)' }}>
+                    <button className="btn btn-secondary">ดูรายละเอียดเต็ม</button>
+                    <button className="btn btn-primary">จองเลย</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Compare Sheet Modal */}
+        {showCompareSheet && (
+          <div className="modal-overlay" onClick={() => setShowCompareSheet(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '1200px' }}>
+              <div className="modal-header">
+                <h2 className="modal-title">เปรียบเทียบทัวร์</h2>
+                <button className="modal-close" onClick={() => setShowCompareSheet(false)}>
+                  <X className="icon-inline" />
+                </button>
+              </div>
+              <div className="modal-body">
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--color-border)' }}>
+                        <th style={{ padding: 'var(--space-2)', textAlign: 'left' }}>ชื่อทัวร์</th>
+                        <th style={{ padding: 'var(--space-2)', textAlign: 'center' }}>ราคา</th>
+                        <th style={{ padding: 'var(--space-2)', textAlign: 'center' }}>ระยะเวลา</th>
+                        <th style={{ padding: 'var(--space-2)', textAlign: 'center' }}>เรตติ้ง</th>
+                        <th style={{ padding: 'var(--space-2)', textAlign: 'center' }}>การดำเนินการ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {compareList.map((tourId) => {
+                        const tour = tours.find(t => t.id === tourId);
+                        return tour ? (
+                          <tr key={tourId} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                            <td style={{ padding: 'var(--space-2)' }}>{tour.title}</td>
+                            <td style={{ padding: 'var(--space-2)', textAlign: 'center' }}>฿{tour.price.toLocaleString()}</td>
+                            <td style={{ padding: 'var(--space-2)', textAlign: 'center' }}>{tour.duration}</td>
+                            <td style={{ padding: 'var(--space-2)', textAlign: 'center' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                <Star className="star-icon" />
+                                {tour.rating.toFixed(1)}
+                              </div>
+                            </td>
+                            <td style={{ padding: 'var(--space-2)', textAlign: 'center' }}>
+                              <button className="btn btn-primary btn-sm">จองเลย</button>
+                            </td>
+                          </tr>
+                        ) : null;
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </>
+  );
+}

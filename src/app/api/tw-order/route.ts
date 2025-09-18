@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
+import jwt from 'jsonwebtoken';
 
 // Direct database connection for tw_order table
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
+const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 // Generate order code in TWP format
 function generateOrderCode(): string {
@@ -23,10 +25,79 @@ function generateBookingId(): string {
   return `BK${timestamp}${random}`.toUpperCase()
 }
 
+function getUserIdFromRequest(req: NextRequest): number | null {
+  const auth = req.headers.get('authorization');
+  if (!auth || !auth.startsWith('Bearer ')) return null;
+  const token = auth.replace('Bearer ', '');
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as { userId: number };
+    return payload.userId;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const userId = getUserIdFromRequest(req);
+    let query = `
+      SELECT 
+        id,
+        period_id,
+        tour_program_id,
+        tour_name,
+        departure_date,
+        return_date,
+        price_per_person,
+        traveler_count,
+        total_amount,
+        deposit_amount,
+        customer_name,
+        customer_phone,
+        customer_email,
+        address,
+        sub_district,
+        district,
+        province,
+        postal_code,
+        status,
+        created_at,
+        updated_at,
+        user_id
+      FROM tw_order 
+    `;
+    const values: any[] = [];
+    if (userId) {
+      query += 'WHERE user_id = $1 ORDER BY created_at DESC';
+      values.push(userId);
+    } else {
+      query += 'ORDER BY created_at DESC';
+    }
+    const result = await pool.query(query, values);
+    // แปลง created_at, updated_at เป็น ISO string (UTC)
+    const orders = result.rows.map(row => ({
+      ...row,
+      created_at: row.created_at ? new Date(row.created_at).toISOString() : null,
+      created_at_ts: row.created_at ? new Date(row.created_at).getTime() : null,
+      updated_at: row.updated_at ? new Date(row.updated_at).toISOString() : null,
+      updated_at_ts: row.updated_at ? new Date(row.updated_at).getTime() : null,
+    }));
+    return NextResponse.json({ 
+      success: true,
+      orders,
+      total: orders.length
+    });
+  } catch (error) {
+    console.log('💥 GET API error:', error);
+    return NextResponse.json({ error: (error as any).message }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     console.log('🔍 API received body:', JSON.stringify(body, null, 2));
+    const userId = getUserIdFromRequest(req);
 
     // Validation เบื้องต้น
     if (!body.customer_name || !body.customer_phone || !body.tour_program_id || !body.tour_name || !body.departure_date || !body.return_date || !body.price_per_person || !body.traveler_count || !body.total_amount) {
@@ -127,10 +198,11 @@ export async function POST(req: NextRequest) {
         extra_rooms,
         selected_package,
         created_at,
-        updated_at
+        updated_at,
+        user_id
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-        $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
+        $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
       ) RETURNING *
     `;
 
@@ -157,7 +229,8 @@ export async function POST(req: NextRequest) {
       body.extra_rooms || 0,
       body.selected_package || 'standard',
       new Date().toISOString(),
-      new Date().toISOString()
+      new Date().toISOString(),
+      userId
     ];
 
     console.log('💾 Inserting to tw_order table...');

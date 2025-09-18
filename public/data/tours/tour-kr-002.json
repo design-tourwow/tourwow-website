@@ -1,0 +1,265 @@
+{
+  "id": "tour-kr-002",
+  "slug": "tour-kr-002",
+  "title": "ทัวร์เกาหลีใต้ โซล ปูซาน",
+  "country": "South Korea",
+  "cities": [
+    "Seoul",
+    "Busan",
+    "Jeju"
+  ],
+  "duration_days": 6,
+  "nights": 5,
+  "price_from": 38500,
+  "currency": "THB",
+  "badges": [
+    "Hot"
+  ],
+  "rating": 4.7,
+  "reviews_count": 89,
+  "hero_images": [
+    "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=1200&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11538485399081-7191377e8241?w=1000&h=600&fit=crop"
+  ],
+  "highlights": [
+    "วัฒนธรรมเกาหลี",
+    "ตลาดมยองดง",
+    "ชิมอาหารท้องถิ่น"
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "ออกเดินทางจากกรุงเทพฯ",
+      "details": [
+        "เช็คอินสนามบิน",
+        "บินตรงสู่โซล"
+      ]
+    },
+    {
+      "day": 2,
+      "title": "โซล - มยองดง",
+      "details": [
+        "ย่านมยองดง",
+        "ตลาดมยองดง",
+        "ชิม K-BBQ"
+      ]
+    },
+    {
+      "day": 3,
+      "title": "โซล - คังนัม",
+      "details": [
+        "ย่านคังนัม",
+        "COEX Mall",
+        "บันไดสีรุ้ง"
+      ]
+    },
+    {
+      "day": 4,
+      "title": "ปูซาน",
+      "details": [
+        "หาดฮายอนแด",
+        "ตลาดจากัลชิ",
+        "วัดแฮดง ยงกุงซา"
+      ]
+    },
+    {
+      "day": 5,
+      "title": "เจจูโด",
+      "details": [
+        "เกาะเจจู",
+        "ฮัลลาซัน",
+        "พิพิธภัณฑ์หินหลา"
+      ]
+    },
+    {
+      "day": 6,
+      "title": "เดินทางกลับ",
+      "details": [
+        "ช้อปปิ้งโซล",
+        "เดินทางกลับประเทศไทย"
+      ]
+    }
+  ],
+  "gallery": [
+    "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11538485399081-7191377e8241?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-21538485399081-7191377e8241?w=600&q=80&h=600&fit=crop"
+  ],
+  "included": [
+    "ตั๋วเครื่องบินไป-กลับ",
+    "ที่พัก 4 ดาว",
+    "อาหารตามรายการ",
+    "รถรับส่งสนามบิน",
+    "ไกด์ท้องถิ่นพูดไทย",
+    "ประกันอุบัติเหตุ"
+  ],
+  "excluded": [
+    "ค่าทิปไกด์และคนขับรถ",
+    "ค่าธรรมเนียมวีซ่า (ถ้ามี)",
+    "ค่าใช้จ่ายส่วนตัว",
+    "ประกันการเดินทางแบบครอบคลุม"
+  ],
+  "policies": {
+    "deposit": 3000,
+    "cancellation": "ยกเลิกฟรีภายใน 7 วันก่อนเดินทาง",
+    "payment_options": [
+      "บัตรเครดิต",
+      "โอนเงิน",
+      "ผ่อนชำระ 0% 6 เดือน"
+    ]
+  },
+  "departures": [
+    {
+      "id": "dep-2025-09-10",
+      "start_date": "2025-09-10",
+      "end_date": "2025-09-15",
+      "date_label": "10–15 ก.ย. 2568",
+      "price": 42627,
+      "seats_left": 2,
+      "status": "low"
+    },
+    {
+      "id": "dep-2025-10-08",
+      "start_date": "2025-10-08",
+      "end_date": "2025-10-13",
+      "date_label": "8–13 ต.ค. 2568",
+      "price": 35302,
+      "seats_left": 4,
+      "status": "low"
+    },
+    {
+      "id": "dep-2025-11-12",
+      "start_date": "2025-11-12",
+      "end_date": "2025-11-17",
+      "date_label": "12–17 พ.ย. 2568",
+      "price": 41545,
+      "seats_left": 5,
+      "status": "low"
+    },
+    {
+      "id": "dep-2025-12-10",
+      "start_date": "2025-12-10",
+      "end_date": "2025-12-15",
+      "date_label": "10–15 ธ.ค. 2568",
+      "price": 34560,
+      "seats_left": 15,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-01-14",
+      "start_date": "2026-01-14",
+      "end_date": "2026-01-19",
+      "date_label": "14–19 ม.ค. 2569",
+      "price": 39107,
+      "seats_left": 20,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-02-11",
+      "start_date": "2026-02-11",
+      "end_date": "2026-02-16",
+      "date_label": "11–16 ก.พ. 2569",
+      "price": 32796,
+      "seats_left": 10,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-03-11",
+      "start_date": "2026-03-11",
+      "end_date": "2026-03-16",
+      "date_label": "11–16 มี.ค. 2569",
+      "price": 37475,
+      "seats_left": 16,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-04-08",
+      "start_date": "2026-04-08",
+      "end_date": "2026-04-13",
+      "date_label": "8–13 เม.ย. 2569",
+      "price": 38093,
+      "seats_left": 14,
+      "status": "available"
+    }
+  ],
+  "addons": [
+    {
+      "code": "INS10",
+      "label": "ประกันการเดินทาง",
+      "price": 899
+    },
+    {
+      "code": "HKUP",
+      "label": "อัปเกรดโรงแรม",
+      "price": 2500
+    },
+    {
+      "code": "SEAT",
+      "label": "เลือกที่นั่งเครื่องบิน",
+      "price": 500
+    },
+    {
+      "code": "WIFI",
+      "label": "WiFi ไม่จำกัด",
+      "price": 299
+    }
+  ],
+  "faqs": [
+    {
+      "q": "ต้องขอวีซ่าหรือไม่?",
+      "a": "สัญชาติไทยสามารถเดินทางได้โดยไม่ต้องขอวีซ่าล่วงหน้า หรือขอวีซ่าตอนถึงแล้วแต่ประเทศปลายทาง"
+    },
+    {
+      "q": "อาหารฮาลาล/เจ มีหรือไม่?",
+      "a": "แจ้งความต้องการพิเศษล่วงหน้าได้ เราจะประสานงานให้ตามความต้องการ"
+    },
+    {
+      "q": "น้ำหนักกระเป๋าเท่าไหร่?",
+      "a": "กระเป๋าใต้ท้องเครื่อง 23 กก. กระเป๋าถือขึ้นเครื่อง 7 กก."
+    },
+    {
+      "q": "สามารถยกเลิก/คืนเงินได้หรือไม่?",
+      "a": "สามารถยกเลิกได้ตามเงื่อนไขของแต่ละโปรแกรม โดยอาจมีค่าธรรมเนียมตามระยะเวลาที่ยกเลิก"
+    }
+  ],
+  "related": [
+    {
+      "id": "tour-jp-001",
+      "title": "ทัวร์ญี่ปุ่น โตเกียว เกียวโต",
+      "price_from": 45900,
+      "thumb": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-tw-003",
+      "title": "ทัวร์ไต้หวัน ไทเป เกาสง",
+      "price_from": 19900,
+      "thumb": "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-sg-004",
+      "title": "ทัวร์สิงคโปร์ มาเลเซีย",
+      "price_from": 24900,
+      "thumb": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-vn-005",
+      "title": "ทัวร์เวียดนาม ฮานอย โฮจิมินห์",
+      "price_from": 16900,
+      "thumb": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&h=600&fit=crop"
+    }
+  ],
+  "licenses": {
+    "tourism_license": "11/2567",
+    "airline_partners": [
+      "TG",
+      "QR",
+      "EK"
+    ]
+  },
+  "seo": {
+    "title": "ทัวร์เกาหลีใต้ โซล ปูซาน ราคาเริ่ม 38,500",
+    "description": "ทัวร์เกาหลีใต้ โซล ปูซาน วัฒนธรรมเกาหลี ตลาดมยองดง ชิมอาหารท้องถิ่น พร้อมไกด์ไทย",
+    "og_image": "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&h=600&fit=crop"
+  }
+}

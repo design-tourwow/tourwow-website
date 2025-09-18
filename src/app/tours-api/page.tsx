@@ -54,7 +54,14 @@ export default function ToursApiPage() {
   const countryList = useMemo(() => ["ทั้งหมด", ...Array.from(new Set(tours.map(t => t.CountryName).filter(Boolean)))], [tours]);
   const categoryList = useMemo(() => ["ทั้งหมด", ...Array.from(new Set(tours.map(t => t.CategoryName).filter(Boolean)))], [tours]);
   const daysList = useMemo(() => ["ทั้งหมด", ...Array.from(new Set(tours.map(t => t.Days).filter(Boolean)))], [tours]);
-  const priceList = ["ทั้งหมด", "ต่ำกว่า 15000", "15000-25000", "25000-35000", "35000-50000", "มากกว่า 50000"];
+  const priceList = [
+    { name: "ทั้งหมด", count: 0 },
+    { name: "ต่ำกว่า 15000", count: 0 },
+    { name: "15000-25000", count: 0 },
+    { name: "25000-35000", count: 0 },
+    { name: "35000-50000", count: 0 },
+    { name: "มากกว่า 50000", count: 0 }
+  ];
 
   // Filtering
   const filtered = useMemo(() => {
@@ -174,9 +181,7 @@ export default function ToursApiPage() {
                 priceRanges={priceList}
                 selectedPriceRange={price}
                 onPriceChange={setPrice}
-                sortOptions={['ยอดนิยม']}
-                selectedSortBy={'ยอดนิยม'}
-                onSortByChange={() => {}}
+
                 countries={countryList.map(name => ({ name, count: tours.filter(t => t.CountryName === name).length }))}
                 selectedCountry={country}
                 onCountryChange={setCountry}

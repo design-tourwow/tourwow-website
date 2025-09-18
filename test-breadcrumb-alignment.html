@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breadcrumb Alignment Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Test various breadcrumb alignment approaches */
+        .breadcrumb-test-1 {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        
+        .breadcrumb-test-2 {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        
+        .breadcrumb-test-3 {
+            display: flex;
+            align-items: baseline;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        
+        .breadcrumb-test-4 {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow-x: auto;
+            line-height: 1;
+        }
+        
+        .breadcrumb-test-5 {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        .breadcrumb-test-5 * {
+            vertical-align: baseline;
+            line-height: 1.2;
+        }
+        
+        /* Hide scrollbar */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Debug styles */
+        .debug-border {
+            border: 1px solid red;
+        }
+        .debug-bg {
+            background: rgba(255, 255, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto space-y-8">
+        <h1 class="text-2xl font-bold">Breadcrumb Alignment Test</h1>
+        
+        <!-- Test 1: Standard flex with items-center -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Test 1: Standard flex with items-center</h2>
+            <div class="breadcrumb-test-1 scrollbar-hide text-sm">
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">หน้าแรก</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-600 flex-shrink-0">ยุโรป</span>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-900 font-medium">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </div>
+        </div>
+        
+        <!-- Test 2: inline-flex -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Test 2: inline-flex</h2>
+            <div class="breadcrumb-test-2 scrollbar-hide text-sm">
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">หน้าแรก</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-600 flex-shrink-0">ยุโรป</span>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-900 font-medium">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </div>
+        </div>
+        
+        <!-- Test 3: flex with items-baseline -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Test 3: flex with items-baseline</h2>
+            <div class="breadcrumb-test-3 scrollbar-hide text-sm">
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">หน้าแรก</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-600 flex-shrink-0">ยุโรป</span>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-900 font-medium">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </div>
+        </div>
+        
+        <!-- Test 4: flex with line-height: 1 -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Test 4: flex with line-height: 1</h2>
+            <div class="breadcrumb-test-4 scrollbar-hide text-sm">
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">หน้าแรก</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-600 flex-shrink-0">ยุโรป</span>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-900 font-medium">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </div>
+        </div>
+        
+        <!-- Test 5: flex with explicit vertical-align -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Test 5: flex with explicit vertical-align</h2>
+            <div class="breadcrumb-test-5 scrollbar-hide text-sm">
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">หน้าแรก</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-600 flex-shrink-0">ยุโรป</span>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-900 font-medium">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </div>
+        </div>
+        
+        <!-- Test 6: Current implementation from tour-search-21 -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Test 6: Current implementation (tour-search-21)</h2>
+            <div class="flex items-center text-sm overflow-x-auto scrollbar-hide" style="white-space: nowrap; display: flex; align-items: center;">
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">หน้าแรก</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <a href="#" class="text-blue-600 hover:underline flex-shrink-0">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-600 flex-shrink-0">ยุโรป</span>
+                <span class="text-gray-400 flex-shrink-0 px-2">/</span>
+                <span class="text-gray-900 font-medium">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </div>
+        </div>
+        
+        <!-- Test 7: Optimal solution -->
+        <div class="bg-white p-4 rounded-lg shadow border-2 border-green-500">
+            <h2 class="text-lg font-semibold mb-2 text-green-600">Test 7: Optimal Solution ✅</h2>
+            <nav class="flex items-center text-sm overflow-x-auto scrollbar-hide whitespace-nowrap" role="navigation">
+                <a href="#" class="text-blue-600 hover:underline inline-block">หน้าแรก</a>
+                <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                <a href="#" class="text-blue-600 hover:underline inline-block">ทัวร์ต่างประเทศ</a>
+                <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                <span class="text-gray-600 inline-block">ยุโรป</span>
+                <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                <span class="text-gray-900 font-medium inline-block">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+            </nav>
+        </div>
+        
+        <!-- Visual alignment check -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Visual Alignment Check</h2>
+            <p class="text-sm text-gray-600 mb-4">The green lines below should align perfectly with the breadcrumb text if alignment is correct:</p>
+            
+            <!-- Reference lines -->
+            <div class="relative">
+                <div class="absolute top-0 left-0 right-0 h-px bg-green-500 opacity-50" style="top: 0.5rem;"></div>
+                <div class="absolute top-0 left-0 right-0 h-px bg-green-500 opacity-50" style="top: 1rem;"></div>
+                <div class="absolute top-0 left-0 right-0 h-px bg-green-500 opacity-50" style="top: 1.5rem;"></div>
+                
+                <!-- Test optimal solution with alignment guides -->
+                <nav class="flex items-center text-sm overflow-x-auto scrollbar-hide whitespace-nowrap relative z-10" role="navigation">
+                    <a href="#" class="text-blue-600 hover:underline inline-block">หน้าแรก</a>
+                    <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                    <a href="#" class="text-blue-600 hover:underline inline-block">ทัวร์ต่างประเทศ</a>
+                    <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                    <span class="text-gray-600 inline-block">ยุโรป</span>
+                    <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                    <span class="text-gray-900 font-medium inline-block">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Mobile test -->
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-2">Mobile Test (320px width simulation)</h2>
+            <div class="w-80 mx-auto border border-gray-300 p-2">
+                <nav class="flex items-center text-sm overflow-x-auto scrollbar-hide whitespace-nowrap" role="navigation">
+                    <a href="#" class="text-blue-600 hover:underline inline-block">หน้าแรก</a>
+                    <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                    <a href="#" class="text-blue-600 hover:underline inline-block">ทัวร์ต่างประเทศ</a>
+                    <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                    <span class="text-gray-600 inline-block">ยุโรป</span>
+                    <span class="text-gray-400 inline-block mx-2" aria-hidden="true">/</span>
+                    <span class="text-gray-900 font-medium inline-block">ทัวร์ยุโรป 4 ประเทศ อิตาลี สวิตเซอร์แลนด์ ออสเตรีย เยอรมนี 8 วัน 5 คืน</span>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="bg-blue-50 p-4 rounded-lg">
+            <h2 class="text-lg font-semibold mb-2">Test Instructions:</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Compare each test to see which has the most aligned appearance</li>
+                <li>Check if text baselines align properly</li>
+                <li>Test horizontal scrolling behavior on mobile</li>
+                <li>Verify that all elements stay on the same line</li>
+                <li>The optimal solution (Test 7) should show perfect alignment</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

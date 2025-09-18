@@ -73,7 +73,7 @@ async function TourDetailContent({ params }: TourDetailPageProps) {
   )
 }
 
-export default function TourDetailPage({ params }: TourDetailPageProps) {
+export default async function TourDetailPage({ params }: TourDetailPageProps) {
   return (
     <LoadingProvider>
       <TourDetailContent params={params} />

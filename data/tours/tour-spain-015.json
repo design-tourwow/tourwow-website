@@ -1,0 +1,253 @@
+{
+  "id": "tour-spain-015",
+  "slug": "tour-spain-015",
+  "title": "ทัวร์สเปน มาดริด บาร์เซโลนา",
+  "country": "Spain",
+  "cities": [
+    "Madrid",
+    "Barcelona",
+    "Seville"
+  ],
+  "duration_days": 8,
+  "nights": 6,
+  "price_from": 69900,
+  "currency": "THB",
+  "badges": [],
+  "rating": 4.6,
+  "reviews_count": 178,
+  "hero_images": [
+    "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=1200&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11543783207-ec64e4d95325?w=1000&h=600&fit=crop"
+  ],
+  "highlights": [
+    "ซากราดา ฟามีเลีย",
+    "พิพิธภัณฑ์พราโด",
+    "ปาร์ค กูเอล"
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "ออกเดินทาง",
+      "details": [
+        "เดินทางจากกรุงเทพฯ"
+      ]
+    },
+    {
+      "day": 2,
+      "title": "เมืองหลัก",
+      "details": [
+        "ชมเมืองและสถานที่สำคัญ"
+      ]
+    },
+    {
+      "day": 3,
+      "title": "สถานที่ท่องเที่ยว",
+      "details": [
+        "เที่ยวชมสถานที่สำคัญ"
+      ]
+    },
+    {
+      "day": 4,
+      "title": "วัฒนธรรมท้องถิ่น",
+      "details": [
+        "สัมผัสวัฒนธรรมและอาหาร"
+      ]
+    },
+    {
+      "day": 5,
+      "title": "ช้อปปิ้ง",
+      "details": [
+        "ซื้อของฝาก"
+      ]
+    },
+    {
+      "day": 6,
+      "title": "เดินทางกลับ",
+      "details": [
+        "เดินทางกลับประเทศไทย"
+      ]
+    }
+  ],
+  "gallery": [
+    "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11543783207-ec64e4d95325?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-21543783207-ec64e4d95325?w=600&q=80&h=600&fit=crop"
+  ],
+  "included": [
+    "ตั๋วเครื่องบินไป-กลับ",
+    "ที่พัก 4 ดาว",
+    "อาหารตามรายการ",
+    "รถรับส่งสนามบิน",
+    "ไกด์ท้องถิ่นพูดไทย",
+    "ประกันอุบัติเหตุ"
+  ],
+  "excluded": [
+    "ค่าทิปไกด์และคนขับรถ",
+    "ค่าธรรมเนียมวีซ่า (ถ้ามี)",
+    "ค่าใช้จ่ายส่วนตัว",
+    "ประกันการเดินทางแบบครอบคลุม"
+  ],
+  "policies": {
+    "deposit": 3000,
+    "cancellation": "ยกเลิกฟรีภายใน 7 วันก่อนเดินทาง",
+    "payment_options": [
+      "บัตรเครดิต",
+      "โอนเงิน",
+      "ผ่อนชำระ 0% 6 เดือน"
+    ]
+  },
+  "departures": [
+    {
+      "id": "dep-2025-09-10",
+      "start_date": "2025-09-10",
+      "end_date": "2025-09-17",
+      "date_label": "10–17 ก.ย. 2568",
+      "price": 63840,
+      "seats_left": 14,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-10-08",
+      "start_date": "2025-10-08",
+      "end_date": "2025-10-15",
+      "date_label": "8–15 ต.ค. 2568",
+      "price": 62429,
+      "seats_left": 24,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-11-12",
+      "start_date": "2025-11-12",
+      "end_date": "2025-11-19",
+      "date_label": "12–19 พ.ย. 2568",
+      "price": 76525,
+      "seats_left": 20,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-12-10",
+      "start_date": "2025-12-10",
+      "end_date": "2025-12-17",
+      "date_label": "10–17 ธ.ค. 2568",
+      "price": 61194,
+      "seats_left": 3,
+      "status": "low"
+    },
+    {
+      "id": "dep-2026-01-14",
+      "start_date": "2026-01-14",
+      "end_date": "2026-01-21",
+      "date_label": "14–21 ม.ค. 2569",
+      "price": 77103,
+      "seats_left": 19,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-02-11",
+      "start_date": "2026-02-11",
+      "end_date": "2026-02-18",
+      "date_label": "11–18 ก.พ. 2569",
+      "price": 62578,
+      "seats_left": 15,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-03-11",
+      "start_date": "2026-03-11",
+      "end_date": "2026-03-18",
+      "date_label": "11–18 มี.ค. 2569",
+      "price": 61748,
+      "seats_left": 20,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-04-08",
+      "start_date": "2026-04-08",
+      "end_date": "2026-04-15",
+      "date_label": "8–15 เม.ย. 2569",
+      "price": 63327,
+      "seats_left": 21,
+      "status": "available"
+    }
+  ],
+  "addons": [
+    {
+      "code": "INS10",
+      "label": "ประกันการเดินทาง",
+      "price": 899
+    },
+    {
+      "code": "HKUP",
+      "label": "อัปเกรดโรงแรม",
+      "price": 2500
+    },
+    {
+      "code": "SEAT",
+      "label": "เลือกที่นั่งเครื่องบิน",
+      "price": 500
+    },
+    {
+      "code": "WIFI",
+      "label": "WiFi ไม่จำกัด",
+      "price": 299
+    }
+  ],
+  "faqs": [
+    {
+      "q": "ต้องขอวีซ่าหรือไม่?",
+      "a": "สัญชาติไทยสามารถเดินทางได้โดยไม่ต้องขอวีซ่าล่วงหน้า หรือขอวีซ่าตอนถึงแล้วแต่ประเทศปลายทาง"
+    },
+    {
+      "q": "อาหารฮาลาล/เจ มีหรือไม่?",
+      "a": "แจ้งความต้องการพิเศษล่วงหน้าได้ เราจะประสานงานให้ตามความต้องการ"
+    },
+    {
+      "q": "น้ำหนักกระเป๋าเท่าไหร่?",
+      "a": "กระเป๋าใต้ท้องเครื่อง 23 กก. กระเป๋าถือขึ้นเครื่อง 7 กก."
+    },
+    {
+      "q": "สามารถยกเลิก/คืนเงินได้หรือไม่?",
+      "a": "สามารถยกเลิกได้ตามเงื่อนไขของแต่ละโปรแกรม โดยอาจมีค่าธรรมเนียมตามระยะเวลาที่ยกเลิก"
+    }
+  ],
+  "related": [
+    {
+      "id": "tour-jp-001",
+      "title": "ทัวร์ญี่ปุ่น โตเกียว เกียวโต",
+      "price_from": 45900,
+      "thumb": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-kr-002",
+      "title": "ทัวร์เกาหลีใต้ โซล ปูซาน",
+      "price_from": 38500,
+      "thumb": "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-tw-003",
+      "title": "ทัวร์ไต้หวัน ไทเป เกาสง",
+      "price_from": 19900,
+      "thumb": "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-sg-004",
+      "title": "ทัวร์สิงคโปร์ มาเลเซีย",
+      "price_from": 24900,
+      "thumb": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&h=600&fit=crop"
+    }
+  ],
+  "licenses": {
+    "tourism_license": "11/2567",
+    "airline_partners": [
+      "TG",
+      "QR",
+      "EK"
+    ]
+  },
+  "seo": {
+    "title": "ทัวร์สเปน มาดริด บาร์เซโลนา ราคาเริ่ม 69,900",
+    "description": "ทัวร์สเปน มาดริด บาร์เซโลนา ซากราดา ฟามีเลีย พิพิธภัณฑ์พราโด ปาร์ค กูเอล พร้อมไกด์ไทย",
+    "og_image": "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop"
+  }
+}

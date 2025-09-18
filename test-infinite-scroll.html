@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scroll Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .tour-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .tour-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+        .highlight {
+            background-color: #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ทดสอบ Infinite Scroll - Product Pool</h1>
+        <div class="status" id="status">กำลังแสดง 20 จาก 100 โปรแกรม</div>
+        <div class="grid" id="tourGrid"></div>
+        <div class="loading" id="loading" style="display: none;">
+            กำลังโหลดเพิ่มเติม...
+        </div>
+    </div>
+
+    <script>
+        let currentItems = 20;
+        const totalItems = 100;
+        const itemsPerLoad = 20;
+        let isLoading = false;
+
+        // สร้างโปรแกรมทัวร์จำลอง
+        function createTourItem(index) {
+            const div = document.createElement('div');
+            div.className = 'tour-item';
+            div.setAttribute('data-tour-item', '');
+            div.innerHTML = `
+                <h3>โปรแกรมทัวร์ ${index}</h3>
+                <p>ราคา: ${(10000 + index * 1000).toLocaleString()} บาท</p>
+                <p>ระยะเวลา: ${3 + (index % 5)} วัน ${2 + (index % 4)} คืน</p>
+                <p>${index === 15 ? '<strong style="color: red;">** นี่คือโปรแกรมที่ 15 - จุดเริ่ม Infinite Scroll **</strong>' : 'รายละเอียดโปรแกรมทัวร์...'}</p>
+            `;
+            if (index === 15) {
+                div.classList.add('highlight');
+            }
+            return div;
+        }
+
+        // โหลดโปรแกรมทัวร์เริ่มต้น
+        function loadInitialTours() {
+            const grid = document.getElementById('tourGrid');
+            for (let i = 1; i <= currentItems; i++) {
+                grid.appendChild(createTourItem(i));
+            }
+            updateStatus();
+            setupIntersectionObserver();
+        }
+
+        // อัพเดทสถานะการแสดงผล
+        function updateStatus() {
+            document.getElementById('status').textContent = 
+                `กำลังแสดง ${currentItems} จาก ${totalItems} โปรแกรม`;
+        }
+
+        // โหลดโปรแกรมเพิ่มเติม
+        function loadMoreTours() {
+            if (isLoading || currentItems >= totalItems) return;
+            
+            isLoading = true;
+            document.getElementById('loading').style.display = 'block';
+            
+            // จำลองการโหลดข้อมูล
+            setTimeout(() => {
+                const grid = document.getElementById('tourGrid');
+                const start = currentItems + 1;
+                const end = Math.min(currentItems + itemsPerLoad, totalItems);
+                
+                for (let i = start; i <= end; i++) {
+                    grid.appendChild(createTourItem(i));
+                }
+                
+                currentItems = end;
+                updateStatus();
+                isLoading = false;
+                document.getElementById('loading').style.display = 'none';
+                
+                // ตั้ง observer ใหม่
+                setupIntersectionObserver();
+            }, 1000);
+        }
+
+        // ตั้งค่า Intersection Observer
+        function setupIntersectionObserver() {
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && currentItems < totalItems && !isLoading) {
+                        console.log('โปรแกรมที่ 15 เข้ามาในมุมมอง - เริ่มโหลดเพิ่มเติม');
+                        loadMoreTours();
+                    }
+                });
+            }, options);
+
+            // สังเกตโปรแกรมที่ 15
+            const items = document.querySelectorAll('[data-tour-item]');
+            if (items.length >= 15) {
+                const targetItem = items[14]; // โปรแกรมที่ 15 (index 14)
+                observer.observe(targetItem);
+                console.log('เริ่มสังเกตโปรแกรมที่ 15');
+            }
+        }
+
+        // เริ่มต้นเมื่อโหลดหน้าเสร็จ
+        window.addEventListener('DOMContentLoaded', loadInitialTours);
+    </script>
+</body>
+</html>

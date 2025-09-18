@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Test - Tour Search 24</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .iframe-container {
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .device-frame {
+            width: 375px;
+            height: 667px;
+            border: none;
+            display: block;
+        }
+        .results {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            background: #f8f9fa;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>📱 Mobile Layout Test</h1>
+        <h2>Tour Search 24 - Mobile First Testing</h2>
+        
+        <div class="info test-result">
+            <strong>Test Device:</strong> iPhone 6/7/8 (375x667px)<br>
+            <strong>Purpose:</strong> Verify mobile-first responsive design
+        </div>
+
+        <button class="test-btn" onclick="runBasicTests()">🧪 Run Basic Tests</button>
+        <button class="test-btn" onclick="testResponsiveness()">📱 Test Responsiveness</button>
+        <button class="test-btn" onclick="openTourPage()">🚀 Open Tour Page</button>
+        
+        <div id="results" class="results" style="display: none;">
+            <div id="test-output"></div>
+        </div>
+
+        <div class="iframe-container">
+            <iframe 
+                id="tourFrame"
+                class="device-frame" 
+                src="about:blank">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('test-output');
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function runBasicTests() {
+            log('🧪 Starting Basic Mobile Tests...', 'info');
+            
+            // Test 1: Viewport
+            const viewport = document.querySelector('meta[name="viewport"]');
+            log(`📱 Viewport: ${viewport ? '✅ Present' : '❌ Missing'}`, viewport ? 'pass' : 'fail');
+            
+            // Test 2: Screen dimensions
+            log(`📏 Screen: ${window.innerWidth}x${window.innerHeight}px`, 'info');
+            log(`📏 Ratio: ${window.devicePixelRatio}x`, 'info');
+            
+            // Test 3: Touch support
+            const hasTouch = 'ontouchstart' in window;
+            log(`👆 Touch Support: ${hasTouch ? '✅ Available' : '❌ Not Available'}`, hasTouch ? 'pass' : 'info');
+            
+            log('✅ Basic tests completed', 'pass');
+        }
+
+        function testResponsiveness() {
+            log('📱 Testing Responsiveness...', 'info');
+            
+            const frame = document.getElementById('tourFrame');
+            const tests = [
+                { width: 320, height: 568, name: 'iPhone SE' },
+                { width: 375, height: 667, name: 'iPhone 6/7/8' },
+                { width: 414, height: 896, name: 'iPhone XR' },
+                { width: 768, height: 1024, name: 'iPad' }
+            ];
+            
+            let testIndex = 0;
+            
+            function runNextTest() {
+                if (testIndex >= tests.length) {
+                    log('✅ Responsiveness tests completed', 'pass');
+                    return;
+                }
+                
+                const test = tests[testIndex];
+                frame.style.width = test.width + 'px';
+                frame.style.height = test.height + 'px';
+                
+                log(`📱 Testing ${test.name} (${test.width}x${test.height})`, 'info');
+                
+                setTimeout(() => {
+                    testIndex++;
+                    runNextTest();
+                }, 1000);
+            }
+            
+            runNextTest();
+        }
+
+        function openTourPage() {
+            log('🚀 Loading Tour Detail Page...', 'info');
+            
+            const frame = document.getElementById('tourFrame');
+            frame.src = 'http://localhost:3000/tour-search-24/tour-jp-001?src=search24';
+            
+            frame.onload = function() {
+                log('✅ Tour page loaded successfully', 'pass');
+                
+                // Test the frame content after load
+                setTimeout(() => {
+                    testFrameContent();
+                }, 2000);
+            };
+            
+            frame.onerror = function() {
+                log('❌ Failed to load tour page', 'fail');
+            };
+        }
+
+        function testFrameContent() {
+            try {
+                const frame = document.getElementById('tourFrame');
+                const frameDoc = frame.contentDocument || frame.contentWindow.document;
+                
+                if (!frameDoc) {
+                    log('❌ Cannot access frame content (CORS)', 'fail');
+                    return;
+                }
+                
+                // Test for overflow
+                const body = frameDoc.body;
+                if (body.scrollWidth > frame.offsetWidth) {
+                    log(`❌ Horizontal overflow: ${body.scrollWidth}px > ${frame.offsetWidth}px`, 'fail');
+                } else {
+                    log('✅ No horizontal overflow detected', 'pass');
+                }
+                
+                // Test for mobile elements
+                const mobileElements = frameDoc.querySelectorAll('.px-3, .sm\\:px-4');
+                log(`📱 Mobile-first elements: ${mobileElements.length} found`, 'info');
+                
+                // Test for buttons
+                const buttons = frameDoc.querySelectorAll('button');
+                log(`🔘 Interactive buttons: ${buttons.length} found`, 'info');
+                
+            } catch (error) {
+                log(`❌ Frame test error: ${error.message}`, 'fail');
+            }
+        }
+
+        // Auto-start basic tests
+        setTimeout(() => {
+            runBasicTests();
+        }, 500);
+    </script>
+</body>
+</html>

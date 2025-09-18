@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Booking Card Display</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #2563eb;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .iframe-container {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        .test-button {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 8px 8px 8px 0;
+            font-weight: 500;
+        }
+        .test-button:hover {
+            background: #2563eb;
+        }
+        .issue-highlight {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .fix-code {
+            background: #f3f4f6;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            margin: 12px 0;
+            white-space: pre-wrap;
+        }
+        .device-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .device-button {
+            padding: 8px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .device-button:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Booking Card Display Test</h1>
+    <p><strong>หน้าตรวจสอบปัญหา Booking Card - Tour Search 24</strong></p>
+
+    <div class="test-section">
+        <h2 class="test-title">🎯 ปัญหาที่พบ</h2>
+        <div class="issue-highlight">
+            <strong>❌ Booking Card แสดงข้อมูลผิดพลาด:</strong><br>
+            • วันเดินทางแสดงว่างเปล่า<br>
+            • ราคาแสดงผิด (฿67,783, ฿59,294 แทนที่จะเป็น ฿39,999)<br>
+            • StickyBookingBar หายไป
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">✅ การแก้ไขที่ทำแล้ว</h2>
+        <div class="fix-code">1. เพิ่ม StickyBookingBar component ที่หายไป:
+
+&lt;StickyBookingBar 
+  tour={tour}
+  selectedDeparture={selectedDeparture}
+  onBooking={() =&gt; setShowBookingModal(true)}
+/&gt;</div>
+        
+        <div class="fix-code">2. ตรวจสอบข้อมูล departures:
+departures: [
+  {
+    "id": "dep-2025-11-12",
+    "date_range": "12–20 พ.ย. 2568",
+    "price": 39999,
+    "seats_left": 12,
+    "status": "available"
+  }
+]</div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">🚀 ทดสอบหน้าจริง</h2>
+        
+        <a href="http://localhost:4000/tour-search-24/tour-turkey-009" class="test-button" target="_blank">
+            📱 เปิดหน้าทัวร์
+        </a>
+        
+        <div class="device-buttons">
+            <div class="device-button" onclick="openInSize(375, 667)">📱 iPhone SE</div>
+            <div class="device-button" onclick="openInSize(375, 812)">📱 iPhone X</div>
+            <div class="device-button" onclick="openInSize(414, 896)">📱 iPhone 11</div>
+            <div class="device-button" onclick="openInSize(768, 1024)">📱 iPad</div>
+            <div class="device-button" onclick="openInSize(1200, 800)">💻 Desktop</div>
+        </div>
+
+        <div class="iframe-container">
+            <iframe 
+                src="http://localhost:4000/tour-search-24/tour-turkey-009" 
+                width="100%" 
+                height="800"
+                style="border: none;">
+            </iframe>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">🔍 ตรวจสอบจุดที่ต้องดู</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+            <div>
+                <h4>📱 Mobile:</h4>
+                <ul>
+                    <li>Sticky booking bar ด้านล่าง</li>
+                    <li>แสดงวันที่: "12–20 พ.ย. 2568"</li>
+                    <li>แสดงราคา: "฿39,999"</li>
+                    <li>ปุ่ม "จองตอนนี้" ทำงาน</li>
+                </ul>
+            </div>
+            <div>
+                <h4>💻 Desktop:</h4>
+                <ul>
+                    <li>Booking card ด้านขวา</li>
+                    <li>Flash sale countdown</li>
+                    <li>แสดงข้อมูลครบถ้วน</li>
+                    <li>Urgency indicators</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">🐛 Debug Information</h2>
+        <div id="debug-info">
+            <p>กำลังโหลดข้อมูล...</p>
+        </div>
+    </div>
+
+    <script>
+        function openInSize(width, height) {
+            const popup = window.open(
+                'http://localhost:4000/tour-search-24/tour-turkey-009', 
+                'tourTest', 
+                `width=${width},height=${height},scrollbars=yes,resizable=yes`
+            );
+            if (popup) {
+                popup.focus();
+                setTimeout(() => {
+                    popup.resizeTo(width, height);
+                }, 100);
+            }
+        }
+
+        // Debug information gathering
+        async function gatherDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            
+            try {
+                const response = await fetch('http://localhost:4000/tour-search-24/tour-turkey-009');
+                const html = await response.text();
+                
+                // Check for specific elements
+                const hasSticky = html.includes('StickyBookingBar') || html.includes('sticky');
+                const hasDateRange = html.includes('12–20 พ.ย. 2568');
+                const hasPrice = html.includes('39,999') || html.includes('39999');
+                
+                debugDiv.innerHTML = `
+                    <div style="font-family: monospace; font-size: 14px;">
+                        <p><strong>🔍 Page Analysis:</strong></p>
+                        <p>✅ Response Status: ${response.status}</p>
+                        <p>${hasSticky ? '✅' : '❌'} Sticky Bar Elements: ${hasSticky}</p>
+                        <p>${hasDateRange ? '✅' : '❌'} Date Range Found: ${hasDateRange}</p>
+                        <p>${hasPrice ? '✅' : '❌'} Price Found: ${hasPrice}</p>
+                        <p><strong>Page Size:</strong> ${(html.length / 1024).toFixed(2)} KB</p>
+                        
+                        <details style="margin-top: 16px;">
+                            <summary><strong>🔍 Search for Booking Elements</strong></summary>
+                            <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 8px; margin: 8px 0;">
+                                ${html.includes('booking') ? 
+                                    html.split('\n')
+                                        .filter(line => line.toLowerCase().includes('booking'))
+                                        .slice(0, 10)
+                                        .map(line => `<div>${line.trim()}</div>`)
+                                        .join('') 
+                                    : '<div>No booking elements found</div>'}
+                            </div>
+                        </details>
+                    </div>
+                `;
+            } catch (error) {
+                debugDiv.innerHTML = `
+                    <p style="color: red;"><strong>❌ Error loading page:</strong></p>
+                    <p>${error.message}</p>
+                    <p>Make sure the dev server is running on port 4000</p>
+                `;
+            }
+        }
+
+        // Run debug check
+        setTimeout(gatherDebugInfo, 1000);
+
+        // Auto refresh iframe every 10 seconds to catch changes
+        let refreshCount = 0;
+        setInterval(() => {
+            const iframe = document.querySelector('iframe');
+            if (iframe && refreshCount < 5) { // Limit refreshes
+                iframe.src = iframe.src;
+                refreshCount++;
+                console.log(`🔄 Iframe refreshed (${refreshCount}/5)`);
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

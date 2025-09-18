@@ -14,6 +14,20 @@ interface BookingModalProps {
     travelerCount: number;
     totalAmount: number;
   };
+  isEditMode?: boolean;
+  editData?: {
+    id: number | string;
+    customer_name: string;
+    customer_phone: string;
+    customer_email: string;
+    traveler_count: number;
+    address: string;
+    sub_district: string;
+    district: string;
+    province: string;
+    postal_code: string;
+  };
+  isGuestBooking?: boolean;
 }
 
 export interface BookingFormData {
@@ -27,7 +41,10 @@ export interface BookingFormData {
   zipCode?: string;
 }
 
-export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }: BookingModalProps) {
+export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary, isEditMode = false, editData, isGuestBooking = false }: BookingModalProps) {
+  // ต้องเรียก hook useThailandData() ทันทีหลังรับ props
+  const { provinces, districts, subDistricts } = useThailandData();
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -36,23 +53,148 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
   const [districtId, setDistrictId] = useState(0);
   const [subDistrictId, setSubDistrictId] = useState(0);
   const [zipCode, setZipCode] = useState('');
+  
+  // New booking form states
+  const [selectedDate, setSelectedDate] = useState('');
+  const [travelerCount, setTravelerCount] = useState(2);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
+
+  // Handle booking submission
+  const handleBookingSubmit = async () => {
+    if (!selectedDate) {
+      setFormError('กรุณาเลือกวันที่เดินทาง');
+      return;
+    }
+
+    setFormError('');
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Call the onConfirm callback with booking data
+      onConfirm({
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
+        provinceId: 0,
+        districtId: 0,
+        subDistrictId: 0,
+        zipCode: ''
+      });
+      
+      // Close modal after successful booking
+      onClose();
+    } catch (error) {
+      setFormError('เกิดข้อผิดพลาดในการจอง กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Pre-fill data in edit mode
+  React.useEffect(() => {
+    console.log('🔧 BookingModal useEffect:', { isEditMode, editData: editData?.id, isOpen });
+    if (isEditMode && editData && isOpen) {
+      console.log('🎯 Pre-filling edit data:', {
+        customer_name: editData.customer_name,
+        customer_phone: editData.customer_phone,
+        customer_email: editData.customer_email,
+        address: editData.address,
+        province: editData.province,
+        district: editData.district,
+        sub_district: editData.sub_district,
+        postal_code: editData.postal_code,
+        traveler_count: editData.traveler_count
+      });
+      setName(editData.customer_name || '');
+      setPhone(editData.customer_phone || '');
+      setEmail(editData.customer_email || '');
+      setAddress(editData.address || '');
+      setZipCode(editData.postal_code || '');
+      
+      // Lookup province/district/subdistrict IDs from names
+      if (provinces.length > 0 && districts.length > 0 && subDistricts.length > 0) {
+        console.log('🔍 Looking up location IDs...');
+        
+        // Find province ID
+        const foundProvince = provinces.find(p => p.name_th === editData.province);
+        if (foundProvince) {
+          console.log('✅ Found province:', foundProvince.name_th, 'ID:', foundProvince.id);
+          setProvinceId(foundProvince.id);
+          
+          // Find district ID within this province
+          const foundDistrict = districts.find(d => 
+            d.name_th === editData.district && d.province_id === foundProvince.id
+          );
+          if (foundDistrict) {
+            console.log('✅ Found district:', foundDistrict.name_th, 'ID:', foundDistrict.id);
+            setDistrictId(foundDistrict.id);
+            
+            // Find sub-district ID within this district
+            const foundSubDistrict = subDistricts.find(sd => 
+              sd.name_th === editData.sub_district && sd.amphure_id === foundDistrict.id
+            );
+            if (foundSubDistrict) {
+              console.log('✅ Found sub-district:', foundSubDistrict.name_th, 'ID:', foundSubDistrict.id);
+              setSubDistrictId(foundSubDistrict.id);
+              // เซ็ต step เป็น 1 เฉพาะครั้งแรกที่โหลดข้อมูล
+              if (!isDataPreFilled) {
+                setCurrentStep(1);
+                setIsDataPreFilled(true);
+              }
+            }
+          }
+        }
+      } else {
+        console.log('⏳ Thailand data not loaded yet, will retry...');
+      }
+    } else if (!isEditMode && isOpen) {
+      // Reset form in new booking mode
+      setName('');
+      setPhone('');
+      setEmail('');
+      setAddress('');
+      setProvinceId(0);
+      setDistrictId(0);
+      setSubDistrictId(0);
+      setZipCode('');
+      setCurrentStep(1);
+      setIsDataPreFilled(false);
+    }
+  }, [isEditMode, editData, isOpen, provinces, districts, subDistricts]);
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1); // 1: Basic Info, 2: Address Info
+  const [isDataPreFilled, setIsDataPreFilled] = useState(false); // Track if edit data is already pre-filled
 
-  // Lock background scroll when modal is open
+  // Lock background scroll and handle keyboard events when modal is open
   React.useEffect(() => {
     if (isOpen) {
       document.body.classList.add('overflow-hidden');
+      
+      // Handle Escape key
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+      
+      document.addEventListener('keydown', handleEscape);
+      
+      return () => {
+        document.body.classList.remove('overflow-hidden');
+        document.removeEventListener('keydown', handleEscape);
+      };
     } else {
       document.body.classList.remove('overflow-hidden');
     }
-    return () => {
-      document.body.classList.remove('overflow-hidden');
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   // Persist form fields to localStorage
   React.useEffect(() => {
@@ -75,10 +217,21 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
   React.useEffect(() => { localStorage.setItem('booking_subDistrictId', String(subDistrictId)); }, [subDistrictId]);
   React.useEffect(() => { localStorage.setItem('booking_zipCode', zipCode); }, [zipCode]);
 
-  // Get all provinces, districts, subdistricts for summary lookup
-  const { provinces, districts, subDistricts } = useThailandData();
-
-  if (!isOpen) return null;
+  console.log('🔍 BookingModal render check:', { 
+    isOpen, 
+    isEditMode, 
+    editDataId: editData?.id,
+    hasEditData: !!editData,
+    customerName: editData?.customer_name,
+    currentStep
+  });
+  
+  if (!isOpen) {
+    console.log('❌ BookingModal not rendering - isOpen is false');
+    return null;
+  }
+  
+  console.log('✅ BookingModal rendering...');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,6 +264,7 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
   };
 
   const handleNextStep = () => {
+    console.log('🔵 handleNextStep called');
     if (!name.trim() || !phone.trim()) {
       setError('กรุณากรอกชื่อ-นามสกุล และเบอร์โทรศัพท์');
       return;
@@ -122,7 +276,9 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
     }
     setEmailError('');
     setError('');
+    console.log('🔵 Setting currentStep to 2');
     setCurrentStep(2);
+    console.log('🔵 currentStep set to 2 completed');
   };
 
   const resetForm = () => {
@@ -137,12 +293,13 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
     setCurrentStep(1);
     setError('');
     setShowSuccess(false);
+    setIsDataPreFilled(false);
   };
 
   // Success Modal
   if (showSuccess) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fadeIn p-2 sm:p-4">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fadeIn p-2 sm:p-4">
         <div className="relative w-full max-w-lg mx-2 sm:mx-4 rounded-2xl shadow-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 animate-modalPop overflow-hidden max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 sm:p-6 text-center text-white">
@@ -161,6 +318,13 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
               <p className="text-gray-600 dark:text-gray-400 text-center mb-4 text-sm sm:text-base">
                 ทีมงานจะติดต่อกลับเพื่อยืนยันรายละเอียดการจองของคุณ
               </p>
+              {isGuestBooking && (
+                <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg p-3 text-center text-sm mb-2">
+                  <b>หมายเหตุ:</b> คุณจองโดยไม่เข้าสู่ระบบ <br />
+                  คุณจะ <b>ไม่สามารถดู/แก้ไข/ยกเลิก</b> รายการจองผ่านระบบได้ กรุณาตรวจสอบอีเมลและเบอร์โทรศัพท์ให้ถูกต้อง<br />
+                  หากต้องการดู/แก้ไขรายการจองในอนาคต กรุณาสมัครสมาชิกและเข้าสู่ระบบ
+                </div>
+              )}
             </div>
 
             {/* Tour Summary */}
@@ -266,258 +430,146 @@ export default function BookingModal({ isOpen, onClose, onConfirm, tourSummary }
     return s ? s.name_th : '';
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-sm animate-fadeIn p-2 sm:p-4">
-      <div className="relative w-full max-w-4xl rounded-2xl shadow-2xl bg-white dark:bg-gray-900 flex flex-col lg:flex-row overflow-hidden border border-gray-200 dark:border-gray-700 animate-modalPop max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mt-2 sm:mt-0">
-        {/* Close Button - Mobile optimized */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-red-500 transition-colors z-20 p-1 sm:p-0"
-          aria-label="ปิด"
-        >
-          <XCircle className="w-6 h-6 sm:w-7 sm:h-7" />
-        </button>
-
-        {/* Form Section - Mobile responsive */}
-        <form className="flex-1 p-4 sm:p-6 md:p-8 flex flex-col justify-start sm:justify-center min-h-[400px] sm:min-h-[500px]" onSubmit={handleSubmit}>
-          {/* Progress Steps - Mobile optimized */}
-          <div className="flex items-center justify-center mb-4 sm:mb-6">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold shadow-lg transition-all ${
-                currentStep >= 1 ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white scale-110' : 'bg-gray-200 text-gray-600'
-              }`}>
-                {currentStep > 1 ? <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" /> : '1'}
-              </div>
-              <div className={`w-12 sm:w-16 h-1 rounded-full transition-all ${
-                currentStep >= 2 ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gray-200'
-              }`} />
-              <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold shadow-lg transition-all ${
-                currentStep >= 2 ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white scale-110' : 'bg-gray-200 text-gray-600'
-              }`}>
-                2
-              </div>
-            </div>
+    <div 
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-md p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div 
+        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden max-h-[90vh] overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-modal-title"
+      >
+        {/* Header with Tour Info */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 md:p-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 id="booking-modal-title" className="text-xl md:text-2xl font-bold">จองทัวร์</h3>
+            <button 
+              onClick={onClose}
+              className="text-white/80 hover:text-white transition-colors p-1"
+              aria-label="ปิด"
+            >
+              <XCircle className="w-6 h-6" />
+            </button>
           </div>
-
-          {/* Step Header - Mobile responsive */}
-          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-            <div className={`p-1.5 sm:p-2 rounded-full ${currentStep === 1 ? 'bg-blue-100 dark:bg-blue-900/50' : 'bg-green-100 dark:bg-green-900/50'}`}>
-              <CheckCircle className={`w-5 h-5 sm:w-6 sm:h-6 ${currentStep === 1 ? 'text-blue-600 dark:text-blue-400' : 'text-green-600 dark:text-green-400'}`} />
-            </div>
-            <div>
-              <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">
-                {currentStep === 1 ? 'ข้อมูลผู้จอง' : 'ที่อยู่สำหรับจัดส่งเอกสาร'}
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                {currentStep === 1 ? 'กรอกข้อมูลติดต่อของคุณ' : 'กรอกที่อยู่สำหรับจัดส่งเอกสารทัวร์'}
-              </p>
-            </div>
-          </div>
-
-          {/* Step 1: Basic Information - Mobile responsive */}
-          {currentStep === 1 && (
-            <div className="space-y-4 sm:space-y-5">
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">ชื่อ-นามสกุล <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    className="form-input w-full pl-9 sm:pl-10 pr-3 py-3 sm:py-2.5 md:py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition text-sm sm:text-base"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    required
-                    placeholder="กรอกชื่อ-นามสกุล"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">เบอร์โทรศัพท์ <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                  <input
-                    type="tel"
-                    className="form-input w-full pl-9 sm:pl-10 pr-3 py-3 sm:py-2.5 md:py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition text-sm sm:text-base"
-                    value={phone}
-                    maxLength={10}
-                    pattern="[0-9]{10}"
-                    inputMode="numeric"
-                    onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                    required
-                    placeholder="กรอกเบอร์โทรศัพท์"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">อีเมล (ถ้ามี)</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    className="form-input w-full pl-9 sm:pl-10 pr-3 py-3 sm:py-2.5 md:py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition text-sm sm:text-base"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="กรอกอีเมล (ถ้ามี)"
-                  />
-                </div>
-                {emailError && <div className="text-red-500 text-xs mt-1">{emailError}</div>}
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Address Information - Mobile optimized */}
-          {currentStep === 2 && (
-            <div className="space-y-4 sm:space-y-5">
-              <AddressForm
-                address={address}
-                provinceId={provinceId}
-                districtId={districtId}
-                subDistrictId={subDistrictId}
-                zipCode={zipCode}
-                onAddressChange={setAddress}
-                onProvinceChange={setProvinceId}
-                onDistrictChange={setDistrictId}
-                onSubDistrictChange={setSubDistrictId}
-                onZipCodeChange={setZipCode}
-                disabled={submitting}
-              />
-            </div>
-          )}
-          
-          {error && <div className="text-red-500 text-xs sm:text-sm mt-3 sm:mt-4 flex items-center gap-1"><Info className="w-3 h-3 sm:w-4 sm:h-4" /> {error}</div>}
-
-          {/* Buttons - Mobile responsive */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6 lg:mt-8">
-            {currentStep === 1 ? (
-              <>
-                <button
-                  type="button"
-                  className="flex-1 py-3 sm:py-2.5 md:py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition flex items-center justify-center gap-2 text-base sm:text-sm md:text-base lg:text-lg"
-                  onClick={onClose}
-                  disabled={submitting}
-                >
-                  <XCircle className="w-4 h-4 sm:w-5 sm:h-5" /> ยกเลิก
-                </button>
-                <button
-                  type="button"
-                  className="flex-1 py-3 sm:py-2.5 md:py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition flex items-center justify-center gap-2 text-base sm:text-sm md:text-base lg:text-lg"
-                  onClick={handleNextStep}
-                >
-                  ถัดไป <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 ml-1" />
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="flex-1 py-3 sm:py-2.5 md:py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition flex items-center justify-center gap-2 text-base sm:text-sm md:text-base lg:text-lg"
-                  onClick={() => setCurrentStep(1)}
-                  disabled={submitting}
-                >
-                  ← ย้อนกลับ
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-3 sm:py-2.5 md:py-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition flex items-center justify-center gap-2 text-base sm:text-sm md:text-base lg:text-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
-                  disabled={submitting}
-                >
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" /> {submitting ? 'กำลังส่ง...' : 'ยืนยันการจอง'}
-                </button>
-              </>
-            )}
-          </div>
-        </form>
-
-        {/* Summary Section - Mobile responsive */}
-        <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-3 sm:p-4 md:p-6 lg:p-8 flex flex-col justify-start sm:justify-center border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 min-w-0 sm:min-w-[300px] lg:min-w-[350px]">
-          <div className="mb-4 sm:mb-6 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 sm:gap-3 mb-2">
-              <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/50 rounded-full">
-                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="font-bold text-lg sm:text-xl text-gray-900 dark:text-gray-200">สรุปการจอง</h3>
-            </div>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-              {currentStep === 1 ? 'รายละเอียดทัวร์ที่คุณเลือก' : 'ตรวจสอบข้อมูลก่อนยืนยันการจอง'}
-            </p>
-          </div>
-          
-          {/* Show booking summary based on step */}
-          {currentStep === 2 && name && (
-            <div className="mb-3 sm:mb-4 bg-white dark:bg-gray-700 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-100 dark:border-gray-600">
-              <div className="flex items-center gap-2 mb-2">
-                <User className="w-4 h-4 text-gray-500" />
-                <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">ข้อมูลผู้จอง</span>
-              </div>
-              <div className="space-y-1 text-xs sm:text-sm">
-                <div><span className="font-medium">ชื่อ:</span> {name}</div>
-                <div><span className="font-medium">โทร:</span> {phone}</div>
-                {email && <div><span className="font-medium">อีเมล:</span> {email}</div>}
-                <div><span className="font-medium">ที่อยู่:</span> {address}
-                  {subDistrictId ? ` ตำบล/แขวง ${getSubDistrictName(subDistrictId)}` : ''}
-                  {districtId ? ` อำเภอ/เขต ${getDistrictName(districtId)}` : ''}
-                  {provinceId ? ` จังหวัด ${getProvinceName(provinceId)}` : ''}
-                  {zipCode ? ` ${zipCode}` : ''}
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-3 sm:space-y-4 text-sm sm:text-base">
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-100 dark:border-gray-600">
-              <div className="flex items-center gap-2 mb-2">
-                <Info className="w-4 h-4 text-gray-500" />
-                <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">โปรแกรมทัวร์</span>
-              </div>
-              <div className="font-semibold text-gray-900 dark:text-white leading-relaxed text-sm sm:text-base">
-                {tourSummary.tourName}
-              </div>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-100 dark:border-gray-600">
-              <div className="flex items-center gap-2 mb-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">ช่วงเวลาเดินทาง</span>
-              </div>
-              <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">
-                {tourSummary.dateRange}
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-100 dark:border-gray-600">
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="w-4 h-4 text-gray-500" />
-                <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">ผู้เดินทาง</span>
-              </div>
-              <div className="font-bold text-sm sm:text-base lg:text-lg text-gray-900 dark:text-white">
-                {tourSummary.travelerCount} คน × ฿{tourSummary.pricePerPerson.toLocaleString()}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-3 sm:mt-4 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-3 sm:p-4 text-white shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-blue-100" />
-                <span className="font-semibold text-xs sm:text-sm">ราคารวมทั้งสิ้น</span>
-              </div>
-              <div className="text-right">
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold">
-                  ฿{tourSummary.totalAmount.toLocaleString()}
-                </div>
-                <div className="text-xs text-blue-100 opacity-90">
-                  มัดจำ 30% = ฿{Math.round(tourSummary.totalAmount * 0.3).toLocaleString()}
-                </div>
-              </div>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-blue-100">{tourSummary.tourName}</h4>
+            <div className="flex items-center gap-4 text-sm text-blue-200">
+              <span>💰 ฿{tourSummary.pricePerPerson.toLocaleString()}/คน</span>
+              <span>📅 {tourSummary.dateRange}</span>
             </div>
           </div>
         </div>
-        <style jsx>{`
-          .animate-fadeIn { animation: fadeIn 0.2s; }
-          .animate-modalPop { animation: modalPop 0.25s cubic-bezier(.4,2,.6,1) }
-          @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-          @keyframes modalPop { from { transform: scale(0.95); opacity: 0 } to { transform: scale(1); opacity: 1 } }
-        `}</style>
+
+        {/* Content */}
+        <div className="p-6 md:p-8">
+          <div className="space-y-6">
+            {/* Date Selection */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-blue-600" />
+                วันที่เดินทาง
+              </label>
+              <select 
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+              >
+                <option value="">เลือกวันที่เดินทาง</option>
+                <option value="15 ม.ค. 68 - 19 ม.ค. 68">15 ม.ค. 68 - 19 ม.ค. 68</option>
+                <option value="22 ม.ค. 68 - 26 ม.ค. 68">22 ม.ค. 68 - 26 ม.ค. 68</option>
+                <option value="29 ม.ค. 68 - 2 ก.พ. 68">29 ม.ค. 68 - 2 ก.พ. 68</option>
+              </select>
+            </div>
+
+            {/* Traveler Count */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <Users className="w-4 h-4 text-blue-600" />
+                จำนวนผู้เดินทาง
+              </label>
+              <div className="flex items-center justify-center gap-6">
+                <button 
+                  onClick={() => setTravelerCount(Math.max(1, travelerCount - 1))}
+                  className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors disabled:opacity-50"
+                  disabled={travelerCount <= 1}
+                >
+                  <XCircle className="w-5 h-5 text-gray-600" />
+                </button>
+                <div className="text-center">
+                  <span className="text-3xl font-bold text-gray-800 block">{travelerCount}</span>
+                  <span className="text-sm text-gray-500">คน</span>
+                </div>
+                <button 
+                  onClick={() => setTravelerCount(Math.min(10, travelerCount + 1))}
+                  className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors disabled:opacity-50"
+                  disabled={travelerCount >= 10}
+                >
+                  <CheckCircle className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+            </div>
+
+            {/* Price Breakdown */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-200">
+              <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-blue-600" />
+                รายละเอียดราคา
+              </h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">ราคาต่อคน</span>
+                  <span className="font-medium">฿{tourSummary.pricePerPerson.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">จำนวนคน</span>
+                  <span className="font-medium">{travelerCount} คน</span>
+                </div>
+                <div className="border-t border-blue-200 pt-2 mt-2">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gray-800">ราคารวม</span>
+                    <span className="text-xl font-bold text-blue-600">฿{(tourSummary.pricePerPerson * travelerCount).toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {formError && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                <div className="flex items-center gap-2 text-red-600">
+                  <Info className="w-4 h-4" />
+                  <span className="text-sm font-medium">{formError}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button 
+              onClick={handleBookingSubmit}
+              disabled={!selectedDate || isSubmitting}
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  กำลังดำเนินการ...
+                </div>
+              ) : (
+                'ดำเนินการจอง'
+              )}
+            </button>
+
+            {/* Additional Info */}
+            <div className="text-center text-sm text-gray-500">
+              <p>💳 ชำระเงินมัดจำ 30% เพื่อยืนยันการจอง</p>
+              <p>📞 ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

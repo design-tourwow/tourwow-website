@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Banner Generator</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        .banner-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+            margin: 20px 0;
+        }
+        .banner-item { 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .banner-img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+        }
+        .banner-info { 
+            padding: 15px; 
+        }
+        .banner-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .banner-desc { 
+            color: #666; 
+            font-size: 14px;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Tour Banner Image Generator</h1>
+    
+    <div class="instructions">
+        <h3>Instructions:</h3>
+        <ol>
+            <li>Click "Download" button on each image you want to save</li>
+            <li>Save the images to <code>public/tour-banners/</code> folder</li>
+            <li>Images are optimized at 400x240 pixels for tour cards</li>
+            <li>All images are high-quality destination photos from Unsplash</li>
+        </ol>
+    </div>
+
+    <div class="banner-grid">
+
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/MJPr6nOdppw?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Tokyo skyline with traditional temples" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Tokyo & Kyoto</div>
+                <div class="banner-desc">Tokyo skyline with traditional temples</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/MJPr6nOdppw?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'japan-tokyo-kyoto.jpg')">
+                    📥 Download japan-tokyo-kyoto.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/TLZhfRCM59Q?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Tokyo Disneyland magical castle" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Tokyo Disneyland</div>
+                <div class="banner-desc">Tokyo Disneyland magical castle</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/TLZhfRCM59Q?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'japan-tokyo-disney.jpg')">
+                    📥 Download japan-tokyo-disney.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/UeAQAzlhdeQ?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Traditional Japanese shrine gates" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Osaka & Kyoto</div>
+                <div class="banner-desc">Traditional Japanese shrine gates</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/UeAQAzlhdeQ?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'japan-osaka-kyoto-nara.jpg')">
+                    📥 Download japan-osaka-kyoto-nara.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/F_pSgQ8Ed9E?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Hokkaido winter snow landscape" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Hokkaido</div>
+                <div class="banner-desc">Hokkaido winter snow landscape</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/F_pSgQ8Ed9E?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'japan-hokkaido-sapporo.jpg')">
+                    📥 Download japan-hokkaido-sapporo.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/JBkwaYMuhdc?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Traditional Japanese village in mountains" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Takayama & Shirakawa-go</div>
+                <div class="banner-desc">Traditional Japanese village in mountains</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/JBkwaYMuhdc?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'japan-takayama-shirakawa.jpg')">
+                    📥 Download japan-takayama-shirakawa.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/TUJud0AWAPI?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Seoul modern cityscape at night" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Seoul & Busan</div>
+                <div class="banner-desc">Seoul modern cityscape at night</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/TUJud0AWAPI?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'korea-seoul-busan-jeju.jpg')">
+                    📥 Download korea-seoul-busan-jeju.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/b90cXqBYTJA?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Taipei 101 and city skyline" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Taipei & Alishan</div>
+                <div class="banner-desc">Taipei 101 and city skyline</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/b90cXqBYTJA?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'taiwan-taipei-alishan.jpg')">
+                    📥 Download taiwan-taipei-alishan.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/gYdjd93sSHU?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Great Wall of China scenic view" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Beijing & Shanghai</div>
+                <div class="banner-desc">Great Wall of China scenic view</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/gYdjd93sSHU?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'china-beijing-shanghai.jpg')">
+                    📥 Download china-beijing-shanghai.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/JBkwaYMuhdc?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Swiss Alps mountain landscape" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">France, Italy & Switzerland</div>
+                <div class="banner-desc">Swiss Alps mountain landscape</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/JBkwaYMuhdc?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'europe-france-italy-swiss.jpg')">
+                    📥 Download europe-france-italy-swiss.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/WPvmBzIdYXs?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Sydney Opera House and harbour" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Sydney & Melbourne</div>
+                <div class="banner-desc">Sydney Opera House and harbour</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/WPvmBzIdYXs?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'australia-sydney-melbourne.jpg')">
+                    📥 Download australia-sydney-melbourne.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/bOqCXbyZn2M?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="Canadian Rocky Mountains landscape" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Vancouver & Calgary</div>
+                <div class="banner-desc">Canadian Rocky Mountains landscape</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/bOqCXbyZn2M?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'canada-vancouver-calgary.jpg')">
+                    📥 Download canada-vancouver-calgary.jpg
+                </button>
+            </div>
+        </div>
+    
+        <div class="banner-item">
+            <img src="https://images.unsplash.com/jFu2L04tMBc?w=400&h=240&fit=crop&crop=center&auto=format&q=80" alt="New Zealand dramatic mountain scenery" class="banner-img" />
+            <div class="banner-info">
+                <div class="banner-title">Auckland & Queenstown</div>
+                <div class="banner-desc">New Zealand dramatic mountain scenery</div>
+                <button class="download-btn" onclick="downloadImage('https://images.unsplash.com/jFu2L04tMBc?w=400&h=240&fit=crop&crop=center&auto=format&q=80', 'newzealand-auckland-queenstown.jpg')">
+                    📥 Download newzealand-auckland-queenstown.jpg
+                </button>
+            </div>
+        </div>
+    
+    </div>
+
+    <script>
+        async function downloadImage(url, filename) {
+            try {
+                const response = await fetch(url)
+                const blob = await response.blob()
+                const downloadUrl = window.URL.createObjectURL(blob)
+                
+                const link = document.createElement('a')
+                link.href = downloadUrl
+                link.download = filename
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                
+                window.URL.revokeObjectURL(downloadUrl)
+                console.log('Downloaded:', filename)
+            } catch (error) {
+                console.error('Download failed:', error)
+            }
+        }
+        
+        // Pre-load images for better UX
+        window.addEventListener('load', () => {
+            console.log('Tour banner generator loaded!')
+        })
+    </script>
+</body>
+</html>

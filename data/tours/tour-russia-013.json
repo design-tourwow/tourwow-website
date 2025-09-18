@@ -1,0 +1,252 @@
+{
+  "id": "tour-russia-013",
+  "slug": "tour-russia-013",
+  "title": "ทัวร์รัสเซีย มอสโก ซางต์ปีเตอร์สเบิร์ก",
+  "country": "Russia",
+  "cities": [
+    "Moscow",
+    "St. Petersburg"
+  ],
+  "duration_days": 9,
+  "nights": 7,
+  "price_from": 89900,
+  "currency": "THB",
+  "badges": [],
+  "rating": 4.5,
+  "reviews_count": 123,
+  "hero_images": [
+    "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=1200&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11513326738677-b964603b136d?w=1000&h=600&fit=crop"
+  ],
+  "highlights": [
+    "จัตุรัสแดง",
+    "พระราชวังฤดูหนาว",
+    "ทรานส์ไซบีเรียน"
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "ออกเดินทาง",
+      "details": [
+        "เดินทางจากกรุงเทพฯ"
+      ]
+    },
+    {
+      "day": 2,
+      "title": "เมืองหลัก",
+      "details": [
+        "ชมเมืองและสถานที่สำคัญ"
+      ]
+    },
+    {
+      "day": 3,
+      "title": "สถานที่ท่องเที่ยว",
+      "details": [
+        "เที่ยวชมสถานที่สำคัญ"
+      ]
+    },
+    {
+      "day": 4,
+      "title": "วัฒนธรรมท้องถิ่น",
+      "details": [
+        "สัมผัสวัฒนธรรมและอาหาร"
+      ]
+    },
+    {
+      "day": 5,
+      "title": "ช้อปปิ้ง",
+      "details": [
+        "ซื้อของฝาก"
+      ]
+    },
+    {
+      "day": 6,
+      "title": "เดินทางกลับ",
+      "details": [
+        "เดินทางกลับประเทศไทย"
+      ]
+    }
+  ],
+  "gallery": [
+    "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-11513326738677-b964603b136d?w=600&q=80&h=600&fit=crop",
+    "https://images.unsplash.com/photo-21513326738677-b964603b136d?w=600&q=80&h=600&fit=crop"
+  ],
+  "included": [
+    "ตั๋วเครื่องบินไป-กลับ",
+    "ที่พัก 4 ดาว",
+    "อาหารตามรายการ",
+    "รถรับส่งสนามบิน",
+    "ไกด์ท้องถิ่นพูดไทย",
+    "ประกันอุบัติเหตุ"
+  ],
+  "excluded": [
+    "ค่าทิปไกด์และคนขับรถ",
+    "ค่าธรรมเนียมวีซ่า (ถ้ามี)",
+    "ค่าใช้จ่ายส่วนตัว",
+    "ประกันการเดินทางแบบครอบคลุม"
+  ],
+  "policies": {
+    "deposit": 3000,
+    "cancellation": "ยกเลิกฟรีภายใน 7 วันก่อนเดินทาง",
+    "payment_options": [
+      "บัตรเครดิต",
+      "โอนเงิน",
+      "ผ่อนชำระ 0% 6 เดือน"
+    ]
+  },
+  "departures": [
+    {
+      "id": "dep-2025-09-10",
+      "start_date": "2025-09-10",
+      "end_date": "2025-09-18",
+      "date_label": "10–18 ก.ย. 2568",
+      "price": 85480,
+      "seats_left": 8,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-10-08",
+      "start_date": "2025-10-08",
+      "end_date": "2025-10-16",
+      "date_label": "8–16 ต.ค. 2568",
+      "price": 100288,
+      "seats_left": 16,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-11-12",
+      "start_date": "2025-11-12",
+      "end_date": "2025-11-20",
+      "date_label": "12–20 พ.ย. 2568",
+      "price": 80647,
+      "seats_left": 8,
+      "status": "available"
+    },
+    {
+      "id": "dep-2025-12-10",
+      "start_date": "2025-12-10",
+      "end_date": "2025-12-18",
+      "date_label": "10–18 ธ.ค. 2568",
+      "price": 83889,
+      "seats_left": 24,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-01-14",
+      "start_date": "2026-01-14",
+      "end_date": "2026-01-22",
+      "date_label": "14–22 ม.ค. 2569",
+      "price": 78709,
+      "seats_left": 15,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-02-11",
+      "start_date": "2026-02-11",
+      "end_date": "2026-02-19",
+      "date_label": "11–19 ก.พ. 2569",
+      "price": 101629,
+      "seats_left": 16,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-03-11",
+      "start_date": "2026-03-11",
+      "end_date": "2026-03-19",
+      "date_label": "11–19 มี.ค. 2569",
+      "price": 86179,
+      "seats_left": 24,
+      "status": "available"
+    },
+    {
+      "id": "dep-2026-04-08",
+      "start_date": "2026-04-08",
+      "end_date": "2026-04-16",
+      "date_label": "8–16 เม.ย. 2569",
+      "price": 88123,
+      "seats_left": 9,
+      "status": "available"
+    }
+  ],
+  "addons": [
+    {
+      "code": "INS10",
+      "label": "ประกันการเดินทาง",
+      "price": 899
+    },
+    {
+      "code": "HKUP",
+      "label": "อัปเกรดโรงแรม",
+      "price": 2500
+    },
+    {
+      "code": "SEAT",
+      "label": "เลือกที่นั่งเครื่องบิน",
+      "price": 500
+    },
+    {
+      "code": "WIFI",
+      "label": "WiFi ไม่จำกัด",
+      "price": 299
+    }
+  ],
+  "faqs": [
+    {
+      "q": "ต้องขอวีซ่าหรือไม่?",
+      "a": "สัญชาติไทยสามารถเดินทางได้โดยไม่ต้องขอวีซ่าล่วงหน้า หรือขอวีซ่าตอนถึงแล้วแต่ประเทศปลายทาง"
+    },
+    {
+      "q": "อาหารฮาลาล/เจ มีหรือไม่?",
+      "a": "แจ้งความต้องการพิเศษล่วงหน้าได้ เราจะประสานงานให้ตามความต้องการ"
+    },
+    {
+      "q": "น้ำหนักกระเป๋าเท่าไหร่?",
+      "a": "กระเป๋าใต้ท้องเครื่อง 23 กก. กระเป๋าถือขึ้นเครื่อง 7 กก."
+    },
+    {
+      "q": "สามารถยกเลิก/คืนเงินได้หรือไม่?",
+      "a": "สามารถยกเลิกได้ตามเงื่อนไขของแต่ละโปรแกรม โดยอาจมีค่าธรรมเนียมตามระยะเวลาที่ยกเลิก"
+    }
+  ],
+  "related": [
+    {
+      "id": "tour-jp-001",
+      "title": "ทัวร์ญี่ปุ่น โตเกียว เกียวโต",
+      "price_from": 45900,
+      "thumb": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-kr-002",
+      "title": "ทัวร์เกาหลีใต้ โซล ปูซาน",
+      "price_from": 38500,
+      "thumb": "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-tw-003",
+      "title": "ทัวร์ไต้หวัน ไทเป เกาสง",
+      "price_from": 19900,
+      "thumb": "https://images.unsplash.com/photo-1508248467877-aec1b08de376?w=800&h=600&fit=crop"
+    },
+    {
+      "id": "tour-sg-004",
+      "title": "ทัวร์สิงคโปร์ มาเลเซีย",
+      "price_from": 24900,
+      "thumb": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&h=600&fit=crop"
+    }
+  ],
+  "licenses": {
+    "tourism_license": "11/2567",
+    "airline_partners": [
+      "TG",
+      "QR",
+      "EK"
+    ]
+  },
+  "seo": {
+    "title": "ทัวร์รัสเซีย มอสโก ซางต์ปีเตอร์สเบิร์ก ราคาเริ่ม 89,900",
+    "description": "ทัวร์รัสเซีย มอสโก ซางต์ปีเตอร์สเบิร์ก จัตุรัสแดง พระราชวังฤดูหนาว ทรานส์ไซบีเรียน พร้อมไกด์ไทย",
+    "og_image": "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800&h=600&fit=crop"
+  }
+}
