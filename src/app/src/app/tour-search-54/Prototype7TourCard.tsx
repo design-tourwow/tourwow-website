@@ -21,7 +21,7 @@ const useAutoExpand = (threshold = 6000, enabled = true) => {
   const [isInView, setIsInView] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const timerRef = useRef<NodeJS.Timeout>();
-  const progressRef = useRef<NodeJS.Timeout>();
+  const progressRef = useRef<number>();
   const elementRef = useRef<HTMLDivElement>(null);
   const cardId = useRef(`card_${Math.random().toString(36).substr(2, 9)}`);
   const cardTimestamp = useRef<number>(0);
