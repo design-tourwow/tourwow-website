@@ -196,7 +196,7 @@ const Prototype7TourCard: React.FC<Prototype7TourCardProps> = ({
   ];
   
   // Check if this is a flash sale (discount > 15%) or regular tour
-  const isFlashSale = hasDiscount && tour.pricing.discount_percentage > 15;
+  const isFlashSale = hasDiscount && (tour.pricing.discount_percentage ?? 0) > 15;
 
   // Progressive digit reveal effect - for testing (always active)
   React.useEffect(() => {
