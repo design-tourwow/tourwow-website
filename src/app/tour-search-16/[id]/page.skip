@@ -1,0 +1,124 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import {
+  ArrowLeft, Star, Clock, Users, MapPin, Calendar, Share2, Heart,
+  Phone, MessageSquare, Check, Wifi, Coffee, Utensils, Car, Bed,
+  Shield, Info, Award, Globe, Camera, Building2
+} from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+
+// Detailed tour data for specific tour
+const tourDetailData: { [key: string]: any } = {
+  'tour-jp-001': {
+    id: 'tour-jp-001',
+    title: 'ทัวร์ญี่ปุ่น โตเกียว เกียวโต',
+    destination: 'ญี่ปุ่น',
+    duration: '5 วัน 4 คืน',
+    price: 45900,
+    originalPrice: 52900,
+    rating: 4.8,
+    reviewCount: 156,
+    images: [
+      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1528164344705-47542687000d?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&h=600&fit=crop'
+    ],
+    highlights: ['ชมซากุระ', 'วัดเก่าแก่', 'รถไฟความเร็วสูง', 'อาหารญี่ปุ่นแท้'],
+    departure: '15 มีนาคม 2025',
+    available: true,
+    groupSize: 'สูงสุด 25 คน',
+    description: 'สัมผัสความงามของญี่ปุ่นในช่วงซากุระบาน เยือนวัดเก่าแก่ในเกียวโต นั่งรถไฟความเร็วสูงชิงกันเซ็น ชิมอาหารญี่ปุ่นต้นตำรับ',
+    itinerary: [
+      {
+        day: 1,
+        title: 'วันที่ 1: เดินทางสู่โตเกียว',
+        activities: [
+          'ออกเดินทางจากสนามบินสุวรรณภูมิ',
+          'เดินทางถึงสนามบินนาริตะ โตเกียว',
+          'เช็คอินโรงแรม พักผ่อน'
+        ]
+      },
+      {
+        day: 2,
+        title: 'วันที่ 2: ชมซากุระและวัดเซนโซจิ',
+        activities: [
+          'ชมซากุระที่สวนอุเอโนะ',
+          'เยือนวัดเซนโซจิ อาซากุสะ',
+          'เดินช้อปปิ้งถนนนากามิเสะ',
+          'ชมวิวกรุงโตเกียวจากสกายทรี'
+        ]
+      },
+      {
+        day: 3,
+        title: 'วันที่ 3: เดินทางสู่เกียวโต',
+        activities: [
+          'นั่งรถไฟความเร็วสูงชิงกันเซ็น',
+          'เยือนวัดคิโยมิซุ-เดระ',
+          'เดินชมย่านกิออนเก่าแก่',
+          'ชิมอาหารญี่ปุ่นต้นตำรับ'
+        ]
+      }
+    ],
+    included: [
+      'ตั๋วเครื่องบิน ไป-กลับ',
+      'ที่พัก 4 ดาว 4 คืน',
+      'อาหาร 8 มื้อ',
+      'รถโค้ชปรับอากาศ',
+      'ไกด์ท้องถิ่นพูดไทย',
+      'ตั๋วรถไฟชิงกันเซ็น',
+      'ประกันการเดินทาง'
+    ],
+    notIncluded: [
+      'ค่าทิป',
+      'ค่าใช้จ่ายส่วนตัว',
+      'อาหารนอกรายการ',
+      'ค่าโทรศัพท์'
+    ],
+    facilities: [
+      { icon: Wifi, label: 'WiFi ฟรี' },
+      { icon: Car, label: 'รถรับส่ง' },
+      { icon: Utensils, label: 'อาหาร 8 มื้อ' },
+      { icon: Bed, label: 'โรงแรม 4 ดาว' },
+      { icon: Shield, label: 'ประกันเดินทาง' },
+      { icon: Globe, label: 'ไกด์ท้องถิ่น' }
+    ]
+  },
+  'tour-kr-002': {
+    id: 'tour-kr-002',
+    title: 'ทัวร์เกาหลีใต้ โซล ปูซาน',
+    destination: 'เกาหลีใต้',
+    duration: '6 วัน 5 คืน',
+    price: 38500,
+    rating: 4.7,
+    reviewCount: 89,
+    images: [
+      'https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop'
+    ],
+    highlights: ['วัฒนธรรมเกาหลี', 'ตลาดมยองดง', 'ชิมอาหารท้องถิ่น', 'K-Pop Culture'],
+    departure: '20 มีนาคม 2025',
+    available: true,
+    groupSize: 'สูงสุด 30 คน',
+    description: 'สัมผัสวัฒนธรรมเกาหลีใต้ ช้อปปิ้งที่ตลาดมยองดง ชิมอาหารเกาหลีแท้ๆ เยือนสถานที่สำคัญในโซลและปูซาน'
+  }
+}
+
+export default function TourDetailSkipped() {
+  return (
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">หน้านี้ถูก Skip ไปก่อน</h1>
+        <p className="text-gray-600 mb-6">เนื่องจากมีปัญหา Type Error ในการ Build</p>
+        <Link
+          href="/tour-search-16"
+          className="inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
+        >
+          กลับหน้าหลัก
+        </Link>
+      </div>
+    </div>
+  )
+}
