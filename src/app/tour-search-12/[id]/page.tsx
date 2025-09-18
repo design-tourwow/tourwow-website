@@ -33,7 +33,7 @@ import {
   Twitter,
   Copy
 } from 'lucide-react'
-import { allTours } from '@/data/tours-data'
+import { allTours } from '@/lib/tour-data-consolidated'
 
 export default function TourDetail() {
   const params = useParams()

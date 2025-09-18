@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Search, MapPin, Calendar, Star, Heart, Clock, Users, Filter, ChevronDown, ChevronUp, TrendingUp, ArrowRight, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { allTours } from '@/data/tours-data'
+import { allTours } from '@/lib/tour-data-consolidated'
 
 export default function TourSearch12() {
   const [searchQuery, setSearchQuery] = useState('')

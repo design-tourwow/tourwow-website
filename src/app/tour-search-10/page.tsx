@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import AsiaIcon from '@/components/icons/AsiaIcon'
 import EuropeIcon from '@/components/icons/EuropeIcon'
-import { allTours } from '@/data/tours-data'
+import { allTours } from '@/lib/tour-data-consolidated'
 
 // ใช้ข้อมูลทัวร์จากไฟล์แยก
 const mockTours = allTours

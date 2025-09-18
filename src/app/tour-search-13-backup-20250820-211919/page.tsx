@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Search, MapPin, Calendar, Star, Heart, Clock, Users, ArrowRight, Filter, X, ChevronDown, Grid, List, Bookmark, TrendingUp } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { allTours } from '@/data/tours-data'
+import { allTours } from '@/lib/tour-data-consolidated'
 
 type SortOption = 'recommended' | 'price-low' | 'price-high' | 'rating' | 'duration' | 'popularity'
 

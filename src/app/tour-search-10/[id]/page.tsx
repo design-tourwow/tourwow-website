@@ -13,7 +13,7 @@ import {
   PlayCircle, ArrowRight, Copy, Check, HelpCircle,
   Filter, Search, TrendingUp, Sparkles, ChevronLeft
 } from 'lucide-react'
-import { allTours } from '@/data/tours-data'
+import { allTours } from '@/lib/tour-data-consolidated'
 
 // Tour interface
 interface Tour {

@@ -11,7 +11,7 @@ import {
   ArrowRight, Plus, Minus
 } from 'lucide-react'
 import Image from 'next/image'
-import { allTours } from '@/data/tours-data'
+import { allTours } from '@/lib/tour-data-consolidated'
 
 interface Tour {
   id: number
