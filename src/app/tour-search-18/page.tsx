@@ -1,6 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+export const dynamic = 'force-dynamic'
+
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import HeroSearch from './components/HeroSearch'
 import FilterSortBar from './components/FilterSortBar'
@@ -10,7 +12,7 @@ import CompareBar from './components/CompareBar'
 import CompareSheet from './components/CompareSheet'
 import QuickView from './components/QuickView'
 
-export default function TourSearch18() {
+function TourSearch18Content() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
@@ -189,6 +191,21 @@ export default function TourSearch18() {
         />
       )}
     </div>
+  )
+}
+
+export default function TourSearch18() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">กำลังโหลด...</p>
+        </div>
+      </div>
+    }>
+      <TourSearch18Content />
+    </Suspense>
   )
 }
 

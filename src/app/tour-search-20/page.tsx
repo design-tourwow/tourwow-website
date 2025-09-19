@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ChevronDown, Search, Calendar, DollarSign, Clock, MapPin, Star, Heart, Share2, Check, Filter, Grid, List, X, ChevronRight, Plane, Users, Globe, Shield, AlertCircle, TrendingUp, Award, Sparkles, Camera, Mountain, Ship, Building2, TreePine, Coffee, Utensils, ShoppingBag, Info, Eye, MessageCircle, FileText } from 'lucide-react';
 

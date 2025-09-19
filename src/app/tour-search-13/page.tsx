@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useMemo, useEffect } from 'react'
 import { Search, MapPin, Calendar, Star, Heart, Clock, Users, ArrowRight, Filter, X, ChevronDown, Grid, List, Bookmark, TrendingUp } from 'lucide-react'
 import Image from 'next/image'

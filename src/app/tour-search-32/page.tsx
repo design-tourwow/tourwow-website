@@ -6,6 +6,8 @@
 
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { 
   Search, Filter, X, MapPin, Calendar, Star, TrendingUp, 

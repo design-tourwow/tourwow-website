@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 // TS33 Main Search Page - Mobile-First Tour Search
 // Completely isolated from existing tour-search implementations
 

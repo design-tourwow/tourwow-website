@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { Search, Heart, ArrowRight, X, ChevronDown, MapPin, Star, Clock, Users, Filter, Eye, Zap, Compass, TrendingUp, Plane, Mic, Map, BarChart3, Share2, CheckSquare, AlertCircle, Activity, Timer, Globe, Award, Shield, TrendingDown, Volume2, Headphones, Flame, Gift, Percent, Tag, ShoppingCart, Crown, Sparkles, TrendingUp as TrendUp, Bell } from 'lucide-react'
 import Image from 'next/image'
