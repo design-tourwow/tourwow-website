@@ -668,28 +668,28 @@ export default function TourSearch32() {
   // Auto slide state for Japan card
   const [currentJapanImageIndex, setCurrentJapanImageIndex] = useState(0)
   const japanImages = [
-    "https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD",
-    "https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e", 
-    "https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo",
-    "https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
+    "/images/countries/japan-1-1.jpg",
+    "/images/countries/japan-1-2.jpg", 
+    "/images/countries/japan-1-3.jpg",
+    "/images/countries/japan-1-4.jpg"
   ]
   
   // Auto slide state for Japan 2 (Kyoto) card
   const [currentJapan2ImageIndex, setCurrentJapan2ImageIndex] = useState(0)
   const japan2Images = [
-    "https://drive.google.com/uc?export=view&id=1HAl4iXIeimYtUgs2_LtNoiqpHfc3bQgM",
-    "https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e",
-    "https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo",
-    "https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
+    "/images/countries/japan-2.jpg",
+    "/images/countries/japan-1-2.jpg",
+    "/images/countries/japan-1-3.jpg",
+    "/images/countries/japan-1-4.jpg"
   ]
   
   // Auto slide state for Japan 3 (Osaka) card
   const [currentJapan3ImageIndex, setCurrentJapan3ImageIndex] = useState(0)
   const japan3Images = [
-    "https://drive.google.com/uc?export=view&id=1HiIpWCDN2K--GluZ03KxgaWkl-dccCRa",
-    "https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e",
-    "https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo",
-    "https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
+    "/images/countries/japan-3.jpg",
+    "/images/countries/japan-1-2.jpg",
+    "/images/countries/japan-1-3.jpg",
+    "/images/countries/japan-1-4.jpg"
   ]
   
   // State management
@@ -3058,7 +3058,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1JBTIXjitgqFQAaUUOC_-MBb-LaMg4s_m"
+                    src="/images/countries/japan-4.jpg"
                     alt="ทัวร์ญี่ปุ่น ฮิโรชิมา สันติภาพ"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -3249,7 +3249,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1Ld7aEqZapdQ_StuEXdcrIA8LIaSYJ-TU"
+                    src="/images/countries/japan-5.jpg"
                     alt="ทัวร์ญี่ปุ่น นารา กวาง"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -3439,7 +3439,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=10RHGEa-j8pRtVktmTdh4APsSHUguw9r0"
+                    src="/images/countries/hongkong.jpg"
                     alt="ทัวร์ฮ่องกง ดิสนีย์แลนด์ วิคตอเรีย"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -3630,7 +3630,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1e9A-BYHMOHcxt4BybLItv0Bi1zPwnjpH"
+                    src="/images/countries/south-korea.jpg"
                     alt="ทัวร์เกาหลีใต้ โซล K-Culture"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -3818,7 +3818,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1qGG5deDkAkDGD9zxvYMaLouuM6pRQytQ"
+                    src="/images/countries/taiwan.jpg"
                     alt="ทัวร์ไต้หวัน ไทเป 101 อาลีซาน"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -3976,7 +3976,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1e7Y9lNqkgEqCyb7C0rag9wdpF5p4HIQd"
+                    src="/images/countries/singapore.jpg"
                     alt="ทัวร์สิงคโปร์ Marina Bay Sands"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -4137,7 +4137,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1ZRJGB2RHUpwsyNHRmnx3PVt_-pjaGh3t"
+                    src="/images/countries/malaysia.jpg"
                     alt="ทัวร์มาเลเซีย กัวลาลัมเปอร์ Petronas Twin Towers"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -4295,7 +4295,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=16O2Km4Pi75rH_POPfu2PNYnBaVzd0AWP"
+                    src="/images/countries/indonesia.jpg"
                     alt="ทัวร์อินโดนีเซีย บาหลี วัฒนธรรม"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -4456,7 +4456,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1a7QT_A3-szWqgEAeoZyXLceyQrSDlnJK"
+                    src="/images/countries/philippines.jpg"
                     alt="ทัวร์ฟิลิปปินส์ โบราไคย์ เกาะสวยงาม"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -4613,7 +4613,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1s7tJR4mk5J7zV-7tMuLfYbdT2j7OJy3q"
+                    src="/images/countries/vietnam.jpg"
                     alt="ทัวร์เวียดนาม ฮาลองเบย์ อ่าวงดงาม"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -4770,7 +4770,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1-TFLWocxCtlm7-LpwADeEloMmB1FrmJh"
+                    src="/images/countries/cambodia.jpg"
                     alt="ทัวร์กัมพูชา นครวัด เขมรโบราณ"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
@@ -4927,7 +4927,7 @@ export default function TourSearch32() {
               <div className="group cursor-pointer">
                 <div className="relative aspect-square overflow-hidden rounded-t-xl shadow-md hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="https://drive.google.com/uc?export=view&id=1YiK6Fn7QogiVd3Ovc4het_fYuiESBrgZ"
+                    src="/images/countries/laos.jpg"
                     alt="ทัวร์ลาว หลวงพระบาง วัดทอง"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
