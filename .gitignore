@@ -48,7 +48,7 @@ backup-*
 public/data/tours/
 public/banners/
 public/tour-banners/
-# Skip large files temporarily (over 20MB each)
+# Skip only large files (over 20MB each)
 public/images/countries/kazakhstan-1.mp4
 public/images/countries/japan-6.mov
 public/images/countries/kazakhstan-3.jpg
@@ -58,9 +58,6 @@ public/images/countries/philippines.jpg
 public/images/countries/japan-4.jpg
 public/images/countries/kazakhstan-4.jpg
 public/images/countries/japan-1-3.jpg
-# Allow smaller images
-!public/images/countries/*.jpg
-!public/images/countries/*.gif
 scripts/
 test-*.js
 debug-*.js
