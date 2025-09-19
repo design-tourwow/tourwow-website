@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, use, useRef } from 'react'
+import React, { useState, useEffect, use, useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -223,7 +223,7 @@ interface TourDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-export default function TourDetailPage({ params }: TourDetailPageProps) {
+function TourDetailContent({ params }: TourDetailPageProps) {
   const resolvedParams = use(params)
   const searchParams = useSearchParams()
   const source = searchParams.get('src')
@@ -944,5 +944,20 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
         </div>
       )}
     </div>
+  )
+}
+
+export default function TourDetailPage({ params }: TourDetailPageProps) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">กำลังโหลด...</p>
+        </div>
+      </div>
+    }>
+      <TourDetailContent params={params} />
+    </Suspense>
   )
 }

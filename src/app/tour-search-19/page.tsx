@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import HeroSearch from './components/HeroSearch'
 import FilterSortBar from './components/FilterSortBar'
@@ -13,7 +13,7 @@ import CompareSheet from './components/CompareSheet'
 import QuickView from './components/QuickView'
 import './mobile-atf.css'
 
-export default function TourSearch19() {
+function TourSearch19Content() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
@@ -573,4 +573,19 @@ function generateMockTours() {
     specialOffers: i % 2 === 0 ? [specialOfferTypes[i % 4]].filter(Boolean) : [],
     urgencyMessage: i % 3 === 0 ? urgencyMessages[i % 4] : null
   }))
+}
+
+export default function TourSearch19() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">กำลังโหลด...</p>
+        </div>
+      </div>
+    }>
+      <TourSearch19Content />
+    </Suspense>
+  )
 }

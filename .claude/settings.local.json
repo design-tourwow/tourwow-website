@@ -4,7 +4,13 @@
       "Bash(brew install:*)",
       "WebFetch(domain:tourwow-website-7r2kks58k-tourwows-projects.vercel.app)",
       "WebFetch(domain:tourwow-website-319gat7en-tourwows-projects.vercel.app)",
-      "Bash(NODE_ENV=production npm run build)"
+      "Bash(NODE_ENV=production npm run build)",
+      "Read(//private/tmp/**)",
+      "Bash(git clone:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git push:*)",
+      "Bash(mkdir:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
