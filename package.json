@@ -17,6 +17,7 @@
     "@types/pg": "^8.15.4",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "critters": "^0.0.23",
     "csv-parser": "^3.2.0",
@@ -33,6 +34,7 @@
     "react-dom": "^18",
     "react-markdown": "^9.0.1",
     "react-select": "^5.10.1",
+    "sharp": "^0.34.4",
     "tailwind-merge": "^3.3.1",
     "timezone": "^1.0.23",
     "utc": "^0.1.0"

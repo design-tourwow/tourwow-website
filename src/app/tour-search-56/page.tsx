@@ -353,7 +353,7 @@ const TourSearch56 = () => {
                     </div>
                   </div>
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -414,7 +414,7 @@ const TourSearch56 = () => {
                     </div>
                   </div>
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -521,7 +521,7 @@ const TourSearch56 = () => {
                     </div>
                   </div>
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -619,7 +619,7 @@ const TourSearch56 = () => {
                     </div>
                   </div>
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -716,7 +716,7 @@ const TourSearch56 = () => {
                   {/* Split Background - Video Top, Card Bottom */}
                   <div className="h-[60%] relative">
                     <video
-                      src="/images/countries/japan-6.mov"
+                      src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                       className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                       autoPlay
                       loop
@@ -802,7 +802,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -845,7 +845,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -892,7 +892,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -949,7 +949,7 @@ const TourSearch56 = () => {
                     {/* Video Side - 65% */}
                     <div className="w-[65%] relative">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                         autoPlay
                         loop
@@ -992,7 +992,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1039,7 +1039,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1103,7 +1103,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1143,7 +1143,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1190,7 +1190,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1249,7 +1249,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1306,7 +1306,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1344,7 +1344,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1385,7 +1385,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1426,7 +1426,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1466,7 +1466,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1521,7 +1521,7 @@ const TourSearch56 = () => {
                   </div>
 
                   <video
-                    src="/images/countries/japan-6.mov"
+                    src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                     autoPlay
                     loop
@@ -1593,7 +1593,7 @@ const TourSearch56 = () => {
                     {/* Top: Video Large (span 2x3) */}
                     <div className="col-span-2 row-span-3 relative overflow-hidden rounded-lg">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
                         autoPlay
                         loop
@@ -1679,7 +1679,7 @@ const TourSearch56 = () => {
                     {/* Carousel Images */}
                     <div className="carousel-container relative w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -1687,22 +1687,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
@@ -1806,7 +1806,7 @@ const TourSearch56 = () => {
                     {/* Carousel Images */}
                     <div className="carousel-container-24 relative w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item-24 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -1814,22 +1814,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item-24 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item-24 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item-24 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item-24 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
@@ -1841,7 +1841,7 @@ const TourSearch56 = () => {
                         {/* Video Thumbnail */}
                         <div className="carousel-indicator-24 w-12 h-8 rounded border-2 transition-all duration-300 cursor-pointer overflow-hidden border-white/70 shadow-lg relative">
                           <video
-                            src="/images/countries/japan-6.mov"
+                            src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                             className="w-full h-full object-cover"
                             muted
                             playsInline
@@ -1858,10 +1858,10 @@ const TourSearch56 = () => {
 
                         {/* Image Thumbnails */}
                         {[
-                          "/images/countries/japan-1-1.jpg",
-                          "/images/countries/japan-1-2.jpg",
-                          "/images/countries/japan-1-3.jpg",
-                          "/images/countries/japan-1-4.jpg"
+                          "https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD",
+                          "https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e",
+                          "https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo",
+                          "https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         ].map((src, index) => (
                           <div
                             key={index + 1}
@@ -1952,7 +1952,7 @@ const TourSearch56 = () => {
                     {/* Carousel Images */}
                     <div className="carousel-container-25 relative w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item-25 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -1960,22 +1960,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item-25 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item-25 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item-25 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item-25 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
@@ -2078,7 +2078,7 @@ const TourSearch56 = () => {
                   <div className="relative h-[250px] mt-16 overflow-hidden">
                     <div className="carousel-container-26 relative w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item-26 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -2086,22 +2086,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item-26 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item-26 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item-26 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item-26 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
@@ -2283,7 +2283,7 @@ const TourSearch56 = () => {
                   <div className="relative w-full h-48 md:w-[45%] md:h-auto">
                     <div className="carousel-container-27 absolute inset-0 w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item-27 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -2291,22 +2291,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item-27 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item-27 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item-27 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item-27 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
@@ -2407,7 +2407,7 @@ const TourSearch56 = () => {
                   <div className="absolute inset-0">
                     <div className="carousel-container-28 relative w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item-28 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -2415,22 +2415,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item-28 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item-28 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item-28 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item-28 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
@@ -2518,7 +2518,7 @@ const TourSearch56 = () => {
                   <div className="absolute inset-0">
                     <div className="carousel-container-29 relative w-full h-full">
                       <video
-                        src="/images/countries/japan-6.mov"
+                        src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                         className="carousel-item-29 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                         autoPlay
                         loop
@@ -2526,22 +2526,22 @@ const TourSearch56 = () => {
                         playsInline
                       />
                       <img
-                        src="/images/countries/japan-1-1.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                         alt="Japan 1"
                         className="carousel-item-29 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-2.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                         alt="Japan 2"
                         className="carousel-item-29 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-3.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                         alt="Japan 3"
                         className="carousel-item-29 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />
                       <img
-                        src="/images/countries/japan-1-4.jpg"
+                        src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                         alt="Japan 4"
                         className="carousel-item-29 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       />

@@ -66,7 +66,7 @@ const TourCarousel: React.FC = () => {
     // Japan Tokyo
     {
       id: 1,
-      image: "/images/countries/japan-1.jpg",
+      image: "https://drive.google.com/uc?export=view&id=1FAWWv71hU8V3VJdz1ap-QVyM4GEWFQ5I",
       alt: "ทัวร์ญี่ปุ่น โตเกียว ซากุระ",
       title: "ทัวร์ญี่ปุ่น 5 วัน 4 คืน",
       airline: "By TG Airways",
@@ -80,7 +80,7 @@ const TourCarousel: React.FC = () => {
     // Japan Kyoto
     {
       id: 2,
-      image: "/images/countries/japan-2.jpg",
+      image: "https://drive.google.com/uc?export=view&id=1HAl4iXIeimYtUgs2_LtNoiqpHfc3bQgM",
       alt: "ทัวร์ญี่ปุ่น เกียวโต เทศกาล",
       title: "ทัวร์ญี่ปุ่น 4 วัน 3 คืน",
       airline: "By NH Airways",
@@ -94,7 +94,7 @@ const TourCarousel: React.FC = () => {
     // Japan Hiroshima
     {
       id: 3,
-      image: "/images/countries/japan-3.jpg",
+      image: "https://drive.google.com/uc?export=view&id=1HiIpWCDN2K--GluZ03KxgaWkl-dccCRa",
       alt: "ทัวร์ญี่ปุ่น ฮิโรชิมา มิยาจิมา",
       title: "ทัวร์ญี่ปุ่น 4 วัน 3 คืน",
       airline: "By TG Airways",
@@ -108,7 +108,7 @@ const TourCarousel: React.FC = () => {
     // Japan Nara
     {
       id: 4,
-      image: "/images/countries/japan-4.jpg",
+      image: "https://drive.google.com/uc?export=view&id=1JBTIXjitgqFQAaUUOC_-MBb-LaMg4s_m",
       alt: "ทัวร์ญี่ปุ่น นารา กวาง",
       title: "ทัวร์ญี่ปุ่น 4 วัน 3 คืน",
       airline: "By NH Airways",
@@ -122,7 +122,7 @@ const TourCarousel: React.FC = () => {
     // Japan Osaka
     {
       id: 5,
-      image: "/images/countries/japan-5.jpg",
+      image: "https://drive.google.com/uc?export=view&id=1Ld7aEqZapdQ_StuEXdcrIA8LIaSYJ-TU",
       alt: "ทัวร์ญี่ปุ่น โอซาก้า ปราสาท",
       title: "ทัวร์ญี่ปุ่น 4 วัน 3 คืน",
       airline: "By JL Airways",

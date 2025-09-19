@@ -211,7 +211,7 @@ const TourSearch58 = () => {
                 <div className="absolute inset-0">
                   <div className="carousel-container-1 relative w-full h-full">
                     <video
-                      src="/images/countries/japan-6.mov"
+                      src="https://drive.google.com/uc?export=view&id=1NMpomdMAJ8O51JJa8jtGENm1E2ztl2_e"
                       className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                       autoPlay
                       loop
@@ -220,7 +220,7 @@ const TourSearch58 = () => {
                       preload="auto"
                     />
                     <img
-                      src="/images/countries/japan-1-1.jpg"
+                      src="https://drive.google.com/uc?export=view&id=1ApwnglWYNuUqJ3twBKR3A3Yt0BdpnVQD"
                       alt="Japan 1"
                       className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       loading="eager"
@@ -228,7 +228,7 @@ const TourSearch58 = () => {
                       decoding="async"
                     />
                     <img
-                      src="/images/countries/japan-1-2.jpg"
+                      src="https://drive.google.com/uc?export=view&id=1B5k-tXgBL8mrvIVqv_nK9e9goluppT4e"
                       alt="Japan 2"
                       className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       loading="eager"
@@ -236,7 +236,7 @@ const TourSearch58 = () => {
                       decoding="async"
                     />
                     <img
-                      src="/images/countries/japan-1-3.jpg"
+                      src="https://drive.google.com/uc?export=view&id=1EJG6tH0nwDi8eO7NfJe4EXqcenqRZcvo"
                       alt="Japan 3"
                       className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       loading="eager"
@@ -244,7 +244,7 @@ const TourSearch58 = () => {
                       decoding="async"
                     />
                     <img
-                      src="/images/countries/japan-1-4.jpg"
+                      src="https://drive.google.com/uc?export=view&id=1F53hVDMOXhdKuwtkJBQ1ovgRNBOwchcE"
                       alt="Japan 4"
                       className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
                       loading="eager"
@@ -373,7 +373,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/japan-2.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1HAl4iXIeimYtUgs2_LtNoiqpHfc3bQgM"
                     alt="Hokkaido"
                     className="absolute inset-0 w-full h-full object-cover object-center"
                     loading="eager"
@@ -515,7 +515,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/singapore.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1e7Y9lNqkgEqCyb7C0rag9wdpF5p4HIQd"
                     alt="Singapore"
                     className="absolute inset-0 w-full h-full object-cover object-center"
                     loading="eager"
@@ -647,7 +647,7 @@ const TourSearch58 = () => {
                 {/* Video Background Only */}
                 <div className="absolute inset-0">
                   <video
-                    src="/images/countries/kazakhstan-1.mp4"
+                    src="https://drive.google.com/uc?export=view&id=1QpU2DG1JAXhfOIweqQIsf1Q3Lzk60NEg"
                     className="absolute inset-0 w-full h-full object-cover"
                     autoPlay
                     loop
@@ -764,7 +764,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/philippines.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1a7QT_A3-szWqgEAeoZyXLceyQrSDlnJK"
                     alt="Philippines"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -862,7 +862,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/laos.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1YiK6Fn7QogiVd3Ovc4het_fYuiESBrgZ"
                     alt="Laos"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -954,7 +954,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/cambodia.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1-TFLWocxCtlm7-LpwADeEloMmB1FrmJh"
                     alt="Cambodia"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -1052,7 +1052,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/hongkong.jpg"
+                    src="https://drive.google.com/uc?export=view&id=10RHGEa-j8pRtVktmTdh4APsSHUguw9r0"
                     alt="Hong Kong"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -1144,7 +1144,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/indonesia.jpg"
+                    src="https://drive.google.com/uc?export=view&id=16O2Km4Pi75rH_POPfu2PNYnBaVzd0AWP"
                     alt="Indonesia"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -1242,7 +1242,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/malaysia.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1ZRJGB2RHUpwsyNHRmnx3PVt_-pjaGh3t"
                     alt="Malaysia"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -1334,7 +1334,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/south-korea.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1e9A-BYHMOHcxt4BybLItv0Bi1zPwnjpH"
                     alt="South Korea"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -1432,7 +1432,7 @@ const TourSearch58 = () => {
                 {/* Single Background Image */}
                 <div className="absolute inset-0">
                   <img
-                    src="/images/countries/taiwan.jpg"
+                    src="https://drive.google.com/uc?export=view&id=1qGG5deDkAkDGD9zxvYMaLouuM6pRQytQ"
                     alt="Taiwan"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
