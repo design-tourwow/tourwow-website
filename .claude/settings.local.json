@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(brew install:*)",
-      "WebFetch(domain:tourwow-website-7r2kks58k-tourwows-projects.vercel.app)"
+      "WebFetch(domain:tourwow-website-7r2kks58k-tourwows-projects.vercel.app)",
+      "WebFetch(domain:tourwow-website-319gat7en-tourwows-projects.vercel.app)",
+      "Bash(NODE_ENV=production npm run build)"
     ],
     "deny": [],
     "ask": []

@@ -64,6 +64,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    missingSuspenseWithCSRBailout: false,
   },
   eslint: {
     ignoreDuringBuilds: true,
