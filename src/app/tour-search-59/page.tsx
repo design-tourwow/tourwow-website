@@ -50,7 +50,7 @@ const TourSearch58 = () => {
 
       // Update carousel every 5 seconds
       if (Math.floor(Date.now() / 1000) % 5 === 0) {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % 5)
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % 2)
       }
     }, 1000) // Update every second
 
@@ -209,14 +209,24 @@ const TourSearch58 = () => {
 
                 {/* Full Background Carousel */}
                 <div className="absolute inset-0">
-                  <img
-                    src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop&auto=format&q=100"
-                    alt="Japan"
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="async"
-                  />
+                  <div className="carousel-container-1 relative w-full h-full">
+                    <img
+                      src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop&auto=format&q=100"
+                      alt="Japan 1"
+                      className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                    />
+                    <img
+                      src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop&auto=format&q=100"
+                      alt="Japan 2"
+                      className="carousel-item-1 absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                    />
+                  </div>
 
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -317,6 +327,17 @@ const TourSearch58 = () => {
 
                 </div>
 
+                {/* Image Indicators - Right Side */}
+                <div className="absolute top-1/2 right-4 transform -translate-y-1/2 flex flex-col space-y-2 z-20">
+                  {[0, 1].map((index) => (
+                    <div
+                      key={index}
+                      className={`carousel-indicator-1 w-2 h-2 rounded-full transition-all duration-300 ${
+                        index === currentImageIndex ? 'bg-red-500 shadow-lg' : 'bg-white/60'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 

@@ -22,7 +22,8 @@
       "Bash(npx vercel inspect:*)",
       "Bash(git restore:*)",
       "WebSearch",
-      "WebFetch(domain:unsplash.com)"
+      "WebFetch(domain:unsplash.com)",
+      "Bash(npx vercel:*)"
     ],
     "deny": [],
     "ask": []
