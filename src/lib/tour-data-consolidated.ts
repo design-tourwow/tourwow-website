@@ -298,4 +298,7 @@ export const getAvailabilityStatus = (availableSeats: number) => {
   if (availableSeats >= 8) return { text: `เหลือ ${availableSeats}`, style: 'bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-700 border-yellow-300' }
   if (availableSeats >= 1) return { text: `ใกล้เต็ม ${availableSeats}`, style: 'bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-300' }
   return { text: 'เต็มแล้ว', style: 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-500 border-gray-300' }
-} 
+}
+
+// Export dummy allTours to prevent build errors
+export const allTours: Tour[] = [] 
