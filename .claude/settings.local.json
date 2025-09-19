@@ -20,7 +20,9 @@
       "WebFetch(domain:tourwow-website-7o46ftzq4-tourwows-projects.vercel.app)",
       "Bash(npx vercel domains:*)",
       "Bash(npx vercel inspect:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "WebSearch",
+      "WebFetch(domain:unsplash.com)"
     ],
     "deny": [],
     "ask": []
